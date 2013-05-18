@@ -5,6 +5,8 @@
     "requirejs": "latest",
     "jquery": "latest",
     "backbone-amd": "latest",
-    "underscore-amd": "latest"
+    "underscore-amd": "latest",
+    "bootstrap": "latest",
+    "bootstrap-datetimepicker":"latest"
   }
 }
