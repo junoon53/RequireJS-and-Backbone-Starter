@@ -5,15 +5,15 @@ define(['backbone'], function(Backbone) {
 		defaults: function() {
 			return {
 				patientName: '',
-				patientId:"null",
+				patient:"null",
 				doctorName: '',
-				doctorId:"null",
+				doctor:"null",
 				amount:0,
-				paymentTypeName:"CASH",
-				paymentTypeId:"null",
+				paymentOptionName:"CASH",
+				paymenOption:"null",
 				rowId:0,
-				clinicId:"",
-				date:"09.05.2013",
+				clinic:"",
+				date: new Date(),
 			}
 		},
 		validate: function(attrs, options) {

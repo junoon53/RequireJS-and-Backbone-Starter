@@ -3,8 +3,7 @@ define([
     'backbone',
     'jquery', 
     'underscore',
-    'models/people/doctor',
-    'models/people/patient',
+    'models/people/person',
     'models/utility/modal',
     'collections/revenue/revenueRowList',      
     'views/people/addDoctor',
@@ -15,16 +14,18 @@ define([
     'router/router',
     'vent',
     'text!templates/app.html',
+    'text!templates/clinicsListRow.html',
     'datetimepicker',
          
 
-    ], function(Backbone,$,_,Doctor,Patient,Modal,RevenueRowList,AddDoctor,AddPatient,RevenueTableView,ModalView,Submit,router,vent,template){
+    ], function(Backbone,$,_,Person,Modal,RevenueRowList,AddDoctor,AddPatient,RevenueTableView,ModalView,Submit,router,vent,template,clinicsListRowTemplate){
 
     var appView  = Backbone.View.extend({
         events: {
             'click li#revenue a': 'addRevenueTableView',
             'click li#submit a': 'handleSubmitClick',
             'click li#logout a': 'handleLogoutClick',
+            'click .clinicsList li a': 'handleClinicSelect',
             'changeDate #datetimepicker' : 'changeDate'
 
         },
@@ -32,9 +33,22 @@ define([
             var self = this;
             this.template = _.template(template);
             this.$el.html(this.template(this.model.toJSON()));   
+
+            this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
+
+            var clinicsList = "";
+            _.each(this.model.get('clinics'),function(element,index,array){
+                clinicsList += self.clinicsListRowTemplate({clinicName:element.name,clinicId:element._id});
+            });
+
+            this.$('.clinicsList').html(clinicsList);
+
+
             this.$('#datetimepicker').datetimepicker({
               pickTime: false
             });
+
+            this.router = new router();
 
             /*Application Sub-Views*/
             this.revenueTableView = null;
@@ -55,6 +69,13 @@ define([
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewDoctor', this.displayAddDoctorModal);
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
+        },
+        handleClinicSelect: function(evt){
+            var selectedClinicId = parseInt(evt.currentTarget.id,10);
+            this.model.set({clinicId:selectedClinicId});
+            this.model.set({clinicName:_.findWhere(this.model.get('clinics'),{_id:selectedClinicId}).name});
+            this.$('a.selectedClinic').attr('id',this.model.get('clinicId'));
+            this.$('a.selectedClinic').text(this.model.get('clinicName'));            
         },
         onClose: function(){
             this.dateTimePicker.destroy();
@@ -91,7 +112,13 @@ define([
         },
         displayAddDoctorModal: function(msg){
             var names = msg.doctorNameString.split(" ");
-            var addDoctorView = new AddDoctor({model: new Doctor({firstName:names[0],lastName:names[1],active:1,clinics:[this.model.get("clinicId")]})});       
+            var addDoctorView = new AddDoctor({model: new Person({
+                                                                    firstName:names[0],
+                                                                    lastName:names[1],
+                                                                    isActive:1,
+                                                                    clinics:[this.model.get("clinicId")],
+                                                                    roles: [0]
+                                                                })});       
             var modalModel = new Modal({header:"Add Doctor",footer:"",body:addDoctorView.$el});
             var modal = new ModalView({model:modalModel});
             this.addAlertView(modal);
@@ -99,7 +126,13 @@ define([
         },
         displayAddPatientModal: function(msg){
             var names = msg.patientNameString.split(" ");
-            var addPatientView = new AddPatient({model: new Patient({firstName:names[0],lastName:names[1]})});       
+            var addPatientView = new AddPatient({model: new Person({
+                                                                     firstName:names[0],
+                                                                     lastName:names[1],
+                                                                     isActive:1,
+                                                                     clinics:[this.model.get("clinicId")],
+                                                                     roles: [4]
+                                                                 })});       
             var modalModel = new Modal({header:"Add Patient",footer:"",body:addPatientView.$el});
             var modal = new ModalView({model:modalModel});
             this.addAlertView(modal);
@@ -139,6 +172,15 @@ define([
             this.$('ul.nav li#revenue').attr("class","active");
             if(this.revenueTableView === null) {
                 this.revenueTableView = new RevenueTableView({model: new RevenueRowList()});
+
+                switch(this.model.get('roleId')){
+                    case 0:                        
+                        break;
+                    case 1:
+                        this.revenueTableView.getRevenueOnDate(this.model.get('date'),this.model.get('clinicId')); 
+                        break;
+                }
+                
                 this.activeViews.push(this.revenueTableView);
             }
                 
@@ -152,7 +194,7 @@ define([
         },
         handleLogoutClick: function(){
              vent.trigger('CDF.Views.AppView:handleLogoutClick');
-             router.index();
+             this.router.index();
         },
 
     });

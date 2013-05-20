@@ -30,15 +30,42 @@ define([
 			return false;
 		},	
 		addNewRow: function() {
-	    	var row = new RevenueRow({patientName: "", patientId:"null", doctorName:"",doctorId:"null",amount:0,paymentTypeName:"CASH",
-	    												 paymentTypeId:0,rowId:0,clinicId:0,date:new Date()});
+	    	var row = new RevenueRow({patientName: "", patient:"null", doctorName:"",doctor:"null",amount:0,paymentOptionName:"CASH",
+	    												 paymentOption:0,rowId:0,clinic:0,date:new Date()});
 	    	this.model.add(row);
+	    	this.addRow(row);
+	    		
+		},
+		addRow: function(rowModel){		
 
-	    	var rowView = new RevenueRowView({model: row});
+	    	var rowView = new RevenueRowView({model: rowModel});
 	    	rowView.render();    			
 
 	    	this.rowViews.push(rowView);
-			this.$('#rows-container').append((rowView.$el));			
+			this.$('#rows-container').append((rowView.$el));		
+		},
+		getRevenueOnDate: function(date,clinic) {
+			var self = this;
+			this.model.fetch({ 
+				    data: $.param({date:date,clinic:clinic}),
+					success: function(collection,response,options){
+								_.each(collection.models, function(element,index,array){
+								// do some housekeeping... 
+							    element.set('doctorName',element.get('doctor').firstName + " " + element.get('doctor').lastName);
+							    element.set('patientName',element.get('patient').firstName + " " + element.get('patient').lastName);
+							    element.set('doctor',element.get('doctor')._id);
+							    element.set('patient',element.get('patient')._id);
+							    element.set('paymentOptionName',element.get('paymentOption').name);
+							    element.set('paymentOption',element.get('paymentOption')._id);
+								self.addRow(element);							
+							 });
+					},
+					error: function(collection, error, options){
+						console.log(error);
+					}
+
+				});
+			
 		},
 		removeAllRowViews: function() {
 			//this.$('#rows-container').html('');

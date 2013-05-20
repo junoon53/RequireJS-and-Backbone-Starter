@@ -18,12 +18,16 @@ define(['backbone','jquery', 'underscore','models/app','views/app','vent'], func
         },
         createAndAddAppView: function(authModel){
             var application = new Application();
-                application.set({"clinicName":authModel.get('primaryClinicName'),
-                "clinicId":authModel.get('clinics')[0],
-                "userFullname":authModel.get('firstName')+" "+authModel.get('lastName'),
-                "doctorId":authModel.get('doctorId'),
-                "userId":authModel.get('_id'),
-                "date":new Date()
+                var person = authModel.get('person');
+                application.set({
+
+                    "clinicName":person.clinics[0].name,
+                    "clinicId":person.clinics[0]._id,
+                    "clinics":person.clinics,
+                    "userFullname":person.firstName+" "+person.lastName,
+                    "personId":person._id,
+                    "date": new Date(),
+                    "roleId":person.roles[0]._id,
             });
 
            var appView = new AppView({model: application});

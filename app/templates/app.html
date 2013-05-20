@@ -20,8 +20,13 @@
                     <li id="logout"><a href="#">Logout</a></li>
                   </ul>
                 </li> 
-                <li class="divider-vertical"></li>                
-                <li><a href="#"><%= clinicName %></a></li>
+                <li class="divider-vertical"></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle selectedClinic" id= <%= clinicId %> data-toggle="dropdown"> <%= clinicName %></b></a>
+                  <ul class="dropdown-menu clinicsList">
+                    <!-- List of clinics -->
+                  </ul>
+                </li>                
               </ul>
               <ul class="nav">
                 <!--<li class="active"><a href="#">Home</a></li>

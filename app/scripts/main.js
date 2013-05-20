@@ -73,11 +73,11 @@ require(['backbone','views/mainView','router/router'], function(Backbone,MainVie
       }
     }
   };
+
+
+  var router = new router();
   
   var mainView = new MainView();
-  var router = new router();
-
-
 
   Backbone.history.start({pushState: true, hashChange: true });
 

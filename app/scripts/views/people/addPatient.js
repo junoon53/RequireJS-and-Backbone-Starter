@@ -1,4 +1,4 @@
-define(['backbone','jquery', 'underscore','vent','text!templates/addPatient.html'], function(Backbone,$,_,Doctor,vent,template){
+define(['backbone','jquery', 'underscore','vent','text!templates/addPatient.html'], function(Backbone,$,_,vent,template){
 
 	var AddPatient = Backbone.View.extend({
 		events: {

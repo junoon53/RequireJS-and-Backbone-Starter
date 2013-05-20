@@ -31,7 +31,7 @@ define([
 			this._total = 0;
 			var self = this;
 			_.each(this.models,function(row, i) {
-				if(row.get("paymentTypeName")==="CASH")
+				if(row.get("paymentOption")==="CASH")
 				 self._total+= parseInt(row.get("amount"),10);
 			});
 			return this._total;
@@ -40,7 +40,7 @@ define([
 			this._total = 0;
 			var self = this;
 			_.each(this.models,function(row, i) {
-				if(row.get("paymentTypeName")==="CARD")
+				if(row.get("paymentOption")==="CARD")
 				 self._total+= parseInt(row.get("amount"),10);
 			});
 			return this._total;
@@ -48,13 +48,17 @@ define([
 		rowCount: function(){
 			return this.models.length;
 		},
+		fetchRevenueByDate: function(date){
+			this.reset();
+			this.fetch({date:date});
+		},
 		removeEmptyRows: function(models){
 			return _.reject(models,function(element){return !element.isValid()});
 		},
 		submitReport: function(msg){
 				_.each(this.removeEmptyRows(this.models),function(element,index,data){
 	                element.set('date',msg.date,{silent:true});   
-	                element.set('clinicId',msg.clinicId,{silent:true});
+	                element.set('clinic',msg.clinic,{silent:true});
 	                element.save(element.attributes,{
 
 	                    success: function(model, response, options){

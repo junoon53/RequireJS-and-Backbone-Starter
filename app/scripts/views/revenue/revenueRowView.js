@@ -2,15 +2,14 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
-	'collections/people/patients',
-	'collections/people/doctors',
+	'collections/people/persons',
 	'collections/revenue/paymentOptions',
 	'models/revenue/revenueRow',
 	'vent',
 	'text!templates/revenueRow.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Patients,Doctors,PaymentOptions,RevenueRow,vent,template){
+	], function(Backbone,$,_,Persons,PaymentOptions,RevenueRow,vent,template){
 
 	var RevenueRowView = Backbone.View.extend({
 		model: new RevenueRow(),
@@ -37,23 +36,23 @@ define([
 				case "patientName":
 					//this.$('.removeAttr').patientName('readonly').focus();
 					this.$('.patientName').attr("valueId", "null");
-					this.model.set("patientId","null",{silent:true});
+					this.model.set("patient","null",{silent:true});
 					this.$('.patientName').val("");
 					break;
 				case "doctorName":
 					//this.$('.doctorName').removeAttr('readonly').focus();
 					this.$('.doctorName').attr("valueId", "null");	
-					this.model.set("doctorId","null",{silent:true});
+					this.model.set("doctor","null",{silent:true});
 					this.$('.doctorName').val("");				
 					break;
 				case "amount":
 					//this.$('.amount').removeAttr('readonly').focus();
 					break;
-				case "paymentTypeName":
-					//this.$('.paymentTypeName').removeAttr('readonly', true).focus();
-					this.$('.paymentTypeName').attr("valueId", 0);
-					this.model.set("paymentTypeId",0,{silent:true});	
-					this.$('.paymentTypeName').val("");			
+				case "paymentOption":
+					//this.$('.paymentOption').removeAttr('readonly', true).focus();
+					this.$('.paymentOption').attr("valueId", 0);
+					this.model.set("paymentOption",0,{silent:true});	
+					this.$('.paymentOption').val("");			
 					break;
 			}
 		
@@ -64,20 +63,20 @@ define([
 			switch(propertyName){
 				case "patientName":
 					element = this.$('.patientName');
-					setElementValue.call(this,'patientId');
+					setElementValue.call(this,'patient');
 					break;
 				case "doctorName":
 					element = this.$('.doctorName');
-					setElementValue.call(this,'doctorId');
+					setElementValue.call(this,'doctor');
 					break;
 				case "amount":
 					element = this.$('.amount');
 					setElementValue.call(this);
 					vent.trigger('CDF.Views.Revenue.RevenueRowView:exitColumn:amount');
 					break;
-				case "paymentTypeName":
-					element = this.$('.paymentTypeName');
-					setElementValue.call(this,'paymentTypeId');
+				case "paymentOption":
+					element = this.$('.paymentOptionName');
+					setElementValue.call(this,'paymentOption');
 					break;
 			}
 
@@ -111,13 +110,13 @@ define([
 		whenValueIsNotSelected : function(propertyId,propertyName){
 			
 			switch(propertyId){
-				case "patientId":
+				case "patient":
 					this.addNewPatient(propertyName);
 					break;
-				case "doctorId":
+				case "doctor":
 					this.addNewDoctor(propertyName);
 					break;
-				case "paymentTypeId":
+				case "paymentOption":
 					break;
 			}
 		},
@@ -146,8 +145,8 @@ define([
 				case "amount":
 					_.delay(function() { self.$('.amount').blur() }, 100);
 					break;
-				case "paymentTypeName":
-					_.delay(function() { self.$('.paymentTypeName').blur() }, 100);
+				case "paymentOptionName":
+					_.delay(function() { self.$('.paymentOptionName').blur() }, 100);
 					break;
 				}
 				
@@ -157,12 +156,12 @@ define([
 			ev.preventDefault();
 			switch(ev.currentTarget.id){
 				case "0":		
-					this.model.set("paymentTypeId",0);
-					this.model.set("paymentTypeName","CASH");
+					this.model.set("paymentOption",0);
+					this.model.set("paymentOptionName","CASH");
 					break;
 				case "1":
-					this.model.set("paymentTypeId",1);
-					this.model.set("paymentTypeName","CARD");		
+					this.model.set("paymentOption",1);
+					this.model.set("paymentOptionName","CARD");		
 					break;
 			}
 			this.render();		
@@ -177,11 +176,11 @@ define([
 
 			this.$('ul.dropdown-menu').html('<li id="0"><a href="#">CASH</a></li><li id="1"><a href="#">CARD</a></li>');
 
-			function source(collection) {
+			function source(collection,roles) {
 
 				return function(query,process){
 					var map = this.options.map;
-					collection.fetch({data:{q:query},success: function(){
+					collection.fetch({data:{searchString:query,roles:roles},success: function(){
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
@@ -221,9 +220,9 @@ define([
 		 
 			};
 
-			this.$('.patientName').typeahead({source:source(new Patients()),updater:updater,minLength:3,id:"patientId"+this.model.cid,map:this.patientMap});
-			this.$('.doctorName').typeahead({source:source(new Doctors()),updater:updater,minLength:3,id:"doctorId"+this.model.cid,map:this.doctorsMap});
-			this.$('.paymentTypeName').typeahead({source:paymentOptionsSource(new PaymentOptions()),updater:updater,minLength:3,id:"paymentTypeId"+this.model.cid,map:this.paymentOptionsMap});
+			this.$('.patientName').typeahead({source:source(new Persons(),[4]),updater:updater,minLength:3,id:"patient"+this.model.cid,map:this.patientMap});
+			this.$('.doctorName').typeahead({source:source(new Persons(),[0,2]),updater:updater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});
+			this.$('.paymentOption').typeahead({source:paymentOptionsSource(new PaymentOptions()),updater:updater,minLength:3,id:"paymentType"+this.model.cid,map:this.paymentOptionsMap});
 			return this;
 		}
 	

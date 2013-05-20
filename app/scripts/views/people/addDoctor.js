@@ -1,7 +1,6 @@
-define(['backbone','jquery', 'underscore','models/people/doctor','vent','text!templates/addDoctor.html'], function(Backbone,$,_,Doctor,vent,template){
+define(['backbone','jquery', 'underscore','vent','text!templates/addDoctor.html'], function(Backbone,$,_,vent,template){
 
 	var AddDoctor = Backbone.View.extend({
-		model: new Doctor(),
 		events: {
 			'click #add-doctor-button' : 'addDoctor'
 		},

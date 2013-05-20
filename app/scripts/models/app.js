@@ -3,12 +3,13 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
     var Application = Backbone.Model.extend({
         url: 'http://192.168.211.132:8080/feedback',
         defaults: {
+            personId:"",
             date: new Date(),
-            userFullname: "",
-            doctorId: "",
-            userId: "",
+            userFullname: "",            
             clinicName: "",
-            clinicId: ""
+            clinicId: "",
+            roleId: "",
+            clinics:[]
         },
         events: {
             //'change:date' : 'checkReportStatus'
@@ -17,7 +18,7 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
            var self = this;
            
            this.listenTo(this,'change:date',this.checkReportStatus);
-           this.listenTo(vent,'CDF.Views.AppView:click:submit',this.checkReportStatusAndSubmit);
+           this.listenTo(vent,'CDF.Views.AppView:click:submit',this.handSubmitByRole);
            this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport',this.processSuccessfulSubmissions);
 
         },
@@ -28,7 +29,7 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
             var self = this;
 
             // save revenue 
-            vent.trigger('CDF.Models.Application:submitReport', {date:this.get('date'),clinicId:this.get('clinicId')});
+            vent.trigger('CDF.Models.Application:submitReport', {date:this.get('date'),clinic:this.get('clinicId')});
             
             // save bank deposits 
 
@@ -60,7 +61,7 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
         },
         checkReportStatus: function(){
             var self = this;
-            this.fetch({data:{date:this.get('date'),clinicId:this.get('clinicId')},success: function(model, response, options){
+            this.fetch({data:{date:this.get('date'),clinic:this.get('clinicId')},success: function(model, response, options){
                         
                 if(response.length > 0 ) {
                     vent.trigger("CDF.Models.Application:checkReportStatus",true);
@@ -70,9 +71,23 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
                     
             }});
         },
+        handSubmitByRole: function(){
+            switch(this.get('roleId')){
+                case 0:
+                    this.checkReportStatusAndSubmit();
+                    break;
+                case 1: 
+                    this.updateReport();
+                    break;
+                default:
+                    break; 
+            }
+        },
         checkReportStatusAndSubmit: function(){
             var self = this;
-            this.fetch({data:{date:this.get('date'),clinicId:this.get('clinicId')},success: function(model, response, options){
+
+            
+            this.fetch({data:{date:this.get('date'),clinic:this.get('clinicId')},success: function(model, response, options){
                         
                 if(response.length > 0 ) {
                     vent.trigger('CDF.Models.Application:checkReportStatusAndSubmit:failed','reportExistsModal');
@@ -83,7 +98,12 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
                 }
                     
             }});
+        },
+        updateReport: function() {
+
+            this.submitReport();
         }
+
 
     });
 

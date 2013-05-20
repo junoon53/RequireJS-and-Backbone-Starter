@@ -6,15 +6,8 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
 	defaults:{
 		loggedIn:false,
 		username:"",
-		firstName:"",
-		lastName:"",
 		password:"",
-		clinics:[],
-        doctorId:"",
-        roleId:"",
-        administratorId:"", 
-        _id:"",
-        primaryClinicName:""
+		person:""
 	},
     initialize: function() {
         var self = this;
@@ -34,13 +27,7 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
             success: function(model,response,options){
                 if(response.length){
                     model.set({'loggedIn':true,
-                               'firstName':response[0].firstName,
-                                'lastName':response[0].lastName,
-                                'clinics':response[0].clinics,
-                                'doctorId':response[0].doctorId,
-                                'roleId':response[0].roleId,
-                                '_id':response[0]._id,
-                                'primaryClinicName':response[0].primaryClinicName
+                               'person':response[0].person
                     });
                     vent.trigger('CDF.Models.Auth:login:success',model);
                 } else {

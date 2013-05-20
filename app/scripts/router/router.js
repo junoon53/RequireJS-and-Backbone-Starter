@@ -18,5 +18,6 @@ define(['backbone','models/auth','views/auth','vent'], function(Backbone,Auth,Au
 
 });
 
-  return Router;
+  
+  return  Router;
 });
