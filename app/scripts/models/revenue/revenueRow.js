@@ -1,7 +1,7 @@
 define(['backbone'], function(Backbone) {
 
 	var RevenueRow = Backbone.Model.extend({
-		url: 'http://192.168.211.132:8080/revenue',
+		//url: 'http://192.168.211.132:8080/revenue',
 		defaults: function() {
 			return {
 				patientName: '',
@@ -10,10 +10,11 @@ define(['backbone'], function(Backbone) {
 				doctor:"null",
 				amount:0,
 				paymentOptionName:"CASH",
-				paymenOption:"null",
+				paymentOption:"null",
 				rowId:0,
 				clinic:"",
 				date: new Date(),
+				markedForDeletion: false
 			}
 		},
 		validate: function(attrs, options) {
@@ -28,6 +29,9 @@ define(['backbone'], function(Backbone) {
 			if(parseInt(attrs.amount,10) <= 0) 
 				this.validationError += "Invalid amount!\r\n";
 
+			if(attrs.markedForDeletion) {
+				this.validationError += "Marked for Deletion!\r\n";
+			}				
 
 		    if(this.validationError.length>0)
 		     return this.validationError;

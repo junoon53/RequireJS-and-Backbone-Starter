@@ -167,7 +167,9 @@ define([
 			this.render();		
 		},
 		delete: function(ev) {
-			ev.preventDefault();
+			if(ev.preventDefault) ev.preventDefault();			
+			this.model.set('markedForDeletion',true);
+			vent.trigger('CDF.Views.Revenue.RevenueRowView:delete');
 			this.close();
 		},	
 		render: function() {

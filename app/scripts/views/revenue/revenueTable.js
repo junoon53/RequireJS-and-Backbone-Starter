@@ -17,7 +17,8 @@ define([
 			
 			this.rowViews = [];
 
-			this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:exitColumn:amount', this.updateTotal, this);
+			this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:exitColumn:amount', this.updateTotal);
+			this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:delete', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);			
 		},
 		onClose: function(){
@@ -42,7 +43,8 @@ define([
 	    	rowView.render();    			
 
 	    	this.rowViews.push(rowView);
-			this.$('#rows-container').append((rowView.$el));		
+			this.$('#rows-container').append((rowView.$el));
+			this.updateTotal();		
 		},
 		getRevenueOnDate: function(date,clinic) {
 			var self = this;
@@ -57,6 +59,7 @@ define([
 							    element.set('patient',element.get('patient')._id);
 							    element.set('paymentOptionName',element.get('paymentOption').name);
 							    element.set('paymentOption',element.get('paymentOption')._id);
+							    element.set('id',element.get('_id'));
 								self.addRow(element);							
 							 });
 					},

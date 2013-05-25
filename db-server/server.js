@@ -168,17 +168,17 @@ function saveRevenue(req,res,next){
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 	var revenueEntry = new Revenue();
 	revenueEntry.date = req.params.date;
-	revenueEntry.clinic = req.params.clinic;
-	revenueEntry.patient = req.params.patient;
-	revenueEntry.doctor= req.params.doctor;
-	revenueEntry.amount = req.params.amount;
-	revenueEntry.paymentOption = req.params.paymentOption;
+	revenueEntry.clinic = parseInt(req.params.clinic,10);
+	revenueEntry.patient = parseInt(req.params.patient,10);
+	revenueEntry.doctor= parseInt(req.params.doctor,10);
+	revenueEntry.amount = parseInt(req.params.amount,10);
+	revenueEntry.paymentOption = parseInt(req.params.paymentOption,10);
 
 	Revenue.count({},function(err,count){
-		revenueEntry._id = count;
+		revenueEntry._id = Math.random(4)+(new Date()).getMilliseconds()+count;
 		revenueEntry.save(function(err,data){
-		    if(err) res.send(err);
-		    else res.send(data);
+		    if(err) console.log(err);
+		    res.send(data);
 		});
 	});	
 
@@ -188,30 +188,43 @@ function updateRevenue(req,res,next){
 	console.log("saving revenue : "+req.params);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	var revenueEntry = new Revenue();
+	/*var revenueEntry = new Revenue();
 	revenueEntry.date = req.params.date;
-	revenueEntry.clinic = req.params.clinic;
-	revenueEntry.patient = req.params.patient;
-	revenueEntry.doctor = req.params.doctor;
-	revenueEntry.amount = req.params.amount;
-	revenueEntry.paymentOption = req.params.paymentOption;
+	revenueEntry.clinic = parseInt(req.params.clinic,10);
+	revenueEntry.patient = parseInt(req.params.patient,10);
+	revenueEntry.doctor = parseInt(req.params.doctor,10);
+	revenueEntry.amount = parseInt(req.params.amount,10);
+	console.log("revenue: "+revenueEntry.amount);
+	revenueEntry.paymentOption = parseInt(req.params.paymentOption,10);*/
 
 	Revenue.update({_id:req.params._id},
 				   { 
 						date:req.params.date,
-						clinicId:req.params.clinic,
-						patientId:req.params.patient,
-						doctorId:req.params.doctor,
-						amount:req.params.aMount,
-						paymentOptionId: req.params.paymentOption
+						clinic:req.params.clinic,
+						patient:req.params.patient,
+						doctor:req.params.doctor,
+						amount:req.params.amount,
+						paymentOption: req.params.paymentOption
 					},
 				   {},
 				   function(err,data){
-				   	if(err) res.send(err);
-		    		else res.send(data);
+				   	if(err) console.log(err);
+		    		res.send(data);
 				   }
 				  );
 
+};
+
+function deleteRevenue(req,res,next){
+	console.log("deleting revenue: "+req.params._id);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	Revenue.remove({_id:req.params._id},function(err){
+		if(err) {console.log(err);
+					res.send(err);}
+
+	});
 };
 
 function getRevenueOnDate(req,res,next){
@@ -360,8 +373,9 @@ server.post('/persons',addNewPerson);
 server.get('/paymentOptions',getPaymentOptions);
 
 server.post('/revenue',saveRevenue);
-server.put('/revenue',updateRevenue);
+server.put('/revenue/:_id',updateRevenue);
 server.get('/revenue',getRevenueOnDate);
+server.del('/revenue/:_id',deleteRevenue);
 
 server.post('/clinics',saveClinic);
 server.get('/clinics',getClinics);

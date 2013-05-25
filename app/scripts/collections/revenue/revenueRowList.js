@@ -22,7 +22,7 @@ define([
 		total: function() {
 			this._total = 0;
 			var self = this;
-			_.each(this.models,function(row, i) {
+			_.each(this.filterInvalidRows(),function(row, i,data) {
 				 self._total+= parseInt(row.get("amount"),10);
 			});
 			return this._total;
@@ -30,7 +30,7 @@ define([
 		totalCash: function(){
 			this._total = 0;
 			var self = this;
-			_.each(this.models,function(row, i) {
+			_.each(this.filterInvalidRows(),function(row, i) {
 				if(row.get("paymentOption")==="CASH")
 				 self._total+= parseInt(row.get("amount"),10);
 			});
@@ -39,26 +39,37 @@ define([
 		totalCard: function(){
 			this._total = 0;
 			var self = this;
-			_.each(this.models,function(row, i) {
+			_.each(this.filterInvalidRows(),function(row, i) {
 				if(row.get("paymentOption")==="CARD")
 				 self._total+= parseInt(row.get("amount"),10);
 			});
 			return this._total;
 		},
 		rowCount: function(){
-			return this.models.length;
+			return this.filterInvalidRows().length;
 		},
 		fetchRevenueByDate: function(date){
 			this.reset();
 			this.fetch({date:date});
 		},
-		removeEmptyRows: function(models){
-			return _.reject(models,function(element){return !element.isValid()});
+		filterInvalidRows: function(models){
+			return _.reject(this.models,function(element){return !element.isValid()});
 		},
-		submitReport: function(msg){
-				_.each(this.removeEmptyRows(this.models),function(element,index,data){
-	                element.set('date',msg.date,{silent:true});   
-	                element.set('clinic',msg.clinic,{silent:true});
+		submitReport: function(msg){			
+				// destroy the deleted rows
+				_.each(this.models,function(element,index,data){
+					if(element.get('markedForDeletion')){
+						element.destroy({success: function(model, response){
+							console.log('destroyed model: '+model.get('_id'));
+						}});
+					} 
+				});
+
+				// save the valid, active rows 
+				_.each(this.filterInvalidRows(),function(element,index,data){
+
+					element.set('date',msg.date,{silent:true});   
+                	element.set('clinic',msg.clinic,{silent:true});
 	                element.save(element.attributes,{
 
 	                    success: function(model, response, options){
@@ -72,9 +83,9 @@ define([
 	                        console.log(error);
 	                        success = false;
 	                    }
-
-	                });
-	        });
+					});
+             
+	        	});
 	        
 	    }
 	});

@@ -50,16 +50,7 @@ define([
 
             this.router = new router();
 
-            /*Application Sub-Views*/
-            this.revenueTableView = null;
-            this.bankdepositsTableView = null;
-            this.expenditureTableView = null;
-            this.dentalMaterialsTableView = null;
-            this.treatmentsView = null;
-            this.patientFeedBackTableView = null;
-            this.clinicIssuesView = null;
-
-            this.activeViews = [];
+            this.activeViews = {};
 
             /*this.defaultView = "<h3>Welcome! Please choose an option on the left!</h3>";
             this.$("#content").append(this.defaultView);*/
@@ -72,16 +63,28 @@ define([
         },
         handleClinicSelect: function(evt){
             var selectedClinicId = parseInt(evt.currentTarget.id,10);
-            this.model.set({clinicId:selectedClinicId});
-            this.model.set({clinicName:_.findWhere(this.model.get('clinics'),{_id:selectedClinicId}).name});
-            this.$('a.selectedClinic').attr('id',this.model.get('clinicId'));
-            this.$('a.selectedClinic').text(this.model.get('clinicName'));            
+            if(selectedClinicId !== this.model.get('clinicId')) {
+                this.model.set({clinicId:selectedClinicId});
+                this.model.set({clinicName:_.findWhere(this.model.get('clinics'),{_id:selectedClinicId}).name});
+                this.$('a.selectedClinic').attr('id',this.model.get('clinicId'));
+                this.$('a.selectedClinic').text(this.model.get('clinicName'));  
+                this.removeAllViews(); 
+            }                      
+        },
+        changeMenuSelection: function(selection) {
+            this.$('ul.nav-list li').each(function(index){
+                $(this).removeAttr('class');
+            })
+
+            if(selection)
+             this.$('ul.nav-list li#'+selection).attr("class","active");
         },
         onClose: function(){
             this.dateTimePicker.destroy();
 
             _.each(this.activeViews,function(element,index,data){
                 element.close();
+                element = null;               
             });    
             
         },
@@ -153,10 +156,22 @@ define([
 
             view.render();     
             this.$("#content").append(view.$el);
+            this.showView(view);
+        },
+        showView: function(view){
 
             // hide all views
             this.hideAllViews();
             view.$el.show();
+
+        },
+        removeAllViews: function(){
+            _.each(this.activeViews, function(value,key,list){
+                value.close();  
+            });
+            this.activeViews = {};
+            this.$('#content').html('');
+            this.changeMenuSelection();
         },
         addAlertView: function(view){
             if (this.currentAlertView){
@@ -169,22 +184,25 @@ define([
             this.$("#alert").html(view.$el);             
         },
         addRevenueTableView: function() {
-            this.$('ul.nav li#revenue').attr("class","active");
-            if(this.revenueTableView === null) {
-                this.revenueTableView = new RevenueTableView({model: new RevenueRowList()});
+           
+            this.changeMenuSelection('revenue');
+
+            if(!this.activeViews.revenue) {
+                this.activeViews.revenue = new RevenueTableView({model: new RevenueRowList()});
 
                 switch(this.model.get('roleId')){
                     case 0:                        
                         break;
                     case 1:
-                        this.revenueTableView.getRevenueOnDate(this.model.get('date'),this.model.get('clinicId')); 
+                        this.activeViews.revenue.getRevenueOnDate(this.model.get('date'),this.model.get('clinicId')); 
                         break;
                 }
-                
-                this.activeViews.push(this.revenueTableView);
+                this.addView(this.activeViews.revenue);                
+            } else {
+                this.showView(this.activeViews.revenue);
             }
                 
-            this.addView(this.revenueTableView);
+           
         },
         handleSubmitClick: function(){
               var modalModel = new Modal({header:"Submit Report",footer:(new Submit()).$el,body:"Phew! That was a lot of work! Well, looks like we're ready to submit! Do check if your inputs are correct before pressing the button."});
