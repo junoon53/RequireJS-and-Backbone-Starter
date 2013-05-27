@@ -1,10 +1,11 @@
       <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
           <div class="container-fluid">
-            <a class="brand" href="#">Clinic Feedback Form</a>
-
+            <a class="brand" href="#">Clinic Feedback Form</a>           
+            
             <div class="nav-collapse collapse">
               <ul class="nav pull-right">
+                <li><a classs='text-warning' href="#"> <%= roleName %> View </a></li>
                 <li><a href="#">Report Date:</a></li>
                 <li id="datetimepicker" class="input-append">
                   <input data-format="dd-MM-yyyy" type="text"></input>
@@ -22,16 +23,11 @@
                 </li> 
                 <li class="divider-vertical"></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle selectedClinic" id= <%= clinicId %> data-toggle="dropdown"> <%= clinicName %></b></a>
+                  <a href="#" class="dropdown-toggle selectedClinic" id= <%= clinic %> data-toggle="dropdown"> <%= clinicName %></b></a>
                   <ul class="dropdown-menu clinicsList">
                     <!-- List of clinics -->
                   </ul>
                 </li>                
-              </ul>
-              <ul class="nav">
-                <!--<li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>-->
               </ul>
             </div>
           </div>

@@ -14,6 +14,7 @@ define(['backbone','jquery', 'underscore','vent','text!templates/addDoctor.html'
 			return this;
 		},
 		addDoctor: function(ev){
+			vent.trigger('CDF.Views.People.AddDoctor:addDoctor:called');
 			ev.preventDefault();
 			this.model.set("firstName",this.$('#firstname').val());
 			this.model.set("lastName",this.$('#lastname').val());

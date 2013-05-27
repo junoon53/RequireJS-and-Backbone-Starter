@@ -97,6 +97,17 @@ User.find({username:"divyaGaur"}).populate('person').exec(function(err,docs){
 
 /**************************Functions****************************************/
 
+function getRoles(req,res,next){
+	console.log('getting roles...');
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	Role.find().execFind(function(err,data){
+		if(err) console.log(err)
+			res.send(data);
+	})
+};
+
 
 function checkFeedbackStatus(req,res,next){
 	console.log('checking daily feedback status for date: '+ req.query.date);
@@ -118,7 +129,7 @@ function checkFeedbackStatus(req,res,next){
 
 	DailyFeedback.find({date:{$gte: startDate, $lt: endDate},clinic:clinic}).execFind(function(err,data){
 			console.log(data);
-			res.send(data);
+			res.send(data[0]);
 	});
 };
 
@@ -156,7 +167,7 @@ function auth(req,res,next){
 	  			path: 'person.clinics'
 	  		}, function(err, data){
 	  		    console.log(err);
-	  			res.send(data);
+	  			res.send(data[0]);
 	  		});
 	     });			
 	});
@@ -369,6 +380,9 @@ function addNewPerson(req,res,next){
 // set up our routes and start the server 
 server.get('/persons',getPersons);
 server.post('/persons',addNewPerson);
+
+
+server.get('/roles',getRoles);
 
 server.get('/paymentOptions',getPaymentOptions);
 

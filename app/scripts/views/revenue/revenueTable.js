@@ -46,7 +46,7 @@ define([
 			this.$('#rows-container').append((rowView.$el));
 			this.updateTotal();		
 		},
-		getRevenueOnDate: function(date,clinic) {
+		fetch: function(date,clinic) {
 			var self = this;
 			this.model.fetch({ 
 				    data: $.param({date:date,clinic:clinic}),

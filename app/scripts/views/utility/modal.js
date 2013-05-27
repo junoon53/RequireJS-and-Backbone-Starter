@@ -14,11 +14,10 @@ define([
             this.template = _.template(template);
             
             this.listenTo(this.$('#myModal'),'hidden',this.setVisibleFlag);
-
-            this.listenTo(vent,'CDF.Models.Application:postReportStatus', this.hide);
-            this.listenTo(vent,'CDF.Views.People.AddDoctor:addDoctor:success', this.hide);
-            this.listenTo(vent,'CDF.Views.People.AddPatient:addPatient:success', this.hide);
-            this.listenTo(vent,'CDF.Models.Application:checkReportStatusAndSubmit:failed', this.hide);
+            this.listenTo(vent,'CDF.Views.AppView:click:submit', this.hide);
+            this.listenTo(vent,'CDF.Views.People.AddDoctor:addDoctor:called', this.hide);
+            this.listenTo(vent,'CDF.Views.People.AddPatient:addPatient:called', this.hide);
+            this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.hide);
 
             this.visible = false;            
         },

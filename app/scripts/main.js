@@ -19,44 +19,12 @@ require.config({
   }
 });
 
-/*if(typeof CDF === "undefined"){
-    CDF = {
-        Views: {
-            Revenue: {},
-            People:  {},
-            Utility: {}
-        },
-        Collections: {
-            Revenue: {},
-            People:  {},
-            Infra:   {},
-
-        },
-        Models: {
-            Revenue: {},
-            People:  {},
-            Infra:   {},
-            Utility: {}
-        },
-        root: "",
-        patientMap:  {},
-        doctorsMap:  {},
-        paymentOptionsMap:{},
-        router:null,
-
-        CONSTANTS: {
-            NULL: "null",
-        },
-        //isModalVisible: false,
-        loggedIn: false,
-        //vent: _.extend({}, Backbone.Events)
-
-    };
-}
-*/
-
-
-require(['backbone','views/mainView','router/router'], function(Backbone,MainView,router) {
+require(['backbone',
+         'views/mainView',
+         'router/router',
+         'models/people/roles',
+         'collections/revenue/paymentOptions'], 
+         function(Backbone,MainView,router,roles,paymentOptions) {
 
   Backbone.View.prototype.close = function(){
     this.remove();
@@ -74,10 +42,8 @@ require(['backbone','views/mainView','router/router'], function(Backbone,MainVie
     }
   };
 
-
-  var router = new router();
-  
-  var mainView = new MainView();
+  roles().fetch();
+  paymentOptions().fetch();
 
   Backbone.history.start({pushState: true, hashChange: true });
 

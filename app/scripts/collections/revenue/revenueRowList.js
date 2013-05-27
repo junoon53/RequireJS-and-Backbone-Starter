@@ -3,8 +3,9 @@ define([
 	 'jquery',
 	 'underscore',
 	 'models/revenue/revenueRow',
+	 'models/app',
 	 'vent'
-	 ], function(Backbone,$,_,RevenueRow,vent){
+	 ], function(Backbone,$,_,RevenueRow,application,vent){
 
 	var RevenueRowList = Backbone.Collection.extend({
 		url: 'http://192.168.211.132:8080/revenue',
@@ -12,7 +13,7 @@ define([
 		initialize: function(){
 			var self = this;
 
-			this.listenTo(vent,'CDF.Models.Application:postReportStatus', this.reset);
+			this.listenTo(vent,'CDF.Models.Application:postReportStatus:success', this.reset);
 			this.listenTo(vent,'CDF.Views.AppView:handleLogoutClick', this.reset);
 			this.listenTo(vent,'CDF.Models.Application:submitReport', this.submitReport);
 	    },
@@ -55,21 +56,19 @@ define([
 		filterInvalidRows: function(models){
 			return _.reject(this.models,function(element){return !element.isValid()});
 		},
-		submitReport: function(msg){			
+		submitReport: function(){			
 				// destroy the deleted rows
-				_.each(this.models,function(element,index,data){
-					if(element.get('markedForDeletion')){
-						element.destroy({success: function(model, response){
-							console.log('destroyed model: '+model.get('_id'));
-						}});
-					} 
+				_.each(this.models,function(element,index,data) {
+					if(element.get('markedForDeletion')) element.destroy({success:function(element,index,data){
+						console.log('row destroyed successfully: '+element._id);
+					}});
 				});
 
 				// save the valid, active rows 
 				_.each(this.filterInvalidRows(),function(element,index,data){
 
-					element.set('date',msg.date,{silent:true});   
-                	element.set('clinic',msg.clinic,{silent:true});
+					element.set('date',application.get('date'),{silent:true});   
+                	element.set('clinic',application.get('clinic'),{silent:true});
 	                element.save(element.attributes,{
 
 	                    success: function(model, response, options){

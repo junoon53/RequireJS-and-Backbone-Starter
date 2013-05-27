@@ -9,7 +9,7 @@ define([
 	'text!templates/revenueRow.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,PaymentOptions,RevenueRow,vent,template){
+	], function(Backbone,$,_,Persons,paymentOptions,RevenueRow,vent,template){
 
 	var RevenueRowView = Backbone.View.extend({
 		model: new RevenueRow(),
@@ -196,35 +196,15 @@ define([
 			}
 
 			};
-
-			function paymentOptionsSource(collection) {
-
-				return function(query,process){
-					var map = this.options.map;
-					collection.fetch({data:{q:query},success: function(){
-						var result = [];
-						var data = collection.toJSON();								
-						 _.each(data,function(element,index,data){
-						 var name = element.name;
-							 result.push(name);
-						 map[name] = (element._id);
-						});
-
-						process(result);
-					}});
-				}
-
-			};
+			
 			function updater(item){
 				 
 			 	 $( "#"+this.options.id ).attr("valueId", this.options.map[ item ] );
 				 return item;
 		 
 			};
-
-			this.$('.patientName').typeahead({source:source(new Persons(),[4]),updater:updater,minLength:3,id:"patient"+this.model.cid,map:this.patientMap});
-			this.$('.doctorName').typeahead({source:source(new Persons(),[0,2]),updater:updater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});
-			this.$('.paymentOption').typeahead({source:paymentOptionsSource(new PaymentOptions()),updater:updater,minLength:3,id:"paymentType"+this.model.cid,map:this.paymentOptionsMap});
+			this.$('.patientName').typeahead({source:source(new Persons(),[0]),updater:updater,minLength:3,id:"patient"+this.model.cid,map:this.patientMap});
+			this.$('.doctorName').typeahead({source:source(new Persons(),[1,2]),updater:updater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});
 			return this;
 		}
 	

@@ -1,5 +1,7 @@
 define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
-    
+
+  var _instance = null;  
+
   var Auth = Backbone.Model.extend({
     
 	url:'http://192.168.211.132:8080/auth',
@@ -25,11 +27,8 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
         var pword = $("#password").val();
         this.save({username:user,password:pword},{
             success: function(model,response,options){
-                if(response.length){
-                    model.set({'loggedIn':true,
-                               'person':response[0].person
-                    });
-                    vent.trigger('CDF.Models.Auth:login:success',model);
+                if(response.person){                    
+                    vent.trigger('CDF.Models.Auth:login:success');
                 } else {
                     alert("Invalid Credentials!");
                 }
@@ -42,5 +41,10 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
     },
 });
 
-  return Auth;
+function getInstance() {
+    if(_instance === null) _instance = new Auth();
+    return _instance
+}
+  return getInstance();
+
 });

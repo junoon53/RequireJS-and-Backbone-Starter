@@ -1,4 +1,7 @@
-define(['backbone','models/auth','views/auth','vent'], function(Backbone,Auth,AuthView,vent) {
+define(['backbone','models/auth','views/auth','vent'], function(Backbone,auth,authView,vent) {
+  
+  var _instance = null;
+
   var Router = Backbone.Router.extend({
 
   routes: {
@@ -9,15 +12,16 @@ define(['backbone','models/auth','views/auth','vent'], function(Backbone,Auth,Au
   },
 
   index: function(){
-
-    var authView =  new AuthView({model: new Auth()});     
-      
-    vent.trigger('CDF.Router:index',authView);
-
+        
+    vent.trigger('CDF.Router:index');
   }
 
 });
 
-  
-  return  Router;
+function getInstance() {
+  if(_instance === null) _instance = new Router();
+  return _instance;
+}
+
+  return  getInstance();
 });

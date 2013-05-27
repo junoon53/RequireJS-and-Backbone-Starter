@@ -1,7 +1,9 @@
-define(['backbone','jquery', 'underscore','models/auth','vent','text!templates/login.html'], function(Backbone,$,_,Auth,vent,template){
+define(['backbone','jquery', 'underscore','models/auth','vent','text!templates/login.html'], function(Backbone,$,_,auth,vent,template){
+
+    var _instance = null;
 
     var AuthView = Backbone.View.extend({
-    	model: new Auth(),
+    	model: auth,
     	events: {
             "click #login": "handleLoginClick"
       	},
@@ -22,6 +24,12 @@ define(['backbone','jquery', 'underscore','models/auth','vent','text!templates/l
         }
     });
 
-    return AuthView;
+    function getInstance() {
+        if(_instance === null) _instance = new AuthView();
+        return _instance;
+    }
+
+
+    return getInstance();
 
 });

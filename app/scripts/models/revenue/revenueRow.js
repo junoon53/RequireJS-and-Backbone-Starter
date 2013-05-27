@@ -20,13 +20,13 @@ define(['backbone'], function(Backbone) {
 		validate: function(attrs, options) {
 			this.validationError = "";
 
-			if(attrs.patientId === "null") 
+			if(parseInt(attrs.patientId,10)) 
 				this.validationError += "No patient selected!\r\n";
 
-			if(attrs.doctorId === "null") 
+			if(parseInt(attrs.doctorId,10)) 
 				this.validationError += "No doctor selected!\r\n";
 
-			if(parseInt(attrs.amount,10) <= 0) 
+			if(parseInt(attrs.amount,10) && parseInt(attrs.amount >=0)) 
 				this.validationError += "Invalid amount!\r\n";
 
 			if(attrs.markedForDeletion) {
