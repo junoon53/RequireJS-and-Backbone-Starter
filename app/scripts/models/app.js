@@ -29,27 +29,49 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
            this.listenTo(this,'change:date',this.checkReportStatus);
            this.listenTo(this,'change:clinic',this.checkReportStatus);
            this.listenTo(vent,'CDF.Views.AppView:click:submit',this.checkReportStatusAndSubmit);
-           this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport',this.processSuccessfulSubmissions);
+
+           this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport:start',this.registerReportSubmission);
+           this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport:success',this.processSuccessfulSubmissions);
+           this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport:failed',this.processFailedSubmission);
+
+
+           this.listenTo(vent,'CDF.Collections.BankDepositsRowList:submitReport:start',this.registerReportSubmission);
+           this.listenTo(vent,'CDF.Collections.BankDepositsRowList:submitReport:success',this.processSuccessfulSubmissions);
+           this.listenTo(vent,'CDF.Collections.BankDepositsRowList:submitReport:failed',this.processFailedSubmission);
+
+           this.reportsToBeSubmitted = [];
+           this.submittedReports = [];
 
         },
         onClose: function(){
 
         },
-        
+        registerReportSubmission: function(reportName){
+            console.log('submitting report: '+reportName);
+
+            this.reportsToBeSubmitted.push(reportName);
+        },
+        processFailedSubmission: function(reportName) {
+            console.log(reportName+" report submission failed");
+            vent.trigger("CDF.Models.Application:postReportStatus:failed","reportSubmitFailedModal");
+            console.log("report post error");
+            
+        },
         processSuccessfulSubmissions: function(reportName){
             console.log(reportName+" report submitted successfully");
+            this.submittedReports.push(reportName);
 
-            if(/*all reports successfully submitted*/true 
+            if((this.reportsToBeSubmitted.length === this.submittedReports.length)
             && this.get('role') !== _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id){
-                this.postReportStatus();    
-             } else if(/*all reports successfully submitted*/true) {
+                this.postReportStatus();  
+                this.reportsToBeSubmitted.length = 0;
+                this.submittedReports.length = 0;  
+             } else if(this.reportsToBeSubmitted.length === this.submittedReports.length) {
                 vent.trigger("CDF.Models.Application:modifyReportStatus:success","reportUpdatedModal");
                 console.log('report modified successfully');
-             } else {
-                vent.trigger("CDF.Models.Application:postReportStatus:failed","reportSubmitFailedModal");
-                 console.log("report post error");
-             }
-            
+                this.reportsToBeSubmitted.length = 0;
+                this.submittedReports.length = 0;
+             } 
         },
         postReportStatus: function(){
             var self = this;
@@ -100,9 +122,13 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
 
                 console.log("Not saving: today's report exists");
             } else if(result) {
+                this.reportsToBeSubmitted.length = 0;
+                this.submittedReports.length = 0;
                 console.log('Report exists: Saving modified report as ADMINISTRATOR');
                 vent.trigger('CDF.Models.Application:submitReport');
             } else if(!result){
+                this.reportsToBeSubmitted.length = 0;
+                this.submittedReports.length = 0;
                 console.log('Saving NEW report');
                 vent.trigger('CDF.Models.Application:submitReport');
             }

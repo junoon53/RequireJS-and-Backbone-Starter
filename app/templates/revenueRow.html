@@ -1,13 +1,14 @@
-      <input type="text" class="patientName  column" id= <%= "'patient"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+patientName+"'" %>  valueId= <%= "'"+patient+"'" %> /> 
- 
-      <input type="text" class="doctorName column" id= <%= "'doctor"+rowId+"'" %> data-provide="typeahead" autocomplete="off"  value= <%= "'"+doctorName+"'" %>  valueId= <%= "'"+doctor+"'" %> />
 
-      <span class="column_prefix">Rs</span>
-      <input type="text" class="amount column" autocomplete="off" value= <%= "'"+amount+"'" %> />
+      <input type="text" class="patientName  column" id= <%= "'patient"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+patientName+"'" %>  valueId= <%= "'"+patient+"'" %> /> 
+  
+      <input type="text" class="doctorName column" id= <%= "'doctor"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+doctorName+"'" %>  valueId= <%= "'"+doctor+"'" %> />
+
+      <span>Rs</span>
+      <input type="text" class="amount column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+amount+"'" %> />
 
       <div class="btn-group">
-        <button class="btn btn-small dropdown-toggle paymentOption" data-toggle="dropdown" valueId=  <%= "'"+paymentOption+"'" %> > <%= paymentOptionName %> <span class="caret"></span></button>
-        <ul class="dropdown-menu">
+        <button class="btn btn-small dropdown-toggle paymentOption"  data-toggle="dropdown" valueId=  <%= "'"+paymentOption+"'" %> > <%= paymentOptionName %> <span class="caret"></span></button>
+        <ul class="dropdown-menu">       
         </ul>
       </div>
 

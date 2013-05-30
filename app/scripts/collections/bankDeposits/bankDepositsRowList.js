@@ -4,22 +4,22 @@ define([
 	 'underscore',
 	 'models/revenue/revenueRow',
 	 'models/app',
-	 'vent'
-	 ], function(Backbone,$,_,RevenueRow,application,vent){
+	 'vent'], function(Backbone,$,_,BankDepositRow,application,vent) {
 
-	var RevenueRowList = Backbone.Collection.extend({
-		url: 'http://192.168.211.132:8080/revenue',
-		model: RevenueRow,
+
+	var BankDepositsRowList = Backbone.Collection.extend({
+		model: BankDepositRow,
+		url: 'http://192.168.211.132:8080/bankDeposits',
 		initialize: function(){
 			var self = this;
 
 			this.listenTo(vent,'CDF.Models.Application:postReportStatus:success', this.reset);
 			this.listenTo(vent,'CDF.Views.AppView:handleLogoutClick', this.reset);
 			this.listenTo(vent,'CDF.Models.Application:submitReport', this.submitReport);
-	    },
-	    onClose: function(){
+		},	
+		onClose: function() {
 
-	    },    
+		},
 		total: function() {
 			this._total = 0;
 			var self = this;
@@ -28,36 +28,16 @@ define([
 			});
 			return this._total;
 		},
-		totalCash: function(){
-			this._total = 0;
-			var self = this;
-			_.each(this.filterInvalidRows(),function(row, i) {
-				if(row.get("paymentOption")==="CASH")
-				 self._total+= parseInt(row.get("amount"),10);
-			});
-			return this._total;
-		},
-		totalCard: function(){
-			this._total = 0;
-			var self = this;
-			_.each(this.filterInvalidRows(),function(row, i) {
-				if(row.get("paymentOption")==="CARD")
-				 self._total+= parseInt(row.get("amount"),10);
-			});
-			return this._total;
-		},
-		rowCount: function(){
-			return this.filterInvalidRows().length;
-		},
-		fetchRevenueByDate: function(date){
+		fetchBankDepositsByDate: function(date){
 			this.reset();
 			this.fetch({date:date});
 		},
 		filterInvalidRows: function(models){
 			return _.reject(this.models,function(element){return !element.isValid()});
 		},
-		submitReport: function(){		
-				vent.trigger('CDF.Collections.RevenueRowList:submitReport:start','revenue');	
+		submitReport: function(){			
+            	vent.trigger('CDF.Collections.BankDepositsRowList:submitReport:start','bankDeposits');
+
 				// destroy the deleted rows
 				_.each(this.models,function(element,index,data) {
 					if(element.get('markedForDeletion')) element.destroy({success:function(element,index,data){
@@ -76,13 +56,13 @@ define([
 	                        console.log(response);
 
 	                        if(index === data.length - 1) {
-	                        	vent.trigger('CDF.Collections.RevenueRowList:submitReport:success','revenue');
+	                        	vent.trigger('CDF.Collections.BankDepositsRowList:submitReport:success','bankDeposits');
 	                        }
 	                    },
 	                    error: function(model, error, options){
 	                        console.log(error);
-	                        vent.trigger('CDF.Collections.RevenueRowList:submitReport:failed','revenue');
-	                    }
+	                        	vent.trigger('CDF.Collections.BankDepositsRowList:submitReport:failed','bankDeposits');
+	                      }
 					});
              
 	        	});
@@ -90,6 +70,6 @@ define([
 	    }
 	});
 
-	return RevenueRowList;
+	return BankDepositsRowList
 
 });

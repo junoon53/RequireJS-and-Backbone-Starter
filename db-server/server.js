@@ -79,6 +79,17 @@ var DailyFeedbackSchema = new Schema({
 mongoose.model('DailyFeedback',DailyFeedbackSchema,'dailyfeedback');
 var DailyFeedback = mongoose.model('DailyFeedback');
 
+var BankDepositsSchema = new Schema({
+	_id:Number,
+	clinic: {type:Number, ref:'Clinic'},
+	date:Date,
+	person: {type:Number,ref:'Person'},
+	amount:Number
+});
+mongoose.model('BankDeposits',BankDepositsSchema,'bankdeposits');
+var BankDeposits = mongoose.model('BankDeposits');
+
+/****************************************Testing************************/
 
 User.find({username:"divyaGaur"}).populate('person').exec(function(err,docs){
 
@@ -93,6 +104,8 @@ User.find({username:"divyaGaur"}).populate('person').exec(function(err,docs){
   		});
      });	
 });
+
+
 
 
 /**************************Functions****************************************/
@@ -199,14 +212,6 @@ function updateRevenue(req,res,next){
 	console.log("saving revenue : "+req.params);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	/*var revenueEntry = new Revenue();
-	revenueEntry.date = req.params.date;
-	revenueEntry.clinic = parseInt(req.params.clinic,10);
-	revenueEntry.patient = parseInt(req.params.patient,10);
-	revenueEntry.doctor = parseInt(req.params.doctor,10);
-	revenueEntry.amount = parseInt(req.params.amount,10);
-	console.log("revenue: "+revenueEntry.amount);
-	revenueEntry.paymentOption = parseInt(req.params.paymentOption,10);*/
 
 	Revenue.update({_id:req.params._id},
 				   { 
@@ -376,6 +381,86 @@ function addNewPerson(req,res,next){
 	});	
 };
 
+function addBankDeposit(req,res,next){
+	console.log("adding new person");
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+	var bankDeposit = new BankDeposits();
+	bankDeposit.person = req.params.person;
+	bankDeposit.clinic = req.params.clinic;
+	bankDeposit.date = req.params.date;
+	bankDeposit.amount = req.params.amount;
+
+	BankDeposits.count({},function(err,count){
+		bankDeposit._id = Math.random(4)+(new Date()).getMilliseconds()+count;
+		bankDeposit.save(function(err,data){
+		    if(err) console.log(err);
+		    res.send(data);
+		});
+	});	
+};
+
+function getBankDeposits(req,res,next){
+	console.log('getting bank deposits on date: '+req.query.date);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	var startDate = new Date(req.query.date);
+	startDate.setHours(0);
+	startDate.setMinutes(0);
+	startDate.setSeconds(0);
+	startDate.setMilliseconds(0);
+	console.log(startDate);
+	var endDate = new Date(startDate.getTime());
+	endDate.setHours(24);
+	console.log(endDate);
+
+	var clinic = parseInt(req.query.clinic,0);
+	console.log(clinic);
+
+	BankDeposits.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
+	.populate('person')
+	.populate('clinic')
+	.execFind(function(err,data){
+		console.log(err);
+		res.send(data);
+	});
+};
+
+function updateBankDeposit(req,res,next){
+	console.log("saving revenue : "+req.params);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	BankDeposits.update({_id:req.params._id},
+				   { 
+						date:req.params.date,
+						clinic:req.params.clinic,
+						person:req.params.person,
+						amount:req.params.amount,
+					},
+				   {},
+				   function(err,data){
+				   	if(err) console.log(err);
+		    		res.send(data);
+				   }
+				  );
+
+};
+
+
+function deleteBankDeposit(req,res,next){
+	console.log("deleting revenue: "+req.params._id);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	BankDeposits.remove({_id:req.params._id},function(err){
+		if(err) {console.log(err);
+					res.send(err);}
+
+	});
+};
+
 
 // set up our routes and start the server 
 server.get('/persons',getPersons);
@@ -391,6 +476,12 @@ server.put('/revenue/:_id',updateRevenue);
 server.get('/revenue',getRevenueOnDate);
 server.del('/revenue/:_id',deleteRevenue);
 
+server.post('/bankDeposits', addBankDeposit);
+server.get('/bankDeposits', getBankDeposits);
+server.put('/bankDeposits/:_id', updateBankDeposit);
+server.del('/bankDeposits/:_id', deleteBankDeposit);
+
+
 server.post('/clinics',saveClinic);
 server.get('/clinics',getClinics);
 
@@ -400,6 +491,9 @@ server.get('/feedback',checkFeedbackStatus);
 server.post('/feedback',saveFeedbackStatus);
 
 server.post('/revenueReport',getRevenueBetweenDates);
+
+
+
 
 
 function unknownMethodHandler(req, res) {

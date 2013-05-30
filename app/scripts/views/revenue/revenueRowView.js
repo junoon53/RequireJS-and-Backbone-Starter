@@ -98,7 +98,7 @@ define([
 						if(propertyValue !== "null") {
 							this.model.set(propertyId,propertyValue,{silent:true});
 							//element.attr('readonly',true);
-						} else if(element.attr("value").trim().length > 0) this.whenValueIsNotSelected(propertyId,element.attr("value"));
+						} else if(element.attr("value").trim().length > 0) this.whenValueIsNotSelected(propertyId,propertyName,element.attr("value"));
 					}
 												
 					
@@ -107,14 +107,17 @@ define([
 			};
 
 		},
-		whenValueIsNotSelected : function(propertyId,propertyName){
+		whenValueIsNotSelected : function(propertyId,propertyName,value){
 			
 			switch(propertyId){
 				case "patient":
+				    this.$('.'+propertyName).attr('title','New Patient? Click here to add');
+				    this.$('.'+propertyName).tooltip({placement:'top',trigger:'hover'});
+
 					this.addNewPatient(propertyName);
 					break;
 				case "doctor":
-					this.addNewDoctor(propertyName);
+					this.addNewDoctor(value);
 					break;
 				case "paymentOption":
 					break;
@@ -177,7 +180,7 @@ define([
 			this.$el.html(this.template(this.model.toJSON()));
 
 			this.$('ul.dropdown-menu').html('<li id="0"><a href="#">CASH</a></li><li id="1"><a href="#">CARD</a></li>');
-
+			
 			function source(collection,roles) {
 
 				return function(query,process){

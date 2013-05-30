@@ -7,10 +7,12 @@ define([
     'models/people/person',
     'models/people/roles',
     'models/utility/modal',
-    'collections/revenue/revenueRowList',      
+    'collections/revenue/revenueRowList', 
+    'collections/bankDeposits/bankDepositsRowList',     
     'views/people/addDoctor',
     'views/people/addPatient',
     'views/revenue/revenueTable',
+    'views/bankDeposits/bankDepositsTable',
     'views/utility/modal',
     'views/utility/submit',
     'router/router',
@@ -20,7 +22,16 @@ define([
     'datetimepicker',
          
 
-    ], function(Backbone,$,_,app,Person,roles,Modal,RevenueRowList,AddDoctor,AddPatient,RevenueTableView,ModalView,Submit,router,vent,template,clinicsListRowTemplate){
+    ], function(Backbone,$,_,app,Person,
+        roles,Modal,
+        RevenueRowList,
+        BankDepositsRowList,
+        AddDoctor,
+        AddPatient,
+        RevenueTableView,
+        BankDepositsTableView,
+        ModalView,
+        Submit,router,vent,template,clinicsListRowTemplate){
 
     var _instance = null;
 
@@ -28,6 +39,7 @@ define([
         model: app,
         events: {
             'click li#revenue': 'addView',
+            'click li#bank-deposits': 'addView',
             'click li#submit a': 'handleSubmitClick',
             'click li#logout a': 'handleLogoutClick',
             'click .clinicsList li a': 'handleClinicSelect',
@@ -44,6 +56,7 @@ define([
             
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:addNewPerson', this.displayAddPersonModal);
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
             this.listenTo(vent,'CDF.Models.Application:modifyReportStatus:success', this.displayModal);
             this.listenTo(vent,'CDF.Models.Application:postReportStatus:success', this.displayModal);
@@ -158,6 +171,20 @@ define([
             this.addAlertView(modal);
             modal.show();
         },
+        displayAddPersonModal: function(msg){
+            var names = msg.personNameString.split(" ");
+            var addPersonView = new AddPerson({model: new Person({
+                                                                    firstName:names[0],
+                                                                    lastName:names[1],
+                                                                    isActive:1,
+                                                                    clinics:[this.model.get("clinic")],
+                                                                    //roles: [_.findWhere(roles().attributes,{name:'DOCTOR'})._id]
+                                                                })});       
+            var modalModel = new Modal({header:"Add Person",footer:"",body:addPersonView.$el});
+            var modal = new ModalView({model:modalModel});
+            this.addAlertView(modal);
+            modal.show();
+        },
         displayAddPatientModal: function(msg){
             var names = msg.patientNameString.split(" ");
             var addPatientView = new AddPatient({model: new Person({
@@ -223,6 +250,9 @@ define([
                 switch(viewType){
                     case 'revenue':
                         this.activeViews[viewType] = new RevenueTableView({model: new RevenueRowList()});
+                        break;
+                    case 'bank-deposits':
+                        this.activeViews[viewType] = new BankDepositsTableView({model: new BankDepositsRowList()});
                         break;
                 }                
 
