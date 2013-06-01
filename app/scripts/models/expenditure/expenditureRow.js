@@ -1,22 +1,41 @@
 define(['backbone','underscore'], function(Backbone,_) {
 
-	var BankDepositRow = Backbone.Model.extend({
+	var ExpenditureRow = Backbone.Model.extend({
 		defaults: {
-			person:null,
-			personName:"",
+			item:'',
+			sanctionedByName:"",
+			sanctionedBy:null,
+			receivedByName:"",
+			receivedBy:null,
+			qty:0,
 			amount:0
 		},
 		validation: {
-		    person: {
+			item: {
+		      required: true,
+		      msg: "Please enter an item"
+		    },
+		    sanctionedBy: {
 		      required: true,
 		      range: [1000,10000],
-		      msg: "Please select a patient"
+		      msg: "Please select a sanctioner"
+		    },
+		    receivedBy: {
+		      required: true,
+		      range: [1000,10000],
+		      msg: "Please select a receiver"
 		    },
 		    amount: {
 		    	pattern: 'digits',
 		    	required: true,
 		    	range: [1, 1000000],
 		    	msg: "Please enter a valid amount"
+		    },
+		    qty: {
+		    	pattern: 'digits',
+		    	required: true,
+		    	range: [1, 1000],
+		    	msg: "Please enter a valid quantity"
 		    }
 		},
 		onClose: function(){
@@ -37,5 +56,5 @@ define(['backbone','underscore'], function(Backbone,_) {
         }*/
 	});
 
-	return BankDepositRow;
+	return ExpenditureRow;
 });

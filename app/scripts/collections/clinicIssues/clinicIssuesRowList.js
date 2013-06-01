@@ -2,12 +2,12 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
-	 'models/bankDeposit/bankDepositRow',
-	 'vent'], function(Backbone,$,_,BankDepositRow,vent) {
+	 'models/clinicIssues/clinicIssuesRow',
+	 'vent'], function(Backbone,$,_,ClinicIssuesRow,vent) {
 
 
-	var BankDepositsRowList = Backbone.Collection.extend({
-		model: BankDepositRow,
+	var ClinicIssuesRowList = Backbone.Collection.extend({
+		model: ClinicIssuesRow,
 		initialize: function(){
 			var self = this;
 
@@ -20,10 +20,10 @@ define([
 		addDataFromReport: function(dataArray){
 			var self = this;
             _.each(dataArray,function(element,index,array){
-                self.add((new BankDepositRow({
-                    personName: element.person.firstName + " " + element.person.lastName,
-                    person: element.person._id,
-                    amount: element.amount
+                self.add((new ClinicIssuesRow({
+                    doctorName: element.doctor.firstName + " " + element.doctor.lastName,
+                    doctor: element.doctor._id,
+                    issue: element.issue
                 })));
             });
 		},
@@ -31,8 +31,8 @@ define([
 			var result = [];
 			_.each(this.models,function(element,index,array){
                     var dataMember = {
-                        person: element.get('person'),
-                        amount: element.get('amount')
+                        doctor: element.get('doctor'),
+                        issue: element.get('issue')
                     };
                     result.push(dataMember);
                 });
@@ -42,7 +42,7 @@ define([
 			this._total = 0;
 			var self = this;
 			_.each(this.filterInvalidRows(),function(row, i,data) {
-				 self._total+= parseInt(row.get("amount"),10);
+				 self._total+= parseInt(row.get("issue"),10);
 			});
 			return this._total;
 		},
@@ -62,6 +62,6 @@ define([
 		
 	});
 
-	return BankDepositsRowList
+	return ClinicIssuesRowList
 
 });

@@ -8,9 +8,9 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
             this.listenTo(vent,'CDF.Models.Auth:login:success',this.createAndAddAppView);
         },
         addView: function(view){
-            if (this.currentView){
-              this.currentView.close();
-            }
+            /*if (this.currentView){
+              this.$el.html('');
+            }*/
          
             this.currentView = view;
             this.currentView.render();
@@ -28,10 +28,10 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
                     "clinic":person.clinics[0]._id,
                     "clinics":person.clinics,
                     "userFullname":person.firstName+" "+person.lastName,
-                    "person":person._id,
+                    "user":person._id,
                     "date": new Date(),
                     "role":person.roles[person.roles.length - 1]._id,
-                    "roleName":person.roles[person.roles.length - 1].name,
+                    "roleName":person.roles[person.roles.length - 1].name
             });
 
            appView.model = application;

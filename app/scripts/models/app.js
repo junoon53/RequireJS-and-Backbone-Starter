@@ -2,15 +2,22 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
     var _instance = null;
 
     var Application = Backbone.Model.extend({
-        url: 'http://192.168.211.132:8080/feedback',
+        url: 'http://192.168.211.132:8080/report',
         defaults: {
             // Report properties
             _id:null,            
+            id:null,            
             clinic: null,
             date: new Date(),
+            revenue: [],
+            bankDeposits: [],
+            expenditure: [],
+            patientsFeedback: [],
+            clinicIssues: [],
+            person: null,
 
             // User properties
-            person:null,
+            user:null,
             role: "",
             clinics:[],
 
@@ -30,52 +37,23 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
            this.listenTo(this,'change:clinic',this.checkReportStatus);
            this.listenTo(vent,'CDF.Views.AppView:click:submit',this.checkReportStatusAndSubmit);
 
-           this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport:start',this.registerReportSubmission);
-           this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport:success',this.processSuccessfulSubmissions);
-           this.listenTo(vent,'CDF.Collections.RevenueRowList:submitReport:failed',this.processFailedSubmission);
-
-
-           this.listenTo(vent,'CDF.Collections.BankDepositsRowList:submitReport:start',this.registerReportSubmission);
-           this.listenTo(vent,'CDF.Collections.BankDepositsRowList:submitReport:success',this.processSuccessfulSubmissions);
-           this.listenTo(vent,'CDF.Collections.BankDepositsRowList:submitReport:failed',this.processFailedSubmission);
-
-           this.reportsToBeSubmitted = [];
-           this.submittedReports = [];
-
         },
         onClose: function(){
 
         },
-        registerReportSubmission: function(reportName){
-            console.log('submitting report: '+reportName);
-
-            this.reportsToBeSubmitted.push(reportName);
-        },
-        processFailedSubmission: function(reportName) {
-            console.log(reportName+" report submission failed");
-            vent.trigger("CDF.Models.Application:postReportStatus:failed","reportSubmitFailedModal");
-            console.log("report post error");
-            
-        },
-        processSuccessfulSubmissions: function(reportName){
-            console.log(reportName+" report submitted successfully");
-            this.submittedReports.push(reportName);
-
-            if((this.reportsToBeSubmitted.length === this.submittedReports.length)
-            && this.get('role') !== _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id){
-                this.postReportStatus();  
-                this.reportsToBeSubmitted.length = 0;
-                this.submittedReports.length = 0;  
-             } else if(this.reportsToBeSubmitted.length === this.submittedReports.length) {
-                vent.trigger("CDF.Models.Application:modifyReportStatus:success","reportUpdatedModal");
-                console.log('report modified successfully');
-                this.reportsToBeSubmitted.length = 0;
-                this.submittedReports.length = 0;
-             } 
+        resetReport: function(){
+            this.set('_id',null);
+            this.set('id',null);
+            this.set('revenue',[]);
+            this.set('bankDeposits',[]);
+            this.set('expenditure',[]);
+            this.set('patientsFeedback',[]);
+            this.set('clinicIssues',[]);
+            this.set('person',null);
         },
         postReportStatus: function(){
             var self = this;
-            this.save({},{
+            this.save(this.model.attributes,{
                 success: function(model,response,options){
                  self.set('date', new Date());
                  console.log("report posted successfully");
@@ -93,9 +71,10 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             this.fetch({data:{date:this.get('date'),clinic:this.get('clinic')},success: function(model, response, options){
                         
                 if(response) {
+                    model.set('id',model.get('_id'));
                     callback.call(self,true);
                 } else {
-                   callback.call(self,false);
+                   callback.call(self,false);                   
                 }
                     
             },silent: true});
@@ -108,31 +87,27 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
         },
         broadcastReportStatus: function(result){
                                     
-            if(result) {
-                vent.trigger("CDF.Models.Application:broadcastReportStatus:true",true);
-            } else {
-                vent.trigger("CDF.Models.Application:broadcastReportStatus:false",false);
-            }                    
+            if(!result) {
+                this.resetReport();
+            } 
+
+            vent.trigger("CDF.Models.Application:broadcastReportStatus" );
+
    
         },
         checkRoleAndSubmit: function(result){
                                              
             if(result &&  (this.get('role') !== _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id)) {
                 vent.trigger('CDF.Models.Application:submitReport:failed','reportExistsModal');
-
                 console.log("Not saving: today's report exists");
             } else if(result) {
-                this.reportsToBeSubmitted.length = 0;
-                this.submittedReports.length = 0;
                 console.log('Report exists: Saving modified report as ADMINISTRATOR');
                 vent.trigger('CDF.Models.Application:submitReport');
             } else if(!result){
-                this.reportsToBeSubmitted.length = 0;
-                this.submittedReports.length = 0;
                 console.log('Saving NEW report');
+                this.set('person',this.get('user'));
                 vent.trigger('CDF.Models.Application:submitReport');
             }
-                    
         },
  
     });

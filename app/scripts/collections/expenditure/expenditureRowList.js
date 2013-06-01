@@ -2,12 +2,12 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
-	 'models/revenue/revenueRow',
+	 'models/expenditure/expenditureRow',
 	 'vent'
-	 ], function(Backbone,$,_,RevenueRow,vent){
+	 ], function(Backbone,$,_,ExpenditureRow,vent){
 
-	var RevenueRowList = Backbone.Collection.extend({
-		model: RevenueRow,
+	var ExpenditureRowList = Backbone.Collection.extend({
+		model: ExpenditureRow,
 		initialize: function(){
 			var self = this;
 
@@ -26,38 +26,20 @@ define([
 			});
 			return this._total;
 		},
-		totalCash: function(){
-			this._total = 0;
-			var self = this;
-			_.each(this.filterInvalidRows(),function(row, i) {
-				if(row.get("paymentOption")==="CASH")
-				 self._total+= parseInt(row.get("amount"),10);
-			});
-			return this._total;
-		},
-		totalCard: function(){
-			this._total = 0;
-			var self = this;
-			_.each(this.filterInvalidRows(),function(row, i) {
-				if(row.get("paymentOption")==="CARD")
-				 self._total+= parseInt(row.get("amount"),10);
-			});
-			return this._total;
-		},
 		filterInvalidRows: function(models){
 			return _.reject(this.models,function(element){return !element.isValid(true)});
 		},
 		addDataFromReport: function(dataArray){
 			var self = this;
 			_.each(dataArray,function(element,index,array){
-                self.add((new RevenueRow({
-                    patientName: element.patient.firstName + " " + element.patient.lastName,
-                    patient: element.patient._id,
-                    doctorName: element.doctor.firstName + " " + element.doctor.lastName,
-                    doctor: element.doctor._id,
+                self.add((new ExpenditureRow({
+                	item: element.item,
+                    receivedByName: element.receivedBy.firstName + " " + element.receivedBy.lastName,
+                    receivedBy: element.receivedBy._id,
+                    sanctionedByName: element.sanctionedBy.firstName + " " + element.sanctionedBy.lastName,
+                    sanctionedBy: element.sanctionedBy._id,
                     amount: element.amount,
-                    paymentOption: element.paymentOption._id,
-                    paymentOptionName: element.paymentOption.name
+                    qty: element.qty
                 })));
             });
 		},
@@ -65,10 +47,12 @@ define([
 			var result = [];
 		    _.each(this.models,function(element,index,array){                    
                var dataMember = {
-                    patient: element.get('patient'),
-                    doctor: element.get('doctor'),
+               		item: element.get('item'),
+                    receivedBy: element.get('receivedBy'),
+                    sanctionedBy: element.get('sanctionedBy'),
                     amount: element.get('amount'),
-                    paymentOption: element.get('paymentOption')
+                    paymentOption: element.get('paymentOption'),
+                    qty: element.get('qty')
                 };
                 result.push(dataMember);
             });
@@ -87,6 +71,6 @@ define([
 		
 	});
 
-	return RevenueRowList;
+	return ExpenditureRowList;
 
 });

@@ -3,22 +3,23 @@ define([
 	'jquery',
 	'underscore',
 	'collections/people/persons',
-	'models/bankDeposit/bankDepositRow',
+	'models/clinicIssues/clinicIssuesRow',
 	'vent',
-	'text!templates/bankDepositsRow.html',
-	'bootstrap'	
-	], function(Backbone,$,_,Persons,BankDepositsRow,vent,template){
+	'text!templates/clinicIssuesRow.html',
+	'bootstrap',
+	
+	], function(Backbone,$,_,Persons,ClinicIssues,vent,template){
 
-	var BankDepositsRowView = Backbone.View.extend({
-		model: new BankDepositsRow(),
-		className: 'bankDepositsRow',
+	var ClinicIssuesRowView = Backbone.View.extend({
+		//model: new ClinicIssues(),
+		className: 'clinicIssuesRow',
 		events: {
 			'click .column': 'edit',
 			'click .delete': 'delete',
 			'blur .column': 'exitColumn',
 			'keypress .column': 'onEnterUpdate',
 		},
-		personsMap:  {},
+		doctorsMap:  {},
 		initialize: function() {
 			this.template = _.template(template);
 			//this.listenTo(this.model,'remove',this.delete);
@@ -31,14 +32,14 @@ define([
 		edit: function(ev) {
 			ev.preventDefault();
 			switch(ev.currentTarget.className.split(" ")[0]){
-				case "personName":
-					//this.$('.personName').removeAttr('readonly').focus();
-					this.$('.personName').attr("valueId", "null");	
-					this.model.set("person","null",{silent:true});
-					this.$('.personName').val("");				
+				case "doctorName":
+					//this.$('.removeAttr').doctorName('readonly').focus();
+					this.$('.doctorName').attr("valueId", "null");
+					this.model.set("doctor","null",{silent:true});
+					this.$('.doctorName').val("");
 					break;
-				case "amount":
-					//this.$('.amount').removeAttr('readonly').focus();
+				case "issue":
+					//this.$('.issue').removeAttr('readonly', true).focus();
 					break;
 			}
 		
@@ -47,33 +48,22 @@ define([
 			var element = null;
 			var propertyName = ev.currentTarget.className.split(" ")[0];
 			switch(propertyName){
-				case "personName":
-					element = this.$('.personName');
-					setElementValue.call(this,'person');
+				case "doctorName":
+					element = this.$('.doctorName');
+					setElementValue.call(this,'doctor');
 					break;
-				case "amount":
-					element = this.$('.amount');
-					setElementValue.call(this);
-					vent.trigger('CDF.Views.BankDeposits.BankDepositsRowView:exitColumn:amount');
+				case "issue":
+					this.model.set('issue',this.$('.issue').attr("value"),{silent:true});
 					break;
 			}
 
-			function setElementValue(propertyId){
-
-				if(element !== null){				
-					this.model.set(propertyName, element.attr("value"),{silent:true});
-							
-						
-					if(typeof propertyId !== "undefined"){
-						var propertyValue = element.attr("valueId");
-						if(propertyValue !== "null") {
-							this.model.set(propertyId,parseInt(propertyValue,10),{silent:true});
-							//element.attr('readonly',true);
-						} else if(element.attr("value").trim().length > 0) this.whenValueIsNotSelected(propertyId,propertyName,element.attr("value"));
-					}
-												
-					
-
+			function setElementValue(propertyId){				
+				this.model.set(propertyName,element.attr("value"),{silent:true});
+				if(typeof propertyId !== "undefined"){
+					var propertyValue = element.attr("valueId");
+					if(propertyValue !== "null") {
+						this.model.set(propertyId, parseInt(propertyValue,10),{silent:true});
+					} else if(element.attr("value").trim().length > 0) this.whenValueIsNotSelected(propertyId,propertyName,element.attr("value"));
 				}
 			};
 
@@ -81,13 +71,13 @@ define([
 		whenValueIsNotSelected : function(propertyId,propertyName,value){
 			
 			switch(propertyId){
-				case "person":
-				    this.addNewPerson(value);
+				case "doctor":
+					this.addNewDoctor(value);
 					break;
 			}
 		},
-		addNewPerson: function(propertyName){
-				vent.trigger('CDF.Views.BankDeposits.BankDepositsRowView:addNewPerson',{personNameString:propertyName});
+		addNewDoctor: function(propertyName){
+				vent.trigger('CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor',{doctorNameString:propertyName});
 		},
 		onEnterUpdate: function(ev) {
 			var self = this;
@@ -95,20 +85,21 @@ define([
 				this.exitColumn(ev);
 
 				switch(ev.currentTarget.className.split(" ")[0]){
-				case "personName":
-					_.delay(function() { self.$('.personName').blur() }, 100);
+				case "doctorName":
+					_.delay(function() { self.$('.doctorName').blur() }, 100);
 					break;
-				case "amount":
-					_.delay(function() { self.$('.amount').blur() }, 100);
+				case "issue":
+					_.delay(function() { self.$('.issue').blur() }, 100);
 					break;
 				}
+				
 			}
 		},
 		delete: function(ev) {
 			if(ev.preventDefault) ev.preventDefault();			
-			vent.trigger('CDF.Views.BankDeposits.BankDepositsRowView:delete');
+			vent.trigger('CDF.Views.ClinicIssues.ClinicIssuesRowView:delete');			
 			this.close();
-		},	
+		},
 		onValid: function(view,errors){
 			var self = this;
 			_.each(this.model.attributes,function(value,key){
@@ -124,7 +115,7 @@ define([
 			});
 			_.each(errors,function(value,key){
 				self.$("."+key).popover({placement:'top',content:value,trigger:'focus hover'});
-			    self.$('.'+key).addClass('input-validation-error');
+				self.$('.'+key).addClass('input-validation-error');
 			});
 		},
 		render: function() {
@@ -156,12 +147,12 @@ define([
 				 return item;
 		 
 			};
-			this.$('.personName').typeahead({source:source(new Persons(),[1,2,3,4]),updater:updater,minLength:3,id:"person"+this.model.cid,map:this.personsMap});
+			this.$('.doctorName').typeahead({source:source(new Persons(),[1,2]),updater:updater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});
 			return this;
 		}
 	
 	});
 
-	return BankDepositsRowView;
+	return ClinicIssuesRowView;
 
 });

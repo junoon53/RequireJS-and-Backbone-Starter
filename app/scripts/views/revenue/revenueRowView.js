@@ -12,7 +12,7 @@ define([
 	], function(Backbone,$,_,Persons,paymentOptions,RevenueRow,vent,template){
 
 	var RevenueRowView = Backbone.View.extend({
-		model: new RevenueRow(),
+		//model: new RevenueRow(),
 		className: 'revenueRow',
 		events: {
 			'click .column': 'edit',
@@ -26,7 +26,10 @@ define([
         paymentOptionsMap:{},
 		initialize: function() {
 			this.template = _.template(template);
-			this.listenTo(this.model,'remove',this.delete);
+			//this.listenTo(this.model,'remove',this.delete);
+			this.listenTo(this.model,'validated:valid',this.onValid);
+			this.listenTo(this.model,'validated:invalid',this.onInvalid);
+			Backbone.Validation.bind(this);
 		},
 		onClose: function(){
 		},
@@ -83,26 +86,14 @@ define([
 			function setElementValue(propertyId){
 
 				if(element !== null){				
-					this.model.set(propertyName, element.attr("value"),{silent:true});
-					if (false/*validate model*/) {
-					 	element.addClass( 'input-validation-error' );
-					 	//this.$('.revenueRow').tooltip({title:this.model.validationError,container:'.revenueRow',trigger:'hover'});
-					 	//this.$('.patientName').tooltip('show');
-						} else {
-							element.removeClass( 'input-validation-error' );
-							//element.tooltip('destroy');
-						}					
+					this.model.set(propertyName, (propertyName === "amount") ? parseInt(element.attr('value'),10): element.attr("value"),{silent:true});								
 						
 					if(typeof propertyId !== "undefined"){
 						var propertyValue = element.attr("valueId");
 						if(propertyValue !== "null") {
-							this.model.set(propertyId,propertyValue,{silent:true});
-							//element.attr('readonly',true);
+							this.model.set(propertyId, parseInt(propertyValue,10),{silent:true});
 						} else if(element.attr("value").trim().length > 0) this.whenValueIsNotSelected(propertyId,propertyName,element.attr("value"));
 					}
-												
-					
-
 				}
 			};
 
@@ -111,10 +102,7 @@ define([
 			
 			switch(propertyId){
 				case "patient":
-				    this.$('.'+propertyName).attr('title','New Patient? Click here to add');
-				    this.$('.'+propertyName).tooltip({placement:'top',trigger:'hover'});
-
-					this.addNewPatient(propertyName);
+					this.addNewPatient(value);
 					break;
 				case "doctor":
 					this.addNewDoctor(value);
@@ -124,14 +112,10 @@ define([
 			}
 		},
 		addNewPatient: function(propertyName){
-			//if(!CDF.isModalVisible){
 				vent.trigger('CDF.Views.Revenue.RevenueRowView:addNewPatient',{patientNameString:propertyName});
-			//}		
 		},
 		addNewDoctor: function(propertyName){
-			//if(!CDF.isModalVisible){
 				vent.trigger('CDF.Views.Revenue.RevenueRowView:addNewDoctor',{doctorNameString:propertyName});
-			//}		
 		},
 		onEnterUpdate: function(ev) {
 			var self = this;
@@ -171,10 +155,27 @@ define([
 		},
 		delete: function(ev) {
 			if(ev.preventDefault) ev.preventDefault();			
-			this.model.set('markedForDeletion',true);
-			vent.trigger('CDF.Views.Revenue.RevenueRowView:delete');
+			vent.trigger('CDF.Views.Revenue.RevenueRowView:delete');			
 			this.close();
-		},	
+		},
+		onValid: function(view,errors){
+			var self = this;
+			_.each(this.model.attributes,function(value,key){
+				self.$("."+key).popover('destroy');
+				self.$('.'+key).removeClass('input-validation-error');
+			});
+		},
+		onInvalid: function(view,errors){
+		    var self = this;
+			_.each(this.model.attributes,function(value,key){
+				self.$("."+key).popover('destroy');
+				self.$('.'+key).removeClass('input-validation-error');
+			});
+			_.each(errors,function(value,key){
+				self.$("."+key).popover({placement:'top',content:value,trigger:'focus hover'});
+				self.$('.'+key).addClass('input-validation-error');
+			});
+		},
 		render: function() {
 			this.model.set("rowId",this.model.cid,{silent:true});
 			this.$el.html(this.template(this.model.toJSON()));
@@ -208,6 +209,7 @@ define([
 			};
 			this.$('.patientName').typeahead({source:source(new Persons(),[0]),updater:updater,minLength:3,id:"patient"+this.model.cid,map:this.patientMap});
 			this.$('.doctorName').typeahead({source:source(new Persons(),[1,2]),updater:updater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});
+			
 			return this;
 		}
 	

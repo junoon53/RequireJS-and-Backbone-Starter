@@ -7,12 +7,24 @@ define([
     'models/people/person',
     'models/people/roles',
     'models/utility/modal',
+    'models/revenue/revenueRow',
     'collections/revenue/revenueRowList', 
-    'collections/bankDeposits/bankDepositsRowList',     
+    'models/bankDeposit/bankDepositRow',
+    'collections/bankDeposits/bankDepositsRowList',
+    'models/expenditure/expenditureRow',
+    'collections/expenditure/expenditureRowList',
+    'models/patientsFeedback/patientsFeedbackRow',
+    'collections/patientsFeedback/patientsFeedbackRowList',
+    'models/clinicIssues/clinicIssuesRow',
+    'collections/clinicIssues/clinicIssuesRowList',
     'views/people/addDoctor',
     'views/people/addPatient',
+    'views/people/addPerson',
     'views/revenue/revenueTable',
     'views/bankDeposits/bankDepositsTable',
+    'views/expenditure/expenditureTable',
+    'views/patientsFeedback/patientsFeedbackTable',
+    'views/clinicIssues/clinicIssuesTable',
     'views/utility/modal',
     'views/utility/submit',
     'router/router',
@@ -24,12 +36,24 @@ define([
 
     ], function(Backbone,$,_,app,Person,
         roles,Modal,
+        RevenueRow,
         RevenueRowList,
+        BankDepositsRow,
         BankDepositsRowList,
+        ExpenditureRow,
+        ExpenditureRowList,
+        PatientsFeedbackRow,
+        PatientsFeedbackRowList,
+        ClinicIssuesRow,
+        ClinicIssuesRowList,
         AddDoctor,
         AddPatient,
+        AddPerson,
         RevenueTableView,
         BankDepositsTableView,
+        ExpenditureTableView,
+        PatientsFeedbackTableView,
+        ClinicIssuesTableView,
         ModalView,
         Submit,router,vent,template,clinicsListRowTemplate){
 
@@ -39,11 +63,14 @@ define([
         model: app,
         events: {
             'click li#revenue': 'addView',
-            'click li#bank-deposits': 'addView',
+            'click li#bankDeposits': 'addView',
+            'click li#expenditure': 'addView',
+            'click li#patientsFeedback': 'addView',
+            'click li#clinicIssues': 'addView',
             'click li#submit a': 'handleSubmitClick',
             'click li#logout a': 'handleLogoutClick',
             'click .clinicsList li a': 'handleClinicSelect',
-            'changeDate #datetimepicker' : 'changeDate'
+            'changeDate #datetimepicker' : 'handleDateChange'
 
         },
         initialize: function(){
@@ -52,17 +79,20 @@ define([
             this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
 
             this.activeViews = {};
-            this.selectedVIew = null;
+            this.selectedViewType = null;
             
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewDoctor', this.displayAddDoctorModal);
             this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:addNewPerson', this.displayAddPersonModal);
+            this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:addNewPerson', this.displayAddPersonModal);
+            this.listenTo(vent,'CDF.Views.PatientsFeedback.PatientsFeedbackRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor', this.displayAddDoctorModal);
+
+
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
-            this.listenTo(vent,'CDF.Models.Application:modifyReportStatus:success', this.displayModal);
-            this.listenTo(vent,'CDF.Models.Application:postReportStatus:success', this.displayModal);
-            this.listenTo(vent,'CDF.Models.Application:postReportStatus:failed', this.displayModal);
-            this.listenTo(vent,"CDF.Models.Application:submitReport:failed", this.displayModal);            
-            this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus:true", this.showReportExistsWarning);            
+            this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
+            this.listenTo(vent,"CDF.Models.Application:submitReport", this.submitReport);            
+            this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.refreshSelectedView);            
         },
         handleClinicSelect: function(ev){
             ev.preventDefault();
@@ -75,9 +105,15 @@ define([
                 this.removeAllViews(); 
             }                      
         },
+        handleDateChange : function(ev) {
+            ev.preventDefault();
+            this.model.set("date",ev.localDate);
+            this.dateTimePicker.hide();
+            this.removeAllViews();
+        }, 
         changeMenuSelection: function(selection) {
             this.$('ul.nav-list li').each(function(index){
-                $(this).removeAttr('class');
+                $(this).removeClass('active');
             })
 
             if(selection) {
@@ -205,19 +241,20 @@ define([
             this.addAlertView(modal);
             modal.show();
         },
-        changeDate : function(ev) {
-            ev.preventDefault();
-            this.model.set("date",ev.localDate);
-            this.dateTimePicker.hide();
-            this.refreshActiveViews();
-        },    
+           
         showView: function(viewType){
 
             // hide all views
             this.hideAllViews();
             this.activeViews[viewType].$el.show();
-            this.selectedView = this.activeViews[viewType];
+            this.selectedViewType = viewType;
 
+        },
+        refreshSelectedView: function(){
+            if(this.selectedViewType !== null) {
+                this.createAndRenderView(this.selectedViewType);
+                this.activeViews[this.selectedViewType].$el.show();
+            }
         },
         removeAllViews: function(){
             _.each(this.activeViews, function(value,key,list){
@@ -225,7 +262,6 @@ define([
             });
             this.activeViews = {};
             this.$('#content').html('');
-            this.changeMenuSelection();
         },
         addAlertView: function(view){
             if (this.currentAlertView){
@@ -237,35 +273,41 @@ define([
 
             this.$("#alert").html(view.$el);             
         },
-        refreshActiveViews: function(){
-            var self = this;
-            var activeViewTypes = _.keys(this.activeViews);
-            this.removeAllViews();
-            _.each(activeViewTypes,function(element,index,array){
-                self.createAndRenderView(element);
-            });
-        },
         createAndRenderView: function(viewType) {
+            var self = this;
             if(!this.activeViews[viewType]) {
                 switch(viewType){
                     case 'revenue':
                         this.activeViews[viewType] = new RevenueTableView({model: new RevenueRowList()});
                         break;
-                    case 'bank-deposits':
+                    case 'patientsFeedback':
+                        this.activeViews[viewType] = new PatientsFeedbackTableView({model: new PatientsFeedbackRowList()});
+                        break; 
+                    case 'clinicIssues':
+                        this.activeViews[viewType] = new ClinicIssuesTableView({model: new ClinicIssuesRowList()});
+                        break;     
+                    case 'bankDeposits':
                         this.activeViews[viewType] = new BankDepositsTableView({model: new BankDepositsRowList()});
                         break;
-                }                
+                    case 'expenditure':
+                        this.activeViews[viewType] = new ExpenditureTableView({model: new ExpenditureRowList()});
+                        break;
+                } 
+
+                this.activeViews[viewType].render();     
+                this.$("#content").append(this.activeViews[viewType].$el);     
+                this.activeViews[viewType].$el.hide();          
 
                 switch(this.model.get('role')){
                     case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
                     case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:                        
                         break;
                     case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
-                        this.activeViews[viewType].fetch(this.model.get('date'),this.model.get('clinic')); 
+                        this.activeViews[viewType].model.reset();
+                        this.activeViews[viewType].model.addDataFromReport(this.model.get(viewType));
                         break;
                 }
-                this.activeViews[viewType].render();     
-                this.$("#content").append(this.activeViews[viewType].$el);
+                
             } 
         },
         addView: function(ev) {
@@ -287,6 +329,36 @@ define([
              vent.trigger('CDF.Views.AppView:handleLogoutClick');
              router.index();
         },
+        validateReport: function(){
+            var result = true
+            _.each(this.activeViews,function(element){
+
+                if(!element.isValid()) result = false
+            });
+            return result;
+        },
+        submitReport: function(){
+            var self = this;
+            if(!this.validateReport()) {
+                console.log('report has invalid entries. Not submitting');
+                return;
+            }
+            var activeViewTypes = _.keys(this.activeViews);
+
+            _.each(activeViewTypes,function(element){
+                self.model.set(element,self.activeViews[element].model.getDataForReport());
+            }); 
+
+            this.model.save(this.model.attributes,{
+                success: function(){
+                    self.displayReportSubmittedModal();
+                },
+                error: function(){
+                    self.displayReportSubmitFailedModal();
+                }
+
+            });
+        }
 
     });
 

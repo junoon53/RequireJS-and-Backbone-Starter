@@ -2,13 +2,13 @@ define([
 	'backbone',
 	'jquery', 
 	'underscore',
-	'models/bankDeposit/bankDepositRow',
-	'views/bankDeposits/bankDepositsRowView',
+	'models/expenditure/expenditureRow',
+	'views/expenditure/expenditureRowView',
 	'vent',
-	'text!templates/bankDepositsTable.html'
-	], function(Backbone,$,_,BankDepositsRow,BankDepositsRowView,vent,template){
+	'text!templates/expenditureTable.html'
+	], function(Backbone,$,_,ExpenditureRow,ExpenditureRowView,vent,template){
 
-	var BankDepositsTableView = Backbone.View.extend({
+	var ExpenditureTableView = Backbone.View.extend({
 	    events: {
 			'click .new-row' : 'handleNewRowSubmit'		
 	    },
@@ -17,10 +17,10 @@ define([
 			
 			this.rowViews = [];
 
-			this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:exitColumn:amount', this.updateTotal);
-			this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:delete', this.updateTotal);
+			this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:exitColumn:amount', this.updateTotal);
+			this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:delete', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
-			this.listenTo(this.model,'add', this.addRow);					
+			this.listenTo(this.model,'add', this.addRow);
 		},
 		onClose: function(){
 
@@ -28,28 +28,29 @@ define([
 		},
 		handleNewRowSubmit: function(ev){
 			ev.preventDefault();
-			this.model.add(new BankDepositsRow());
-		},	
-		addRow: function(rowModel){		
-
-	    	var rowView = new BankDepositsRowView({model: rowModel});
-	    	rowView.render();    		
-
-	    	this.rowViews.push(rowView);
-			this.$('#rows-container').append((rowView.$el));
-			this.updateTotal();		
+			this.model.add(new ExpenditureRow());
 		},
 		isValid: function() {
 			var result = this.model.isValid();
 			if(!result){
 				this.$('.alert').hide();
-				this.$('.alert-error').show();
+				this.$('.alert-error').show(); 
 			} else {
 				this.$('.alert').hide();
 			}
 			return result;
 		},	
+		addRow: function(rowModel){		
+
+	    	var rowView = new ExpenditureRowView({model: rowModel});
+	    	rowView.render();    			
+
+	    	this.rowViews.push(rowView);
+			this.$('#rows-container').append((rowView.$el));
+			this.updateTotal();		
+		},
 		removeAllRowViews: function() {
+			//this.$('#rows-container').html('');
 			for(var i=0;i<this.rowViews.length;i++){
 				this.rowViews[i].close();
 			}
@@ -67,6 +68,6 @@ define([
 		}
 	});
 
-	return BankDepositsTableView;
+	return ExpenditureTableView;
 
 });

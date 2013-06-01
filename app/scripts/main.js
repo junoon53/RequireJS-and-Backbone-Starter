@@ -6,7 +6,7 @@ require.config({
     'bootstrap' : 'vendor/bootstrap/docs/assets/js/bootstrap',
     'datetimepicker': 'vendor/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
     'templates': '../templates',
-    /*'backbone': './backbone'*/    
+    'backbone-validation':'vendor/backbone-validation/dist/backbone-validation-amd',  
     'backbone': 'vendor/backbone-amd/backbone'    
   },
   shim: {
@@ -19,12 +19,13 @@ require.config({
   }
 });
 
-require(['backbone',
+require(['backbone',         
          'views/mainView',
          'router/router',
          'models/people/roles',
-         'collections/revenue/paymentOptions'], 
-         function(Backbone,MainView,router,roles,paymentOptions) {
+         'collections/revenue/paymentOptions',
+         'backbone-validation'], 
+         function(Backbone,MainView,router,roles,paymentOptions,validation) {
 
   Backbone.View.prototype.close = function(){
     this.remove();
@@ -41,6 +42,8 @@ require(['backbone',
       }
     }
   };
+
+  _.extend(Backbone.Model.prototype, validation.mixin);
 
   roles().fetch();
   paymentOptions().fetch();

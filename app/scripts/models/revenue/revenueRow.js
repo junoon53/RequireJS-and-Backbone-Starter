@@ -1,41 +1,56 @@
-define(['backbone'], function(Backbone) {
+define(['backbone','underscore'], function(Backbone,_) {
 
 	var RevenueRow = Backbone.Model.extend({
 		//url: 'http://192.168.211.132:8080/revenue',
 		defaults: function() {
 			return {
 				patientName: '',
-				patient:"null",
+				patient:null,
 				doctorName: '',
-				doctor:"null",
+				doctor:null,
 				amount:0,
-				paymentOptionName:"CASH",
-				paymentOption:"null",
+				paymentOption:0,
+				paymentOptionName: "CASH",
 				rowId:0,
-				clinic:"",
-				date: new Date(),
-				markedForDeletion: false
 			}
 		},
-		validate: function(attrs, options) {
-			this.validationError = "";
-
-			if(parseInt(attrs.patientId,10)) 
-				this.validationError += "No patient selected!\r\n";
-
-			if(parseInt(attrs.doctorId,10)) 
-				this.validationError += "No doctor selected!\r\n";
-
-			if(parseInt(attrs.amount,10) && parseInt(attrs.amount >=0)) 
-				this.validationError += "Invalid amount!\r\n";
-
-			if(attrs.markedForDeletion) {
-				this.validationError += "Marked for Deletion!\r\n";
-			}				
-
-		    if(this.validationError.length>0)
-		     return this.validationError;
+		validation: {
+		    patient: {
+		      required: true,
+		      range: [1000,10000],
+		      msg: "Please select a patient"
+		    },
+		    doctor: {
+		      required: true,
+		      range: [1000,10000],
+		      msg: "Please select a doctor"
+		    },
+		    amount: {
+		    	pattern: 'digits',
+		    	required: true,
+		    	range: [1, 1000000],
+		    	msg: "Please enter a valid amount"
+		    }
+		},
+		onClose: function(){
+			if(this.collection)
+			this.collection.remove(this);
 		}
+		/*validate: function(attrs, options) {
+			var validationError = [];
+
+			if(!_.isNumber(parseInt(attrs.patient,10))) 
+				validationError.push({attribute: "patientName",message:"No patient selected!"});
+
+			if(!_.isNumber(parseInt(attrs.doctor,10))) 
+				validationError.push({attribute: "doctorName",message:"No doctor selected!"});
+
+			if(!_.isNumber(parseInt(attrs.amount,10)) || parseInt(attrs.amount) < 0)
+				validationError.push({attribute: "amount",message:"Invalid amount!"});
+
+		    if(validationError.length>0)
+		     return validationError;
+		},*/
 		
 	});
 

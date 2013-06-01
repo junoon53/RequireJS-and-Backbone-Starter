@@ -4,7 +4,7 @@ define(['backbone'], function(Backbone) {
 		defaults: {
 			_id:null,
 			name:""
-		}
+		},
 	});
 
 	return PaymentOption;

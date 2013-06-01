@@ -49,19 +49,6 @@ var PaymentOptionSchema = new Schema({
 mongoose.model('PaymentOption',PaymentOptionSchema,'paymentOptions');
 var PaymentOption = mongoose.model('PaymentOption');
 
-var RevenueSchema = new Schema({
-	_id:  Number,
-	date: Date,
-	amount: Number,
-	clinic: { type: Number, ref: 'Clinic'},
-	patient: { type: Number, ref: 'Person'},
-	doctor: { type: Number, ref: 'Person'},	
-	paymentOption: { type: Number, ref: 'PaymentOption'}
-
-});
-mongoose.model('Revenue',RevenueSchema,'revenue');
-var Revenue = mongoose.model('Revenue');
-
 
 var UserSchema = new Schema({
 	username:String,
@@ -71,23 +58,41 @@ var UserSchema = new Schema({
 mongoose.model('User',UserSchema,'users');
 var User = mongoose.model('User');
 
-var DailyFeedbackSchema = new Schema({
+var ReportSchema = new Schema({
 	clinic: {type:Number, ref: 'Clinic'},
 	date:Date,
-	doctor: {type:Number,ref: 'Person'}
-});
-mongoose.model('DailyFeedback',DailyFeedbackSchema,'dailyfeedback');
-var DailyFeedback = mongoose.model('DailyFeedback');
+	person: {type:Number,ref: 'Person'},
+	revenue: [{				
+				patient: { type: Number, ref: 'Person'},
+				doctor: { type: Number, ref: 'Person'},	
+				amount: Number,
+				paymentOption: { type: Number, ref: 'PaymentOption'}
 
-var BankDepositsSchema = new Schema({
-	_id:Number,
-	clinic: {type:Number, ref:'Clinic'},
-	date:Date,
-	person: {type:Number,ref:'Person'},
-	amount:Number
+	}],
+	bankDeposits: [{ 
+					person: {type:Number,ref:'Person'},
+					amount:Number,
+	}],
+    expenditure: [{
+    				item: String,
+    				sanctionedBy: { type: Number, ref: 'Person'},
+    				receivedBy: { type: Number, ref: 'Person'},
+    				amount: Number,
+    				qty: Number,
+    }],
+    patientsFeedback: [{
+						patient: { type: Number, ref: 'Person'},
+						feedback: String
+    }],
+    clinicIssues: [{
+					doctor: { type: Number, ref: 'Person'},	
+					issue: String,
+    }]
+ 
+	
 });
-mongoose.model('BankDeposits',BankDepositsSchema,'bankdeposits');
-var BankDeposits = mongoose.model('BankDeposits');
+mongoose.model('Report',ReportSchema,'reports');
+var Report = mongoose.model('Report');
 
 /****************************************Testing************************/
 
@@ -105,9 +110,6 @@ User.find({username:"divyaGaur"}).populate('person').exec(function(err,docs){
      });	
 });
 
-
-
-
 /**************************Functions****************************************/
 
 function getRoles(req,res,next){
@@ -122,11 +124,11 @@ function getRoles(req,res,next){
 };
 
 
-function checkFeedbackStatus(req,res,next){
-	console.log('checking daily feedback status for date: '+ req.query.date);
-	console.log('role: '+req.query.role);
+function getReport(req,res,next){
+	console.log('getting report for date: '+ req.query.date);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
 	var startDate = new Date(req.query.date);
 	startDate.setHours(0);
 	startDate.setMinutes(0);
@@ -140,25 +142,62 @@ function checkFeedbackStatus(req,res,next){
 	var clinic = parseInt(req.query.clinic,0);
 	console.log(clinic);
 
-	DailyFeedback.find({date:{$gte: startDate, $lt: endDate},clinic:clinic}).execFind(function(err,data){
+	Report.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
+    .populate('person')
+    .populate('revenue.doctor')
+    .populate('revenue.patient')
+    .populate('revenue.paymentOption')
+    .populate('bankDeposits.person')
+    .populate('expenditure.sanctionedBy')
+    .populate('expenditure.receivedBy')
+    .populate('patientsFeedback.patient')
+    .populate('clinicIssues.doctor')
+	.execFind(function(err,data){
 			console.log(data);
 			res.send(data[0]);
 	});
 };
 
 
-function saveFeedbackStatus(req,res,next){
-	console.log('saving feedback status for date: '+ req.params.date);
+function addReport(req,res,next){
+	console.log('saving report for date: '+ req.params.date);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	var feedback = new DailyFeedback();
-	feedback.date = req.params.date;
-	feedback.clinic = req.params.clinicId;
-	feedback.doctor = req.params.doctorId;
 
-	feedback.save(function(){
+	var report = new Report();
+	report.date = req.params.date;
+	report.clinic = req.params.clinic;
+	report.person = req.params.person;
+	report.revenue = req.params.revenue;
+	report.bankDeposits = req.params.bankDeposits;
+	report.expenditure = req.params.expenditure;
+	report.patientsFeedback = req.params.patientsFeedback;
+	report.clinicIssues = req.params.clinicIssues;
+
+	report.save(function(){
 			res.send(req.body);
 		});
+};
+
+function updateReport(req,res,next){
+	console.log('updating report with Id : '+ req.params._id);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	Report.update({_id:req.params.id},
+					{
+					    revenue: req.params.revenue,
+					    bankDeposits: req.params.bankDeposits,
+					    expenditure: req.params.expenditure,
+					    patientsFeedback: req.params.patientsFeedback,
+					    clinicIssues: req.params.clinicIssues
+					},
+					{},
+					function(err,data){
+						if(err) console.log(err);
+						res.send(data);
+					});
+
 };
 
 
@@ -186,123 +225,7 @@ function auth(req,res,next){
 	});
 };
 
-function saveRevenue(req,res,next){
-	console.log("saving revenue : "+req.params);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	var revenueEntry = new Revenue();
-	revenueEntry.date = req.params.date;
-	revenueEntry.clinic = parseInt(req.params.clinic,10);
-	revenueEntry.patient = parseInt(req.params.patient,10);
-	revenueEntry.doctor= parseInt(req.params.doctor,10);
-	revenueEntry.amount = parseInt(req.params.amount,10);
-	revenueEntry.paymentOption = parseInt(req.params.paymentOption,10);
 
-	Revenue.count({},function(err,count){
-		revenueEntry._id = Math.random(4)+(new Date()).getMilliseconds()+count;
-		revenueEntry.save(function(err,data){
-		    if(err) console.log(err);
-		    res.send(data);
-		});
-	});	
-
-};
-
-function updateRevenue(req,res,next){
-	console.log("saving revenue : "+req.params);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-
-	Revenue.update({_id:req.params._id},
-				   { 
-						date:req.params.date,
-						clinic:req.params.clinic,
-						patient:req.params.patient,
-						doctor:req.params.doctor,
-						amount:req.params.amount,
-						paymentOption: req.params.paymentOption
-					},
-				   {},
-				   function(err,data){
-				   	if(err) console.log(err);
-		    		res.send(data);
-				   }
-				  );
-
-};
-
-function deleteRevenue(req,res,next){
-	console.log("deleting revenue: "+req.params._id);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-
-	Revenue.remove({_id:req.params._id},function(err){
-		if(err) {console.log(err);
-					res.send(err);}
-
-	});
-};
-
-function getRevenueOnDate(req,res,next){
-	console.log("getting revenue for: "+req.query.date);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	
-	var startDate = new Date(req.query.date);
-	startDate.setHours(0);
-	startDate.setMinutes(0);
-	startDate.setSeconds(0);
-	startDate.setMilliseconds(0);
-	console.log(startDate);
-	var endDate = new Date(startDate.getTime());
-	endDate.setHours(24);
-	console.log(endDate);
-
-	var clinic = parseInt(req.query.clinic,0);
-	console.log(clinic);
-
-	Revenue.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
-	.populate('doctor')
-	.populate('patient')
-	.populate('clinic')
-	.populate('paymentOption')
-	.execFind(function(err,data){
-		console.log(err);
-		res.send(data);
-	});
-
-};
-
-function getRevenueBetweenDates(req,res,next){
-	console.log('getting revenue between dates: '+req.params.startDate+" "+req.params.endDate);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-
-	var startDate = new Date(req.params.startDate);
-	var endDate = new Date(req.params.endDate);
-
-	startDate.setHours(0);
-	startDate.setMinutes(0);
-	startDate.setSeconds(0);
-	startDate.setMilliseconds(0);
-
-	endDate.setHours(0);
-	endDate.setMinutes(0);
-	endDate.setSeconds(0);
-	endDate.setMilliseconds(0);
-
-	endDate.setHours(24);
-
-	Revenue.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
-	.populate('doctor')
-	.populate('patient')
-	.populate('clinic')
-	.populate('paymentOption')
-	.execFind(function(err,data){
-		console.log(err);
-		res.send(data);
-	});
-};
 
 function getPersons(req,res,next){
 	console.log("sending persons like :"+req.query.searchString+" with roles: "+req.query.roles);
@@ -381,88 +304,9 @@ function addNewPerson(req,res,next){
 	});	
 };
 
-function addBankDeposit(req,res,next){
-	console.log("adding new person");
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	var bankDeposit = new BankDeposits();
-	bankDeposit.person = req.params.person;
-	bankDeposit.clinic = req.params.clinic;
-	bankDeposit.date = req.params.date;
-	bankDeposit.amount = req.params.amount;
 
-	BankDeposits.count({},function(err,count){
-		bankDeposit._id = Math.random(4)+(new Date()).getMilliseconds()+count;
-		bankDeposit.save(function(err,data){
-		    if(err) console.log(err);
-		    res.send(data);
-		});
-	});	
-};
+// set up our routes and start the server
 
-function getBankDeposits(req,res,next){
-	console.log('getting bank deposits on date: '+req.query.date);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-
-	var startDate = new Date(req.query.date);
-	startDate.setHours(0);
-	startDate.setMinutes(0);
-	startDate.setSeconds(0);
-	startDate.setMilliseconds(0);
-	console.log(startDate);
-	var endDate = new Date(startDate.getTime());
-	endDate.setHours(24);
-	console.log(endDate);
-
-	var clinic = parseInt(req.query.clinic,0);
-	console.log(clinic);
-
-	BankDeposits.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
-	.populate('person')
-	.populate('clinic')
-	.execFind(function(err,data){
-		console.log(err);
-		res.send(data);
-	});
-};
-
-function updateBankDeposit(req,res,next){
-	console.log("saving revenue : "+req.params);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-
-	BankDeposits.update({_id:req.params._id},
-				   { 
-						date:req.params.date,
-						clinic:req.params.clinic,
-						person:req.params.person,
-						amount:req.params.amount,
-					},
-				   {},
-				   function(err,data){
-				   	if(err) console.log(err);
-		    		res.send(data);
-				   }
-				  );
-
-};
-
-
-function deleteBankDeposit(req,res,next){
-	console.log("deleting revenue: "+req.params._id);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-
-	BankDeposits.remove({_id:req.params._id},function(err){
-		if(err) {console.log(err);
-					res.send(err);}
-
-	});
-};
-
-
-// set up our routes and start the server 
 server.get('/persons',getPersons);
 server.post('/persons',addNewPerson);
 
@@ -471,30 +315,17 @@ server.get('/roles',getRoles);
 
 server.get('/paymentOptions',getPaymentOptions);
 
-server.post('/revenue',saveRevenue);
-server.put('/revenue/:_id',updateRevenue);
-server.get('/revenue',getRevenueOnDate);
-server.del('/revenue/:_id',deleteRevenue);
-
-server.post('/bankDeposits', addBankDeposit);
-server.get('/bankDeposits', getBankDeposits);
-server.put('/bankDeposits/:_id', updateBankDeposit);
-server.del('/bankDeposits/:_id', deleteBankDeposit);
-
-
 server.post('/clinics',saveClinic);
 server.get('/clinics',getClinics);
 
 server.post('/auth',auth);
 
-server.get('/feedback',checkFeedbackStatus);
-server.post('/feedback',saveFeedbackStatus);
+server.get('/report',getReport);
+server.post('/report',addReport);
+server.put('/report', updateReport);
+//server.del('/report/:_id', deleteReport);
 
-server.post('/revenueReport',getRevenueBetweenDates);
-
-
-
-
+/*******************************************************************************************/
 
 function unknownMethodHandler(req, res) {
   if (req.method.toLowerCase() === 'options') {

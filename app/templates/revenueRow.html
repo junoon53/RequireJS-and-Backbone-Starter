@@ -1,15 +1,16 @@
 
-      <input type="text" class="patientName  column" id= <%= "'patient"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+patientName+"'" %>  valueId= <%= "'"+patient+"'" %> /> 
-  
-      <input type="text" class="doctorName column" id= <%= "'doctor"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+doctorName+"'" %>  valueId= <%= "'"+doctor+"'" %> />
+      
+<input type="text" class="patientName patient column" id= <%= "'patient"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+patientName+"'" %>  valueId= <%= "'"+patient+"'" %> /> 
 
-      <span>Rs</span>
-      <input type="text" class="amount column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+amount+"'" %> />
+<input type="text" class="doctorName doctor column" id= <%= "'doctor"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+doctorName+"'" %>  valueId= <%= "'"+doctor+"'" %> />
 
-      <div class="btn-group">
-        <button class="btn btn-small dropdown-toggle paymentOption"  data-toggle="dropdown" valueId=  <%= "'"+paymentOption+"'" %> > <%= paymentOptionName %> <span class="caret"></span></button>
-        <ul class="dropdown-menu">       
-        </ul>
-      </div>
+<span>Rs</span>
+<input type="text" class="amount column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+amount+"'" %> />
 
-      <a href="#" class="delete"><i class="icon-remove delete-row-icon"></i></a>
+<div class="btn-group">
+<button class="btn btn-small dropdown-toggle paymentOption"  data-toggle="dropdown" valueId=  <%= "'"+paymentOption+"'" %> > <%= paymentOptionName %> <span class="caret"></span></button>
+<ul class="dropdown-menu">       
+</ul>
+</div>
+
+<a href="#" class="delete"><i class="icon-remove delete-row-icon"></i></a>
