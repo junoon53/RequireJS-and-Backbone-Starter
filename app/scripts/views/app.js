@@ -7,6 +7,7 @@ define([
     'models/people/person',
     'models/people/roles',
     'models/utility/modal',
+
     'models/revenue/revenueRow',
     'collections/revenue/revenueRowList', 
     'models/bankDeposit/bankDepositRow',
@@ -17,14 +18,20 @@ define([
     'collections/patientsFeedback/patientsFeedbackRowList',
     'models/clinicIssues/clinicIssuesRow',
     'collections/clinicIssues/clinicIssuesRowList',
+    'models/dentalMaterials/inventoryRequiredRow',
+    'collections/dentalMaterials/inventoryRequiredRowList',
+
     'views/people/addDoctor',
     'views/people/addPatient',
     'views/people/addPerson',
+
     'views/revenue/revenueTable',
     'views/bankDeposits/bankDepositsTable',
     'views/expenditure/expenditureTable',
     'views/patientsFeedback/patientsFeedbackTable',
     'views/clinicIssues/clinicIssuesTable',
+    'views/inventoryRequired/inventoryRequiredTable',
+
     'views/utility/modal',
     'views/utility/submit',
     'router/router',
@@ -46,6 +53,9 @@ define([
         PatientsFeedbackRowList,
         ClinicIssuesRow,
         ClinicIssuesRowList,
+        InventoryRequiredRow,
+        InventoryRequiredRowList,
+
         AddDoctor,
         AddPatient,
         AddPerson,
@@ -54,6 +64,8 @@ define([
         ExpenditureTableView,
         PatientsFeedbackTableView,
         ClinicIssuesTableView,
+        InventoryRequiredTableView,
+
         ModalView,
         Submit,router,vent,template,clinicsListRowTemplate){
 
@@ -67,6 +79,7 @@ define([
             'click li#expenditure': 'addView',
             'click li#patientsFeedback': 'addView',
             'click li#clinicIssues': 'addView',
+            'click li#inventoryRequired': 'addView',
             'click li#submit a': 'handleSubmitClick',
             'click li#logout a': 'handleLogoutClick',
             'click .clinicsList li a': 'handleClinicSelect',
@@ -87,6 +100,7 @@ define([
             this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:addNewPerson', this.displayAddPersonModal);
             this.listenTo(vent,'CDF.Views.PatientsFeedback.PatientsFeedbackRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryRequiredRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
 
 
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
@@ -193,6 +207,9 @@ define([
             this.addAlertView(modal);
             modal.show();
         },
+        displayAddExpendableInventoryItemModal: function(){
+            // TODO
+        },
         displayAddDoctorModal: function(msg){
             var names = msg.doctorNameString.split(" ");
             var addDoctorView = new AddDoctor({model: new Person({
@@ -291,6 +308,9 @@ define([
                         break;
                     case 'expenditure':
                         this.activeViews[viewType] = new ExpenditureTableView({model: new ExpenditureRowList()});
+                        break;
+                    case 'inventoryRequired':
+                        this.activeViews[viewType] = new InventoryRequiredTableView({model: new InventoryRequiredRowList()});
                         break;
                 } 
 

@@ -80,19 +80,42 @@ var ReportSchema = new Schema({
     				amount: Number,
     				qty: Number,
     }],
-    patientsFeedback: [{
+    patientsFeedback: [{ 
 						patient: { type: Number, ref: 'Person'},
 						feedback: String
     }],
     clinicIssues: [{
 					doctor: { type: Number, ref: 'Person'},	
 					issue: String,
+    }],
+    inventoryRequired: [{
+    					  expendableInventoryItem: {type:Number, ref: 'ExpendableInventoryMaster'},
+    					  qty: Number
     }]
  
 	
 });
 mongoose.model('Report',ReportSchema,'reports');
 var Report = mongoose.model('Report');
+
+var ExpendableInventoryMasterSchema = new Schema({
+	_id:Number,
+	genericName:String,
+	brandName:String,
+	accountingUnit:String,
+	expendableInventoryType: {type:Number, ref:'ExpendableInventoryType'}
+});
+mongoose.model('ExpendableInventoryMaster',ExpendableInventoryMasterSchema,'expendableInventoryMaster');
+var ExpendableInventoryMaster = mongoose.model('ExpendableInventoryMaster');
+
+var ExpendableInventoryTypeSchema = new Schema({
+	_id:Number,
+	name:String
+});
+mongoose.model('ExpendableInventoryType',ExpendableInventoryTypeSchema,'expendableInventoryTypes');
+var ExpendableInventoryType = mongoose.model('ExpendableInventoryType');
+
+
 
 /****************************************Testing************************/
 
@@ -152,9 +175,13 @@ function getReport(req,res,next){
     .populate('expenditure.receivedBy')
     .populate('patientsFeedback.patient')
     .populate('clinicIssues.doctor')
+    .populate('inventoryRequired.expendableInventoryItem')
 	.execFind(function(err,data){
-			console.log(data);
-			res.send(data[0]);
+		     ExpendableInventoryType.populate(data, {path: 'inventoryRequired.expendableInventoryItem.expendableInventoryType'},function(err,data){
+		     	console.log(data);
+				res.send(data[0]);
+		     });
+			
 	});
 };
 
@@ -173,6 +200,7 @@ function addReport(req,res,next){
 	report.expenditure = req.params.expenditure;
 	report.patientsFeedback = req.params.patientsFeedback;
 	report.clinicIssues = req.params.clinicIssues;
+	report.inventoryRequired = req.params.inventoryRequired;
 
 	report.save(function(){
 			res.send(req.body);
@@ -190,7 +218,8 @@ function updateReport(req,res,next){
 					    bankDeposits: req.params.bankDeposits,
 					    expenditure: req.params.expenditure,
 					    patientsFeedback: req.params.patientsFeedback,
-					    clinicIssues: req.params.clinicIssues
+					    clinicIssues: req.params.clinicIssues,
+					    inventoryRequired: req.params.inventoryRequired
 					},
 					{},
 					function(err,data){
@@ -240,6 +269,23 @@ function getPersons(req,res,next){
 		.populate('clinics')
 		.execFind(function(err,data){
 			console.log(err);
+			console.log(data);
+			res.send(data);
+	});
+
+};
+
+function getExpendableInventoryItems(req,res,next){
+	console.log("sending expendable inventory items like :"+req.query.searchString);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	ExpendableInventoryMaster.find({
+				"genericName" : {$regex : ".*"+req.query.searchString.toUpperCase()+".*"}
+				 })
+		.populate('expendableInventoryType')
+		.execFind(function(err,data){
+			if(err) console.log(err);
 			console.log(data);
 			res.send(data);
 	});
@@ -310,6 +356,7 @@ function addNewPerson(req,res,next){
 server.get('/persons',getPersons);
 server.post('/persons',addNewPerson);
 
+server.get('/expendableInventoryMaster',getExpendableInventoryItems);
 
 server.get('/roles',getRoles);
 

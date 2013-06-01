@@ -21,18 +21,6 @@ define(['backbone','underscore'], function(Backbone,_) {
 			if(this.collection)
 			this.collection.remove(this);
 		}
-		/*validate: function(attrs,options) {
-			var validationError = [];
-
-			if(!_.isNumber(parseInt(attrs.doctor,10))) 
-				validationError.push({attribute:"doctorName",message:"No doctor selected!"});
-
-			if(!_.isNumber(parseInt(attrs.issue,10)) || parseInt(attrs.issue < 0))
-				validationError.push({attribute:"issue",message:"Invalid issue!"});
-
-		    if(validationError.length>0)
-		     return validationError;
-        }*/
 	});
 
 	return ClinicIssuesRow;

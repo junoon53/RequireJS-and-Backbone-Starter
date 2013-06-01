@@ -14,6 +14,8 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             expenditure: [],
             patientsFeedback: [],
             clinicIssues: [],
+            inventoryRequired:[],
+
             person: null,
 
             // User properties
@@ -49,6 +51,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             this.set('expenditure',[]);
             this.set('patientsFeedback',[]);
             this.set('clinicIssues',[]);
+            this.set('inventoryRequired',[]);
             this.set('person',null);
         },
         postReportStatus: function(){
