@@ -43,6 +43,10 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
         onClose: function(){
 
         },
+        viewTypes: function() {
+            return ['revenue','bankDeposits','expenditure','patientsFeedback',
+                    'clinicIssues','inventoryRequired'];
+        },
         resetReport: function(){
             this.set('_id',null);
             this.set('id',null);
@@ -94,7 +98,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
                 this.resetReport();
             } 
 
-            vent.trigger("CDF.Models.Application:broadcastReportStatus" );
+            vent.trigger("CDF.Models.Application:broadcastReportStatus",result );
 
    
         },

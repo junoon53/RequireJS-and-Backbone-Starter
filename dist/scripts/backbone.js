@@ -1,0 +1,1 @@
+define(["vendor/backbone-amd/backbone"],function(e){return e.View.prototype.close=function(){this.remove(),this.off(),this.undelegateEvents(),this.stopListening(),this.model.off(),this.model.stopListening(),this.onClose&&(this.onClose(),this.model.onClose&&this.model.onClose())},e});

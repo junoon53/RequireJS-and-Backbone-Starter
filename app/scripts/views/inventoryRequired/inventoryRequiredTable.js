@@ -3,12 +3,14 @@ define([
 	'jquery', 
 	'underscore',
 	'models/dentalMaterials/inventoryRequiredRow',
+	'collections/dentalMaterials/inventoryRequiredRowList',
 	'views/inventoryRequired/inventoryRequiredRowView',
 	'vent',
 	'text!templates/inventoryRequiredTable.html'
-	], function(Backbone,$,_,InventoryRequiredRow,InventoryRequiredRowView,vent,template){
+	], function(Backbone,$,_,InventoryRequiredRow,InventoryRequiredRowList,InventoryRequiredRowView,vent,template){
 
 	var InventoryRequiredTableView = Backbone.View.extend({
+		model: new InventoryRequiredRowList(),
 	    events: {
 			'click .new-row' : 'handleNewRowSubmit'		
 	    },

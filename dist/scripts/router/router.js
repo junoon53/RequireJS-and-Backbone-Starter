@@ -1,0 +1,1 @@
+define(["backbone","models/auth","views/auth","vent"],function(e,t,n,r){function o(){return i===null&&(i=new s),i}var i=null,s=e.Router.extend({routes:{"":"index"},index:function(){r.trigger("CDF.Router:index")}});return o()});

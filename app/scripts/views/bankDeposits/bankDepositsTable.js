@@ -3,12 +3,14 @@ define([
 	'jquery', 
 	'underscore',
 	'models/bankDeposit/bankDepositRow',
+	'collections/bankDeposits/bankDepositsRowList',
 	'views/bankDeposits/bankDepositsRowView',
 	'vent',
 	'text!templates/bankDepositsTable.html'
-	], function(Backbone,$,_,BankDepositsRow,BankDepositsRowView,vent,template){
+	], function(Backbone,$,_,BankDepositsRow,BankDepositsRowList,BankDepositsRowView,vent,template){
 
 	var BankDepositsTableView = Backbone.View.extend({
+		model: new BankDepositsRowList(),
 	    events: {
 			'click .new-row' : 'handleNewRowSubmit'		
 	    },
@@ -18,6 +20,7 @@ define([
 			this.rowViews = [];
 
 			this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:exitColumn:amount', this.updateTotal);
+			this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:onValid', this.updateTotal);
 			this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:delete', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);					

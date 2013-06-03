@@ -10,7 +10,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 		    person: {
 		      required: true,
 		      range: [1000,10000],
-		      msg: "Please select a patient"
+		      msg: "Please select a person"
 		    },
 		    amount: {
 		    	pattern: 'digits',

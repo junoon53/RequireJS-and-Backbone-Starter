@@ -3,12 +3,14 @@ define([
 	'jquery', 
 	'underscore',
 	'models/expenditure/expenditureRow',
+	'collections/expenditure/expenditureRowList',
 	'views/expenditure/expenditureRowView',
 	'vent',
 	'text!templates/expenditureTable.html'
-	], function(Backbone,$,_,ExpenditureRow,ExpenditureRowView,vent,template){
+	], function(Backbone,$,_,ExpenditureRow,ExpenditureRowList,ExpenditureRowView,vent,template){
 
 	var ExpenditureTableView = Backbone.View.extend({
+		model: new ExpenditureRowList(),
 	    events: {
 			'click .new-row' : 'handleNewRowSubmit'		
 	    },
@@ -19,6 +21,7 @@ define([
 
 			this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:exitColumn:amount', this.updateTotal);
 			this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:delete', this.updateTotal);
+			this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:onValid', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);
 		},

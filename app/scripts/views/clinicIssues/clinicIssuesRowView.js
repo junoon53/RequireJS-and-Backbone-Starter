@@ -6,14 +6,17 @@ define([
 	'models/clinicIssues/clinicIssuesRow',
 	'vent',
 	'text!templates/clinicIssuesRow.html',
+	'text!templates/yesNo.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,ClinicIssues,vent,template){
+	], function(Backbone,$,_,Persons,ClinicIssues,vent,template,yesNoTemplate){
 
 	var ClinicIssuesRowView = Backbone.View.extend({
 		//model: new ClinicIssues(),
 		className: 'clinicIssuesRow',
 		events: {
+			'click button.yesOption': 'addNewDoctor',
+			'click button.noOption' : 'hidePopover',	
 			'click .column': 'edit',
 			'click .delete': 'delete',
 			'blur .column': 'exitColumn',
@@ -21,6 +24,7 @@ define([
 		},
 		doctorsMap:  {},
 		initialize: function() {
+			this.yesNoTemplate = _.template(yesNoTemplate);
 			this.template = _.template(template);
 			//this.listenTo(this.model,'remove',this.delete);
 			this.listenTo(this.model,'validated:valid',this.onValid);
@@ -31,65 +35,76 @@ define([
 		},
 		edit: function(ev) {
 			ev.preventDefault();
-			switch(ev.currentTarget.className.split(" ")[0]){
-				case "doctorName":
-					//this.$('.removeAttr').doctorName('readonly').focus();
-					this.$('.doctorName').attr("valueId", "null");
-					this.model.set("doctor","null",{silent:true});
-					this.$('.doctorName').val("");
-					break;
-				case "issue":
-					//this.$('.issue').removeAttr('readonly', true).focus();
-					break;
+			var targetClass = ev.currentTarget.className.split(" ")[0];
+			var el = this.$('.'+targetClass);
+			var valueId = el.attr('valueId');
+			var value = el.val();
+			if(el.attr('valueId') === 'null'
+			&& el.val().length > 0 ) {
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
 			}
+
 		
 		},
 		exitColumn: function(ev) {
-			var element = null;
-			var propertyName = ev.currentTarget.className.split(" ")[0];
-			switch(propertyName){
-				case "doctorName":
-					element = this.$('.doctorName');
-					setElementValue.call(this,'doctor');
+			var targetClass = ev.currentTarget.className.split(" ")[0];
+			switch(targetClass){
+				case "doctor":
+					this.model.set(targetClass,this.$('.doctor').attr("value"));
+					var propertyValue = this.$('.doctor').attr("valueId");
+					if(propertyValue !== "null") {
+						this.model.set('doctor', parseInt(propertyValue,10));
+					} 
+					this.model.isValid(true);
 					break;
 				case "issue":
-					this.model.set('issue',this.$('.issue').attr("value"),{silent:true});
+					this.model.set('issue',this.$('.issue').attr("value"));
+				    this.model.isValid(true);
 					break;
 			}
 
-			function setElementValue(propertyId){				
-				this.model.set(propertyName,element.attr("value"),{silent:true});
-				if(typeof propertyId !== "undefined"){
-					var propertyValue = element.attr("valueId");
-					if(propertyValue !== "null") {
-						this.model.set(propertyId, parseInt(propertyValue,10),{silent:true});
-					} else if(element.attr("value").trim().length > 0) this.whenValueIsNotSelected(propertyId,propertyName,element.attr("value"));
-				}
-			};
-
 		},
-		whenValueIsNotSelected : function(propertyId,propertyName,value){
+		whenValueIsNotSelected : function(targetClass,value){
+			this.$("."+targetClass).tooltip('destroy');
+			var yesNoTemplate = this.yesNoTemplate({message:'Add new '+targetClass+'?',id:targetClass});
 			
-			switch(propertyId){
-				case "doctor":
-					this.addNewDoctor(value);
-					break;
-			}
+			this.$("."+targetClass).popover({html: true, placement:'top',content:yesNoTemplate});
+			this.$("."+targetClass).popover('show');
 		},
-		addNewDoctor: function(propertyName){
-				vent.trigger('CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor',{doctorNameString:propertyName});
+    	hidePopover: function(ev){
+			ev.preventDefault();
+			this.$('.'+ev.currentTarget.parentElement.id).popover('destroy');
+		},
+		addNewDoctor: function(ev){
+			ev.preventDefault();
+			var targetClass = ev.currentTarget.parentElement.id;
+			this.$('.'+targetClass).popover('destroy');
+			var value =  this.$('.'+targetClass).val();
+			var self = this;
+				function newDoctorAdded(doctorModel) {
+					self.$('.doctor').val(doctorModel.get('firstName')+" "+doctorModel.get('lastName'));
+					self.$('.doctor').attr('valueId',doctorModel.get('_id'));
+					self.model.set('doctor',doctorModel.get('_id'));
+					self.model.set('doctorName',doctorModel.get('firstName')+" "+doctorModel.get('lastName')); 
+					self.model.isValid(true);
+				}
+
+				vent.trigger('CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor',{doctorNameString:value,callback:newDoctorAdded});
 		},
 		onEnterUpdate: function(ev) {
 			var self = this;
 			if (ev.keyCode === 13) {
 				this.exitColumn(ev);
-
+			}else{
 				switch(ev.currentTarget.className.split(" ")[0]){
-				case "doctorName":
-					_.delay(function() { self.$('.doctorName').blur() }, 100);
+				case "doctor":
+					//this.$('.removeAttr').doctorName('readonly').focus();
+					this.$('.doctor').attr("valueId", "null");
+					this.model.set("doctor","null");
+					//this.$('.doctorName').val("");
 					break;
 				case "issue":
-					_.delay(function() { self.$('.issue').blur() }, 100);
+					//this.$('.issue').removeAttr('readonly', true).focus();
 					break;
 				}
 				
@@ -102,26 +117,28 @@ define([
 		},
 		onValid: function(view,errors){
 			var self = this;
+			vent.trigger('CDF.Views.ClinicIssues.ClinicIssuesRowView:onValid');
 			_.each(this.model.attributes,function(value,key){
-				self.$("."+key).popover('destroy');
+				this.$('.'+key).popover('destroy');
+				self.$("."+key).tooltip('destroy');
 				self.$('.'+key).removeClass('input-validation-error');
 			});
 		},
 		onInvalid: function(view,errors){
 		    var self = this;
 			_.each(this.model.attributes,function(value,key){
-				self.$("."+key).popover('destroy');
+				self.$("."+key).tooltip('destroy');
 				self.$('.'+key).removeClass('input-validation-error');
 			});
 			_.each(errors,function(value,key){
-				self.$("."+key).popover({placement:'top',content:value,trigger:'focus hover'});
+				self.$("."+key).tooltip({placement:'top',title:value,trigger:'focus hover'});
 				self.$('.'+key).addClass('input-validation-error');
 			});
 		},
 		render: function() {
 			this.model.set("rowId",this.model.cid,{silent:true});
 			this.$el.html(this.template(this.model.toJSON()));
-
+			this.model.isValid(true);
 			function source(collection,roles) {
 
 				return function(query,process){
@@ -147,7 +164,7 @@ define([
 				 return item;
 		 
 			};
-			this.$('.doctorName').typeahead({source:source(new Persons(),[1,2]),updater:updater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});
+			this.$('.doctor').typeahead({source:source(new Persons(),[1,2]),updater:updater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});
 			return this;
 		}
 	

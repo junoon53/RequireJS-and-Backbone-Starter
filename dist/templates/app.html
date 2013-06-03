@@ -1,0 +1,66 @@
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container-fluid">
+            <a class="brand" href="#">Clinic Feedback Form</a>           
+            
+            <div class="nav-collapse collapse">
+              <ul class="nav pull-right">
+                <li><a classs='text-warning' href="#"> <%= roleName %> View </a></li>
+                <li><a href="#">Report Date:</a></li>
+                <li id="datetimepicker" class="input-append">
+                  <input data-format="dd-MM-yyyy" type="text"></input>
+                  <span class="add-on">
+                    <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                    </i>
+                  </span>
+                </li>                
+                <li class="divider-vertical"></li> 
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <%= userFullname %><b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li id="logout"><a href="#">Logout</a></li>
+                  </ul>
+                </li> 
+                <li class="divider-vertical"></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle selectedClinic" id= <%= clinic %> data-toggle="dropdown"> <%= clinicName %></b></a>
+                  <ul class="dropdown-menu clinicsList">
+                    <!-- List of clinics -->
+                  </ul>
+                </li>                
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span2">
+          <div class="well" style="padding: 8px 0">
+            <ul class="nav nav-list">
+              <li id="revenue"><a href="#" ></i>Revenue</a></li>
+              <li id="bankDeposits"><a href="#" ></i>Bank Deposits</a></li>
+              <li id="expenditure"><a href="#" ></i>Expenditure</a></li>
+              <li id="inventoryReceived" ><a href="#" ></i>Inventory Received</a></li>              
+              <li id="inventoryRequired" ><a href="#" ></i>Inventory Required</a></li>              
+              <li id="treatments"><a href="#" ></i>Treatments</a></li>
+              <li id="patientsFeedback"><a href="#" ></i>Patients Feedback</a></li>
+              <li id="clinicIssues"><a href="#" ></i>Clinic Issues</a></li>
+              <li class="divider"></li>
+              <li id="submit"><a href="#" ></i>Submit</a></li>
+            </ul>
+          </div>
+          </div><!--/span-->
+          <div class="span10">
+            <div id="content"></div>
+            <div id ="alert"></div>
+          </div><!--/span-->
+        </div><!--/row-->
+
+        <hr>
+
+        <footer>
+          <p>&copy; Colonels Dental First 2013</p>
+        </footer>
+
+      </div><!--/.fluid-container-->

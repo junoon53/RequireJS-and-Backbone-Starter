@@ -3,12 +3,14 @@ define([
 	'jquery', 
 	'underscore',
 	'models/revenue/revenueRow',
+	'collections/revenue/revenueRowList',
 	'views/revenue/revenueRowView',
 	'vent',
 	'text!templates/revenueTable.html'
-	], function(Backbone,$,_,RevenueRow,RevenueRowView,vent,template){
+	], function(Backbone,$,_,RevenueRow,RevenueRowList,RevenueRowView,vent,template){
 
 	var RevenueTableView = Backbone.View.extend({
+		model: new RevenueRowList(),
 	    events: {
 			'click .new-row' : 'handleNewRowSubmit'		
 	    },
@@ -18,6 +20,8 @@ define([
 			this.rowViews = [];
 
 			this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:exitColumn:amount', this.updateTotal);
+			this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:onValid', this.updateTotal);
+
 			this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:delete', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);

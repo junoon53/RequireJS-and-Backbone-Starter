@@ -3,27 +3,14 @@ define([
     'backbone',
     'jquery', 
     'underscore',
+    
     'models/app',
-    'models/people/person',
     'models/people/roles',
-    'models/utility/modal',
-
-    'models/revenue/revenueRow',
-    'collections/revenue/revenueRowList', 
-    'models/bankDeposit/bankDepositRow',
-    'collections/bankDeposits/bankDepositsRowList',
-    'models/expenditure/expenditureRow',
-    'collections/expenditure/expenditureRowList',
-    'models/patientsFeedback/patientsFeedbackRow',
-    'collections/patientsFeedback/patientsFeedbackRowList',
-    'models/clinicIssues/clinicIssuesRow',
-    'collections/clinicIssues/clinicIssuesRowList',
-    'models/dentalMaterials/inventoryRequiredRow',
-    'collections/dentalMaterials/inventoryRequiredRowList',
 
     'views/people/addDoctor',
     'views/people/addPatient',
     'views/people/addPerson',
+    'views/inventoryRequired/addExpInventoryItem',
 
     'views/revenue/revenueTable',
     'views/bankDeposits/bankDepositsTable',
@@ -41,24 +28,15 @@ define([
     'datetimepicker',
          
 
-    ], function(Backbone,$,_,app,Person,
-        roles,Modal,
-        RevenueRow,
-        RevenueRowList,
-        BankDepositsRow,
-        BankDepositsRowList,
-        ExpenditureRow,
-        ExpenditureRowList,
-        PatientsFeedbackRow,
-        PatientsFeedbackRowList,
-        ClinicIssuesRow,
-        ClinicIssuesRowList,
-        InventoryRequiredRow,
-        InventoryRequiredRowList,
+    ], function(Backbone,$,_,
+        app,
+        roles,
 
         AddDoctor,
         AddPatient,
         AddPerson,
+        AddExpendableInventoryItem,
+
         RevenueTableView,
         BankDepositsTableView,
         ExpenditureTableView,
@@ -67,7 +45,9 @@ define([
         InventoryRequiredTableView,
 
         ModalView,
-        Submit,router,vent,template,clinicsListRowTemplate){
+        Submit,
+
+        router,vent,template,clinicsListRowTemplate){
 
     var _instance = null;
 
@@ -80,7 +60,7 @@ define([
             'click li#patientsFeedback': 'addView',
             'click li#clinicIssues': 'addView',
             'click li#inventoryRequired': 'addView',
-            'click li#submit a': 'handleSubmitClick',
+            'click li#submit a': 'showSubmitModal',
             'click li#logout a': 'handleLogoutClick',
             'click .clinicsList li a': 'handleClinicSelect',
             'changeDate #datetimepicker' : 'handleDateChange'
@@ -102,11 +82,17 @@ define([
             this.listenTo(vent,'CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor', this.displayAddDoctorModal);
             this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryRequiredRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
 
-
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
             this.listenTo(vent,"CDF.Models.Application:submitReport", this.submitReport);            
-            this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.refreshSelectedView);            
+            this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.addRetrievedViews);
+            
+            this.listenTo(this.model,'change:revenue',console.log('revenue updated in app model'));           
+            this.listenTo(this.model,'change:bankDeposits',console.log('bankDeposits updated in app model'));           
+            this.listenTo(this.model,'change:expenditure',console.log('expenditure updated in app model'));           
+            this.listenTo(this.model,'change:patientsFeedback',console.log('patientsFeedback updated in app model'));           
+            this.listenTo(this.model,'change:clinicIssues',console.log('clinicIssues updated in app model'));           
+            this.listenTo(this.model,'change:inventoryRequired',console.log('inventoryRequired updated in app model'));           
         },
         handleClinicSelect: function(ev){
             ev.preventDefault();
@@ -190,75 +176,105 @@ define([
             }
         },
         displayReportSubmittedModal: function(){
-            var modalModel = new Modal({header:"Congrats!",footer:"",body:"The report was submitted successfully"});
-            var modal = new ModalView({model:modalModel});
+            var modal = new ModalView();
+            modal.model.set({header:"Congrats!",footer:"",body:"The report was submitted successfully"});
             this.addAlertView(modal);
             modal.show();
         },
         displayReportSubmitFailedModal: function(){
-            var modalModel = new Modal({header:"Error",footer:"",body:"The report could not be submitted. Please try again"});
-            var modal = new ModalView({model:modalModel});
+            var modal = new ModalView();
+            modal.model.set({header:"Error",footer:"",body:"The report could not be submitted. Please try again"});
+            this.addAlertView(modal);
+            modal.show();
+        },
+        displayReportHasErrorsModal: function(){
+            var modal = new ModalView();
+            modal.model.set({header:"Report has invalid entries!",footer:"",body:"Please correct the invalid entries and try again."});
             this.addAlertView(modal);
             modal.show();
         },
         displayReportUpdatedModal: function(){
-            var modalModel = new Modal({header:"Congrats!",footer:"",body:"The report was updated successfully"});
-            var modal = new ModalView({model:modalModel});
+            var modal = new ModalView();
+            modal.model.set({header:"Congrats!",footer:"",body:"The report was updated successfully"});
             this.addAlertView(modal);
             modal.show();
         },
-        displayAddExpendableInventoryItemModal: function(){
-            // TODO
+        displayReportExistsModal: function(msg){
+            var modal = new ModalView();
+            modal.model.set({header:"Report Exists",footer:"",body:"A report for the selected date has already been submitted. Please choose a different date. To modify an earlier report, contact an administrator."});
+            this.addAlertView(modal);
+            modal.show();
+        },
+        displayAddExpendableInventoryItemModal: function(msg){
+
+            var addExpendableInventoryItemView = new AddExpendableInventoryItem();
+            addExpendableInventoryItemView.model.set({
+                genericName:msg.genericName
+            });                                                                    
+            addExpendableInventoryItemView.callback = msg.callback;
+            var modal = new ModalView();
+            modal.model.set({header:"Add Expendable Inventory Item",footer:"",body:addExpendableInventoryItemView.$el});
+            this.addAlertView(modal);
+            modal.show();
         },
         displayAddDoctorModal: function(msg){
             var names = msg.doctorNameString.split(" ");
-            var addDoctorView = new AddDoctor({model: new Person({
-                                                                    firstName:names[0],
-                                                                    lastName:names[1],
-                                                                    isActive:1,
-                                                                    clinics:[this.model.get("clinic")],
-                                                                    roles: [_.findWhere(roles().attributes,{name:'DOCTOR'})._id]
-                                                                })});       
-            var modalModel = new Modal({header:"Add Doctor",footer:"",body:addDoctorView.$el});
-            var modal = new ModalView({model:modalModel});
+            var addDoctorView = new AddDoctor();     
+            addDoctorView.model.set({ 
+                firstName:names[0],
+                lastName:names[1],
+                isActive:1,
+                clinics:[this.model.get("clinic")],
+                roles: [_.findWhere(roles().attributes,{name:'DOCTOR'})._id]
+            });
+            addDoctorView.callback = msg.callback;
+            addDoctorView.render();
+            var modal = new ModalView();
+            modal.model.set({header:"Add Doctor",footer:"",body:addDoctorView.$el});
             this.addAlertView(modal);
             modal.show();
         },
         displayAddPersonModal: function(msg){
             var names = msg.personNameString.split(" ");
-            var addPersonView = new AddPerson({model: new Person({
-                                                                    firstName:names[0],
-                                                                    lastName:names[1],
-                                                                    isActive:1,
-                                                                    clinics:[this.model.get("clinic")],
-                                                                    //roles: [_.findWhere(roles().attributes,{name:'DOCTOR'})._id]
-                                                                })});       
-            var modalModel = new Modal({header:"Add Person",footer:"",body:addPersonView.$el});
-            var modal = new ModalView({model:modalModel});
+            var addPersonView = new AddPerson();
+            addPersonView.model.set({
+                firstName:names[0],
+                lastName:names[1],
+                isActive:1,
+                clinics:[this.model.get("clinic")],
+                roles: [_.findWhere(roles().attributes,{name:'STAKEHOLDER'})._id]
+            });
+            addPersonView.callback = msg.callback;
+            addPersonView.render();
+            var modal = new ModalView();
+            modal.model.set({header:"Add Person",footer:"",body:addPersonView.$el});
             this.addAlertView(modal);
             modal.show();
         },
         displayAddPatientModal: function(msg){
             var names = msg.patientNameString.split(" ");
-            var addPatientView = new AddPatient({model: new Person({
-                                                                     firstName:names[0],
-                                                                     lastName:names[1],
-                                                                     isActive:1,
-                                                                     clinics:[this.model.get("clinic")],
-                                                                     roles: [_.findWhere(roles().attributes,{name:'PATIENT'})._id]
-                                                                 })});       
-            var modalModel = new Modal({header:"Add Patient",footer:"",body:addPatientView.$el});
-            var modal = new ModalView({model:modalModel});
+            var addPatientView = new AddPatient();
+            addPatientView.model.set({
+                 firstName:names[0],
+                 lastName:names[1],
+                 isActive:1,
+                 clinics:[this.model.get("clinic")],
+                 roles: [_.findWhere(roles().attributes,{name:'PATIENT'})._id]
+            });
+            addPatientView.callback = msg.callback;
+            addPatientView.render();
+            var modal = new ModalView();
+            modal.model.set({header:"Add Patient",footer:"",body:addPatientView.$el});
             this.addAlertView(modal);
             modal.show();
         },
-        displayReportExistsModal: function(msg){
-            var modalModel = new Modal({header:"Report Exists",footer:"",body:"A report for the selected date has already been submitted. Please choose a different date. To modify an earlier report, contact an administrator."});
-            var modal = new ModalView({model:modalModel});
-            this.addAlertView(modal);
-            modal.show();
+        showSubmitModal: function(ev){
+            ev.preventDefault();
+              var modal = new ModalView();
+              modal.model.set({header:"Submit Report",footer:(new Submit()).$el,body:"Phew! That was a lot of work! Well, looks like we're ready to submit! Do check if your inputs are correct before pressing the button."});
+              this.addAlertView(modal);
+              modal.show();
         },
-           
         showView: function(viewType){
 
             // hide all views
@@ -267,11 +283,24 @@ define([
             this.selectedViewType = viewType;
 
         },
-        refreshSelectedView: function(){
-            if(this.selectedViewType !== null) {
+        refreshSelectedView: function(reportExists){
+            if(this.selectedViewType !== null && reportExists) {
                 this.createAndRenderView(this.selectedViewType);
                 this.activeViews[this.selectedViewType].$el.show();
             }
+        },
+        addRetrievedViews: function(reportExists) {
+            var self = this;
+            if(reportExists){
+                _.each(this.model.viewTypes(),function(viewType){
+                    self.createAndRenderView(viewType);
+                });
+                if(this.selectedViewType !== null) {
+                    //this.createAndRenderView(this.selectedViewType);
+                    this.activeViews[this.selectedViewType].$el.show();
+                }
+            }
+            
         },
         removeAllViews: function(){
             _.each(this.activeViews, function(value,key,list){
@@ -287,7 +316,6 @@ define([
          
             this.currentAlertView = view;
             this.currentAlertView.render();
-
             this.$("#alert").html(view.$el);             
         },
         createAndRenderView: function(viewType) {
@@ -295,22 +323,22 @@ define([
             if(!this.activeViews[viewType]) {
                 switch(viewType){
                     case 'revenue':
-                        this.activeViews[viewType] = new RevenueTableView({model: new RevenueRowList()});
+                        this.activeViews[viewType] = new RevenueTableView();
                         break;
                     case 'patientsFeedback':
-                        this.activeViews[viewType] = new PatientsFeedbackTableView({model: new PatientsFeedbackRowList()});
+                        this.activeViews[viewType] = new PatientsFeedbackTableView();
                         break; 
                     case 'clinicIssues':
-                        this.activeViews[viewType] = new ClinicIssuesTableView({model: new ClinicIssuesRowList()});
+                        this.activeViews[viewType] = new ClinicIssuesTableView();
                         break;     
                     case 'bankDeposits':
-                        this.activeViews[viewType] = new BankDepositsTableView({model: new BankDepositsRowList()});
+                        this.activeViews[viewType] = new BankDepositsTableView();
                         break;
                     case 'expenditure':
-                        this.activeViews[viewType] = new ExpenditureTableView({model: new ExpenditureRowList()});
+                        this.activeViews[viewType] = new ExpenditureTableView();
                         break;
                     case 'inventoryRequired':
-                        this.activeViews[viewType] = new InventoryRequiredTableView({model: new InventoryRequiredRowList()});
+                        this.activeViews[viewType] = new InventoryRequiredTableView();
                         break;
                 } 
 
@@ -337,13 +365,6 @@ define([
             this.createAndRenderView(viewType);  
             this.showView(viewType);          
         },
-        handleSubmitClick: function(ev){
-            ev.preventDefault();
-              var modalModel = new Modal({header:"Submit Report",footer:(new Submit()).$el,body:"Phew! That was a lot of work! Well, looks like we're ready to submit! Do check if your inputs are correct before pressing the button."});
-              var modal = new ModalView({model:modalModel});
-              this.addAlertView(modal);
-              modal.show();
-        },
         handleLogoutClick: function(ev){
             ev.preventDefault();
              vent.trigger('CDF.Views.AppView:handleLogoutClick');
@@ -361,19 +382,20 @@ define([
             var self = this;
             if(!this.validateReport()) {
                 console.log('report has invalid entries. Not submitting');
+                this.displayReportHasErrorsModal();
                 return;
             }
-            var activeViewTypes = _.keys(this.activeViews);
 
-            _.each(activeViewTypes,function(element){
-                self.model.set(element,self.activeViews[element].model.getDataForReport());
-            }); 
+            this.model.viewTypes().forEach(function(prop){
+                if(self.activeViews[prop])
+                self.model.set(prop,self.activeViews[prop].model.getDataForReport());
+            });
 
             this.model.save(this.model.attributes,{
                 success: function(){
                     self.displayReportSubmittedModal();
                 },
-                error: function(){
+                error: function(response1,response2,response3){
                     self.displayReportSubmitFailedModal();
                 }
 

@@ -135,6 +135,17 @@ User.find({username:"divyaGaur"}).populate('person').exec(function(err,docs){
 
 /**************************Functions****************************************/
 
+function getExpendableInventoryTypes(req,res,next){
+		console.log('getting expendable inventory types...');
+		res.header("Access-Control-Allow-Origin","*");		
+		res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+		ExpendableInventoryType.find().execFind(function(err,data){
+		if(err) console.log(err)
+			res.send(data);
+	});
+};
+
 function getRoles(req,res,next){
 	console.log('getting roles...');
 	res.header("Access-Control-Allow-Origin","*");
@@ -143,7 +154,7 @@ function getRoles(req,res,next){
 	Role.find().execFind(function(err,data){
 		if(err) console.log(err)
 			res.send(data);
-	})
+	});
 };
 
 
@@ -202,8 +213,8 @@ function addReport(req,res,next){
 	report.clinicIssues = req.params.clinicIssues;
 	report.inventoryRequired = req.params.inventoryRequired;
 
-	report.save(function(){
-			res.send(req.body);
+	report.save(function(err,data){
+			res.send(data);
 		});
 };
 
@@ -222,9 +233,10 @@ function updateReport(req,res,next){
 					    inventoryRequired: req.params.inventoryRequired
 					},
 					{},
-					function(err,data){
-						if(err) console.log(err);
-						res.send(data);
+					function(err,result){
+						if(err) res.send(err);
+						if(result) res.send(result);
+						
 					});
 
 };
@@ -292,6 +304,31 @@ function getExpendableInventoryItems(req,res,next){
 
 };
 
+function addExpendableInventoryItem(req,res,next){
+	console.log("adding expendable inventory item..."+req.params.genericName);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	var expendableInventoryItem = new ExpendableInventoryMaster();
+	expendableInventoryItem.genericName = req.params.genericName;
+	expendableInventoryItem.brandName = req.params.brandName;
+	expendableInventoryItem.accountingUnit = req.params.accountingUnit;
+	expendableInventoryItem.expendableInventoryType = req.params.expendableInventoryType;
+
+	ExpendableInventoryMaster.count({},function(err,count){
+		expendableInventoryItem._id = Math.floor(Math.random()*10000)+count;
+		expendableInventoryItem.save(function(err,data){
+			ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
+			function(err,data){
+				console.log(err);
+				console.log(data);
+				res.send(data);
+			});
+			
+		});
+	});
+};
+
 
 function getPaymentOptions(req,res,next){
 	console.log('sending payment options');
@@ -312,8 +349,10 @@ function saveClinic(req,res,next){
 	
 	clinic.count({},function(err,count){
 		clinic._id = count;
-		clinic.save(function(){
-			res.send(req.body);
+		clinic.save(function(err,data){
+			onsole.log(err);
+			console.log(data);
+			res.send(data);
 		});
 	});	
 
@@ -323,6 +362,7 @@ function getClinics(req,res,next){
 	console.log('sending clinics');
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
 	clinics.find().execFind(function(arr,data){
     	res.send(data);
 	});
@@ -344,8 +384,10 @@ function addNewPerson(req,res,next){
 
 	Person.count({},function(err,count){
 		person._id = 1001+count;
-		person.save(function(){
-			res.send(req.body);
+		person.save(function(err,data){
+			console.log(err);
+			console.log(data);
+			res.send(data);
 		});
 	});	
 };
@@ -356,7 +398,10 @@ function addNewPerson(req,res,next){
 server.get('/persons',getPersons);
 server.post('/persons',addNewPerson);
 
+server.get('/expendableInventoryTypes', getExpendableInventoryTypes);
+
 server.get('/expendableInventoryMaster',getExpendableInventoryItems);
+server.post('/expendableInventoryMaster',addExpendableInventoryItem);
 
 server.get('/roles',getRoles);
 

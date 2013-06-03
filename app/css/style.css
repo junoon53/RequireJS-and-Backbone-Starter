@@ -16,6 +16,10 @@
 	width: 400px;
 }
 
+.add-new-item-alert {
+	width: 220px;
+}
+
 .tableHeaderColumn {
 	display:inline-block;
 	font-weight: bold;

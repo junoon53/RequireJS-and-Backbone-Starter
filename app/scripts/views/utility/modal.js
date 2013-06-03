@@ -2,11 +2,13 @@ define([
     'backbone',
     'jquery', 
     'underscore',
+    'models/utility/modal',
     'vent',
     'text!templates/modal.html'
-    ], function(Backbone,$,_,vent,template){
+    ], function(Backbone,$,_,ModalModel,vent,template){
 
     var Modal = Backbone.View.extend({
+        model: new ModalModel(),
         header: "This is a Modal",
         footer: "",
         initialize: function(){
@@ -17,6 +19,8 @@ define([
             this.listenTo(vent,'CDF.Views.AppView:click:submit', this.hide);
             this.listenTo(vent,'CDF.Views.People.AddDoctor:addDoctor:called', this.hide);
             this.listenTo(vent,'CDF.Views.People.AddPatient:addPatient:called', this.hide);
+            this.listenTo(vent,'CDF.Views.People.AddPerson:addPerson:called', this.hide);
+            this.listenTo(vent,'CDF.Views.InventoryRequired.AddExpendableInventoryItem:addExpendableInventoryItem:called', this.hide);
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.hide);
 
             this.visible = false;            

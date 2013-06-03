@@ -43,7 +43,7 @@ require(['backbone',
     }
   };
 
-  _.extend(Backbone.Model.prototype, validation.mixin);
+  //_.extend(Backbone.Model.prototype, validation.mixin);
 
   roles().fetch();
   paymentOptions().fetch();

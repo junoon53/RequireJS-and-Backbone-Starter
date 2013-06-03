@@ -3,12 +3,14 @@ define([
 	'jquery', 
 	'underscore',
 	'models/patientsFeedback/patientsFeedbackRow',
+	'collections/patientsFeedback/patientsFeedbackRowList',
 	'views/patientsFeedback/patientsFeedbackRowView',
 	'vent',
 	'text!templates/patientsFeedbackTable.html'
-	], function(Backbone,$,_,PatientsFeedbackRow,PatientsFeedbackRowView,vent,template){
+	], function(Backbone,$,_,PatientsFeedbackRow,PatientsFeedbackRowList,PatientsFeedbackRowView,vent,template){
 
 	var PatientsFeedbackTableView = Backbone.View.extend({
+		model: new PatientsFeedbackRowList(),
 	    events: {
 			'click .new-row' : 'handleNewRowSubmit'		
 	    },

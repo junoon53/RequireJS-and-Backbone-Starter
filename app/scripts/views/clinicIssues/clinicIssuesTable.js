@@ -3,12 +3,14 @@ define([
 	'jquery', 
 	'underscore',
 	'models/clinicIssues/clinicIssuesRow',
+	'collections/clinicIssues/clinicIssuesRowList',
 	'views/clinicIssues/clinicIssuesRowView',
 	'vent',
 	'text!templates/clinicIssuesTable.html'
-	], function(Backbone,$,_,ClinicIssuesRow,ClinicIssuesRowView,vent,template){
+	], function(Backbone,$,_,ClinicIssuesRow,ClinicIssuesRowList,ClinicIssuesRowView,vent,template){
 
 	var ClinicIssuesTableView = Backbone.View.extend({
+		model: new ClinicIssuesRowList(),
 	    events: {
 			'click .new-row' : 'handleNewRowSubmit'		
 	    },
