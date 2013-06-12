@@ -22,6 +22,9 @@ define([
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);
 		},
+		reset: function(){
+			this.model.reset();
+		},
 		onClose: function(){
 
 			this.removeAllRowViews();
@@ -60,6 +63,12 @@ define([
 			this.$el.html(this.template(this.model.toJSON()));	
 			return this;
 		},
+		addDataFromReport: function(data){
+			this.model.addDataFromReport(data);
+		},
+		getDataForReport: function(){
+			return this.model.getDataForReport();
+		}
 	});
 
 	return InventoryRequiredTableView;

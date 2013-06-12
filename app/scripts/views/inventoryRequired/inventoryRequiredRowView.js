@@ -12,7 +12,7 @@ define([
 
 	var InventoryRequiredRowView = Backbone.View.extend({
 		model: new InventoryRequiredRow(),
-		className: 'inventoryRequiredRow',
+		className: 'inventoryRequiredRow row-fluid',
 		events: {
 			'click button.yesOption': 'addNewExpendableInventoryItem',
 			'click button.noOption' : 'hidePopover',

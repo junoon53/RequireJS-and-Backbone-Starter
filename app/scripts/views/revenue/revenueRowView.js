@@ -14,7 +14,7 @@ define([
 
 	var RevenueRowView = Backbone.View.extend({
 		//model: new RevenueRow(),
-		className: 'revenueRow',
+		className: 'revenueRow row-fluid',
 		events: {
 			'click button.yesOption': 'addNewItem',
 			'click button.noOption' : 'hidePopover',

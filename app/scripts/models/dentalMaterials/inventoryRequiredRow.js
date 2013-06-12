@@ -14,7 +14,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 		    expendableInventoryItem: {
 		      pattern: 'digits',
 		      required: true,
-		      range: [1000,100000],
+		      range: [100,100000],
 		      msg: "Please select an inventory item"
 		    },
 		    qty: {

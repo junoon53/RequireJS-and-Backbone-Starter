@@ -13,7 +13,7 @@ define([
 
 	var PatientsFeedbackRowView = Backbone.View.extend({
 		//model: new PatientsFeedback(),
-		className: 'patientsFeedbackRow',
+		className: 'patientsFeedbackRow row-fluid',
 		events: {
 			'click button.yesOption': 'addNewPatient',
 			'click button.noOption' : 'hidePopover',	

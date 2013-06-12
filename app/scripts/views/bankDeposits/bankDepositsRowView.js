@@ -12,7 +12,7 @@ define([
 
 	var BankDepositsRowView = Backbone.View.extend({
 		model: new BankDepositsRow(),
-		className: 'bankDepositsRow',
+		className: 'bankDepositsRow row-fluid',
 		events: {
 			'click button.yesOption': 'addNewPerson',
 			'click button.noOption' : 'hidePopover',	

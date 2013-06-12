@@ -25,6 +25,9 @@ define([
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);
 		},
+		reset: function(){
+			this.model.reset();
+		},
 		onClose: function(){
 
 			this.removeAllRowViews();
@@ -68,6 +71,12 @@ define([
 		updateTotal: function(){
 
 			this.$('.total').text("Total : Rs. "+this.model.total());
+		},
+		addDataFromReport: function(data){
+			this.model.addDataFromReport(data);
+		},
+		getDataForReport: function(){
+			return this.model.getDataForReport();
 		}
 	});
 

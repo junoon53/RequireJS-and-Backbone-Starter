@@ -47,7 +47,7 @@ define([
 			return this._total;
 		},
 		filterInvalidRows: function(){
-			return _.reject(this.models,function(element){return !element.isValid(true)});
+			return _.reject(this.models,function(element){return !element.isValid()});
 		},
 		isValid: function() {
 			var result = true;

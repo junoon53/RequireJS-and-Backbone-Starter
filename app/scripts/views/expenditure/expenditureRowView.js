@@ -13,7 +13,7 @@ define([
 
 	var ExpenditureRowView = Backbone.View.extend({
 		//model: new ExpenditureRow(),
-		className: 'expenditureRow',
+		className: 'expenditureRow row-fluid',
 		events: {
 			'click button.yesOption': 'addNewPerson',
 			'click button.noOption' : 'hidePopover',

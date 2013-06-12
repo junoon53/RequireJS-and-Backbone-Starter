@@ -1,12 +1,34 @@
-<input type="text" class="item column" autocomplete="off" value= <%= "'"+item+"'" %>  /> 
+<div class='span2'>
+	<input type="text" class="item column" autocomplete="off" value= <%= "'"+item+"'" %>  /> 
+</div>
+
+<div class='span2'>
+	<input type="text" class="sanctionedBy column" id= <%= "'sanctionedBy"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+sanctionedByName+"'" %>  valueId= <%= "'"+sanctionedBy+"'" %> /> 
+</div>
+
+<div class='span2'>
+	<input type="text" class="receivedBy column" id= <%= "'receivedBy"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+receivedByName+"'" %>  valueId= <%= "'"+receivedBy+"'" %> />
+</div>
+
+<div class='span2'>
+	<input type="text" class="qty column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+qty+"'" %> />
+</div>
+
+<div class='span3'>
+	<div class='row-fluid'>
+		<div class='span5'>
+			<div class="input-prepend input-append">
+	  			<span class="add-on">Rs</span>
+	  			<input type="text" class="amount column" data-toggle="tooltip" autocomplete="off" value= <%= "'"+amount+"'" %> />
+			</div>	 
+	    </div>
+		<div class='span2 offset4'>
+			<button class='btn delete'>X</button>
+		</div>
+	</div>
+</div>
+
       
-<input type="text" class="sanctionedBy column" id= <%= "'sanctionedBy"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+sanctionedByName+"'" %>  valueId= <%= "'"+sanctionedBy+"'" %> /> 
 
-<input type="text" class="receivedBy column" id= <%= "'receivedBy"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+receivedByName+"'" %>  valueId= <%= "'"+receivedBy+"'" %> />
 
-<input type="text" class="qty column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+qty+"'" %> />
 
-<span>Rs</span>
-<input type="text" class="amount column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+amount+"'" %> />
-
-<a href="#" class="delete"><i class="icon-remove delete-row-icon"></i></a>

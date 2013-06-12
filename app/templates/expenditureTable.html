@@ -1,20 +1,26 @@
- <div class="alert alert-error" style="display:none">
-Please correct the invalid entries!
+<h2>Expenditure</h2>  
+<hr />
+
+<div class='row-fluid alert alert-error' style="display:none">
+      <div class='span3'>
+            <div>Please correct the invalid entries!</div>
+      </div>
 </div>
-<div class="alert alert-success" style="display:none">
-<strong>Success!</strong> You passed the validation.
-</div>	
 
-      <h2>Expenditure</h2>  
-      <label class="tableHeaderColumn">Item</label> 
-      <label class="tableHeaderColumn">Sanctioned By</label>
-      <label class="tableHeaderColumn">Received By</label>
-      <label class="tableHeaderColumn">Quantity</label>
-      <label class="tableHeaderColumn">Amount</label>
 
-      <div id="rows-container"></div>
-      <button class="btn btn-small new-row" type="button"><i class="icon-plus"></i>Add Row</button>      
-      <hr />
-      <label  class="total tableHeaderColumn"></label>
-      <hr/>
+<div class='row-fluid'>
+      <div class='span2'><label class="tableHeaderColumn">Item</label> </div>
+      <div class='span2'><label class="tableHeaderColumn">Sanctioned</label> </div>
+      <div class='span2'><label class="tableHeaderColumn">Received</label> </div>
+      <div class='span2'><label class="tableHeaderColumn">Quantity</label> </div>
+      <div class='span2'><label class="tableHeaderColumn">Amount</label> </div>
+</div>
+
+
+<div class='row-fluid' id="rows-container"></div>
+
+<button class="btn btn-small new-row" type="button"><i class="icon-plus"></i>Add Row</button>      
+<hr />
+<label  class="total tableHeaderColumn"></label>
+<hr/>
       

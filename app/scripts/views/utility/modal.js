@@ -21,6 +21,8 @@ define([
             this.listenTo(vent,'CDF.Views.People.AddPatient:addPatient:called', this.hide);
             this.listenTo(vent,'CDF.Views.People.AddPerson:addPerson:called', this.hide);
             this.listenTo(vent,'CDF.Views.InventoryRequired.AddExpendableInventoryItem:addExpendableInventoryItem:called', this.hide);
+            this.listenTo(vent,'CDF.Views.InventoryReceived.AddExpendableInventoryItem:addExpendableInventoryItem:called', this.hide);
+            this.listenTo(vent,'CDF.Views.InventoryReceived.AddPerson:addPerson:called', this.hide);
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.hide);
 
             this.visible = false;            

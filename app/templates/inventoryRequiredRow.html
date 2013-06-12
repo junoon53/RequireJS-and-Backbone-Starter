@@ -1,12 +1,23 @@
+<div class='span2'>
 <input type="text" class="expendableInventoryItem column" id= <%= "'expendableInventoryItem"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+genericName+"'" %>  valueId= <%= "'"+expendableInventoryItem+"'" %> /> 
+</div>
 
+<div class='span2'>
 <span class="brandName column uneditable-input" id= <%= "'brandName"+rowId+"'" %> > <%= brandName %></span>
+</div>
 
+<div class='span2'>
 <span  class="accountingUnit column uneditable-input" id= <%= "'accountingUnit"+rowId+"'" %> > <%= accountingUnit %> </span>
+</div>
 
-<span class="expendableInventoryType column uneditable-input" id= <%= "'expendableInventoryType"+rowId+"'" %> ><%=  expendableInventoryType %> </span>
+<div class='span1'>
+<span class="expendableInventoryType column uneditable-input input-small" id= <%= "'expendableInventoryType"+rowId+"'" %> ><%=  expendableInventoryType %> </span>
+</div>
 
-<input type="text" class="qty column" data-toggle="tooltip"  autocomplete="off" value= <%= qty %>  >
+<div class='span1'>
+<input type="text" class="qty column input-small" data-toggle="tooltip"  autocomplete="off" value= <%= qty %>  >
+</div>
 
-<a href="#" class="delete"><i class="icon-remove delete-row-icon"></i></a>
-  	
+<div class='span1'>
+<button class='btn delete'>X</button>	
+</div>  	

@@ -1,8 +1,12 @@
+/***********Restify***********************************/
+
 var restify = require('restify');
 var server = restify.createServer();
 server.use(restify.fullResponse());
 server.use(restify.bodyParser());
 server.use(restify.queryParser({ mapParams: false }));
+
+/*******************Mongoose**************************/
 
 var mongoose = require('mongoose');
 //var config = require('./config');
@@ -13,6 +17,8 @@ mongoose.connection.on("open", function(){
 });
 
 Schema = mongoose.Schema;
+
+/*******************Schemas**************************/
 
 var ClinicSchema = new Schema({
 	_id:Number,
@@ -91,7 +97,27 @@ var ReportSchema = new Schema({
     inventoryRequired: [{
     					  expendableInventoryItem: {type:Number, ref: 'ExpendableInventoryMaster'},
     					  qty: Number
-    }]
+    }],
+    inventoryReceived: [{ 
+    					  type:Number, ref:'ClinicExpendableInventory'
+    }],
+    treatments: [{
+			    	treatment: { type: Number, ref: 'TreatmentsMaster' },
+			    	doctors: [{type: Number, ref: 'Person'}],
+			    	patient: {type: Number, ref: 'Person'},
+			    	
+			    	// optional parameters: 
+			    	details: {
+			    		expendableInventoryItem: { type:Number, ref: 'ExpendableInventoryMaster'},
+			    		tooth: Number,
+			    		stage: {name:String,_id:Number},
+			    		quadrant: String,
+			    		sitting: Number,
+			    		numInjections: Number,
+			    		numFillings: Number
+			    	}
+
+    }]	
  
 	
 });
@@ -108,6 +134,21 @@ var ExpendableInventoryMasterSchema = new Schema({
 mongoose.model('ExpendableInventoryMaster',ExpendableInventoryMasterSchema,'expendableInventoryMaster');
 var ExpendableInventoryMaster = mongoose.model('ExpendableInventoryMaster');
 
+var ClinicExpendableInventorySchema = new Schema({
+	_id:Number,
+	clinic: {type:Number, ref:'Clinic'},
+	expendableInventoryItem: {type:Number, ref:'ExpendableInventoryMaster'},
+	qtyReceived:Number,
+	qtyRemaining:Number,
+	dateReceived:Date,
+	dateUpdated:Date,
+	dateExpiry:Date,
+	receivedBy:{type:Number, ref:'Person'},
+});
+mongoose.model('ClinicExpendableInventory',ClinicExpendableInventorySchema,'clinicExpendableInventory');
+var ClinicExpendableInventory = mongoose.model('ClinicExpendableInventory');
+
+
 var ExpendableInventoryTypeSchema = new Schema({
 	_id:Number,
 	name:String
@@ -115,7 +156,32 @@ var ExpendableInventoryTypeSchema = new Schema({
 mongoose.model('ExpendableInventoryType',ExpendableInventoryTypeSchema,'expendableInventoryTypes');
 var ExpendableInventoryType = mongoose.model('ExpendableInventoryType');
 
+var TreatmentsMasterSchema = new Schema({
+	_id: Number,
+	category: { type: Number, ref: 'TreatmentCategory' },
+	name: String, 
+});
+mongoose.model('TreatmentsMaster',TreatmentsMasterSchema,'treatmentsMaster');
+var TreatmentsMaster = mongoose.model('TreatmentsMaster');
 
+var TreatmentCategorySchema = new Schema({
+	_id: Number,
+	name: String,
+	stages: Array
+});
+mongoose.model('TreatmentCategory', TreatmentCategorySchema, 'treatmentCategories');
+var TreatmentCategory = mongoose.model('TreatmentCategory');
+
+var ToothSchema = new Schema({
+	_id: Number,
+	number: String,
+	quadrant: String,
+	toothType : String,
+	numRoots: Number,
+	setType: String
+});
+mongoose.model('Tooth', ToothSchema, 'teeth');
+var Tooth = mongoose.model('Tooth');
 
 /****************************************Testing************************/
 
@@ -157,12 +223,7 @@ function getRoles(req,res,next){
 	});
 };
 
-
-function getReport(req,res,next){
-	console.log('getting report for date: '+ req.query.date);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-
+function _getReport(req,callback){
 	var startDate = new Date(req.query.date);
 	startDate.setHours(0);
 	startDate.setMinutes(0);
@@ -187,35 +248,129 @@ function getReport(req,res,next){
     .populate('patientsFeedback.patient')
     .populate('clinicIssues.doctor')
     .populate('inventoryRequired.expendableInventoryItem')
-	.execFind(function(err,data){
-		     ExpendableInventoryType.populate(data, {path: 'inventoryRequired.expendableInventoryItem.expendableInventoryType'},function(err,data){
-		     	console.log(data);
-				res.send(data[0]);
-		     });
-			
+    .populate('inventoryReceived')
+    .populate('treatments.treatment')
+    .populate('treatments.doctors')
+    .populate('treatments.patient')
+    .execFind(function(err,data){
+		if(err) {console.log(err); res.send(err);}
+		else {
+			ExpendableInventoryMaster.populate(data,{path:'inventoryReceived.expendableInventoryItem'},function (err,data){
+				if(err) {console.log(err); res.send(err);}
+			 	else {
+			 		Person.populate(data,{path:'inventoryReceived.receivedBy'},function (err,data) {
+						if(err) {console.log(err); res.send(err);}
+						else {
+							ExpendableInventoryType.populate(data, {path: 'inventoryRequired.expendableInventoryItem.expendableInventoryType'},function (err,data){
+								if(err) {console.log(err); res.send(err);}
+								else {
+									ExpendableInventoryType.populate(data, {path: 'inventoryReceived.expendableInventoryItem.expendableInventoryType'},function (err,data){
+						     			if(err) {console.log(err); res.send(err);}
+						     			else {
+						     				ExpendableInventoryMaster.populate(data,{path: 'treatments.details.expendableInventoryItem'}, function (err,data){
+						     					if(err) {console.log(err); res.send(err);}
+							     				else {
+							     					TreatmentCategory.populate(data,{path: 'treatments.treatment.category'}, function (err,data){
+								     					if(err) {console.log(err); res.send(err);}
+									     				else {
+										     				console.log(data);
+															callback(data[0]);
+									     				}
+							     					});
+							     				}
+						     				});
+						     			}
+					     			});
+								}
+			     			});	
+						}
+			 		});
+			 	}
+			});
+		}
 	});
 };
 
+function getReport(req,res,next){
+	console.log('getting report for date: '+ req.query.date);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	_getReport(req,function(data){
+		res.send(data);
+	});
+
+};
+
+function _addReport(data,callback){
+	var report = new Report({
+		date : data.date,
+		clinic : data.clinic,
+		person : data.person,
+		revenue : data.revenue,
+		bankDeposits : data.bankDeposits,
+		expenditure : data.expenditure,
+		patientsFeedback : data.patientsFeedback,
+		clinicIssues : data.clinicIssues,
+		inventoryRequired : data.inventoryRequired,
+		inventoryReceived : data.inventoryReceived,
+		treatments: data.treatments
+	});
+	report.save(function(err,data){
+			callback(err,data);
+		});
+}
 
 function addReport(req,res,next){
 	console.log('saving report for date: '+ req.params.date);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
+	
+	var clinicExpendableInventoryItems = [];
 
-	var report = new Report();
-	report.date = req.params.date;
-	report.clinic = req.params.clinic;
-	report.person = req.params.person;
-	report.revenue = req.params.revenue;
-	report.bankDeposits = req.params.bankDeposits;
-	report.expenditure = req.params.expenditure;
-	report.patientsFeedback = req.params.patientsFeedback;
-	report.clinicIssues = req.params.clinicIssues;
-	report.inventoryRequired = req.params.inventoryRequired;
+	if(req.params.inventoryReceived.length){
+	 	req.params.inventoryReceived.forEach(function(item,index,array) {
+	 		var inventoryReceived = new ClinicExpendableInventory({
+				expendableInventoryItem : item.expendableInventoryItem,
+				dateReceived : req.params.date,
+				dateUpdated : req.params.date,
+				dateExpiry : item.dateExpiry,
+				qtyReceived : item.qtyReceived,
+				qtyRemaining : item.qtyReceived,
+				receivedBy : item.receivedBy,
+				clinic : req.params.clinic
+			});
 
-	report.save(function(err,data){
-			res.send(data);
-		});
+	 		_addClinicExpendableInventoryItem(inventoryReceived,function(err,data){
+	 			if(err){console.log(err);}
+				clinicExpendableInventoryItems.push(data._id);
+
+				if(index === array.length -1) {
+					req.params.inventoryReceived = clinicExpendableInventoryItems;
+				 	console.log(req.params.inventoryReceived);
+
+					_addReport(req.params,function(err,data){
+						if(err){
+							console.log(err);
+							res.send(err);
+						} else if(data){
+							res.send(data);
+						}
+					});
+				}
+			});
+	 	});
+	 } else {
+	 	_addReport(req.params,function(err,data){
+						if(err){
+							console.log(err);
+							res.send(err);
+						} else if(data){
+							res.send(data);
+						}
+				});
+	 }
+
 };
 
 function updateReport(req,res,next){
@@ -223,21 +378,64 @@ function updateReport(req,res,next){
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
-	Report.update({_id:req.params.id},
-					{
-					    revenue: req.params.revenue,
-					    bankDeposits: req.params.bankDeposits,
-					    expenditure: req.params.expenditure,
-					    patientsFeedback: req.params.patientsFeedback,
-					    clinicIssues: req.params.clinicIssues,
-					    inventoryRequired: req.params.inventoryRequired
-					},
-					{},
-					function(err,result){
-						if(err) res.send(err);
-						if(result) res.send(result);
-						
-					});
+	var clinicExpendableInventoryItems = [];
+
+	if(req.params.inventoryReceived.length){
+		req.params.inventoryReceived.forEach(function(item,index,array){
+			if(item._id) {
+				clinicExpendableInventoryItems.push(item._id);
+				_updateClinicExpendableInventoryItem(item,function (err,data){
+					if(err){console.log(err);}
+					updateReport(index,array);
+				});
+			} else {
+				var inventoryReceived = new ClinicExpendableInventory({
+					expendableInventoryItem : item.expendableInventoryItem,
+					dateReceived : req.params.date,
+					dateUpdated : req.params.date,
+					dateExpiry : item.dateExpiry,
+					qtyReceived : item.qtyReceived,
+					qtyRemaining : item.qtyReceived,
+					receivedBy : item.receivedBy,
+					clinic : req.params.clinic
+				});
+				_addClinicExpendableInventoryItem(inventoryReceived,function (err,data){
+					if(err){console.log(err);}
+					clinicExpendableInventoryItems.push(data._id);
+					_updateReport(index,array);
+				});
+			}
+		});
+	}else {
+		_updateReport(0,[0]);
+	}
+
+	function _updateReport(index,array) {
+		req.params.inventoryReceived = clinicExpendableInventoryItems;
+		if(index === array.length - 1)
+		Report.update({_id:req.params._id},
+				{
+				    revenue: req.params.revenue,
+				    bankDeposits: req.params.bankDeposits,
+				    expenditure: req.params.expenditure,
+				    patientsFeedback: req.params.patientsFeedback,
+				    clinicIssues: req.params.clinicIssues,
+				    inventoryRequired: req.params.inventoryRequired,
+				    inventoryReceived: req.params.inventoryReceived,
+				    treatments: req.params.treatments
+				},
+				{},
+				function(err,result){
+					if(err) res.send(err);
+					if(result) _getReport( { query: { date:req.params.date,clinic:req.params.clinic } },
+											function(data){
+												res.send(data);
+											} );
+					
+				});
+	}
+
+	
 
 };
 
@@ -287,6 +485,59 @@ function getPersons(req,res,next){
 
 };
 
+function _addClinicExpendableInventoryItem(clinicExpendableInventoryItem,callback){
+	ClinicExpendableInventory.count({},function(err,count){
+		clinicExpendableInventoryItem._id = Math.floor(Math.random()*10000)+count;
+		clinicExpendableInventoryItem.save(function(err,data){
+			ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
+			function(err,data){
+				Person.populate(data,{path:'receivedBy'},
+				function(err,data){
+					if(callback) callback(err,data);
+				});
+			});
+			
+		});
+	});
+};
+
+function _updateClinicExpendableInventoryItem(attributes,callback){
+	var _id = attributes._id;
+	delete attributes._id;
+	ClinicExpendableInventory.update(
+		{_id:_id},
+		attributes,
+		{},
+		function(err,numAffectedRows,rawResponse){
+			if(err) console.log('error: '+err);
+			if(callback) callback(err,numAffectedRows);
+		}
+	);
+};
+
+function addClinicExpendableInventoryItem(req,res,next){
+	console.log("adding expendable inventory item");
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+	
+	var clinicExpendableInventoryItem = new ClinicExpendableInventory({
+ 		item : req.params.item,
+		dateReceived : req.params.dateReceived,
+		dateUpdated : req.params.dateUpdated,
+		dateExpiry : req.params.dateExpiry,
+		qtyReceived : req.params.qtyReceived,
+		qtyRemaining : req.params.qtyRemaining,
+		receivedBy : req.params.receivedBy,
+		clinic : req.params.clinic
+	});
+	
+	_addClinicExpendableInventoryItem(clinicExpendableInventoryItem,function(err,data){
+		console.log(err);
+		console.log(data);
+		res.send(data);
+	});
+};
+
 function getExpendableInventoryItems(req,res,next){
 	console.log("sending expendable inventory items like :"+req.query.searchString);
 	res.header("Access-Control-Allow-Origin","*");
@@ -309,20 +560,31 @@ function addExpendableInventoryItem(req,res,next){
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
-	var expendableInventoryItem = new ExpendableInventoryMaster();
-	expendableInventoryItem.genericName = req.params.genericName;
-	expendableInventoryItem.brandName = req.params.brandName;
-	expendableInventoryItem.accountingUnit = req.params.accountingUnit;
-	expendableInventoryItem.expendableInventoryType = req.params.expendableInventoryType;
+	var expendableInventoryItem = new ExpendableInventoryMaster({
+		clinic : req.params.clinic,
+		item : req.params.item,
+		qtyReceived : req.params.qtyReceived,
+		qtyRemaining : req.params.qtyRemaining,
+		dateReceived : req.params.dateReceived,
+		dateUpdated : req.params.dateUpdated,
+		dateExpiry : req.params.dateExpiry,
+		receivedBy : req.params.receivedBy
+	});
 
-	ExpendableInventoryMaster.count({},function(err,count){
+	ClinicExpendableInventory.count({},function(err,count){
 		expendableInventoryItem._id = Math.floor(Math.random()*10000)+count;
 		expendableInventoryItem.save(function(err,data){
-			ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
+			ExpendableInventoryType.populate(data,{path:'item.expendableInventoryType'},
 			function(err,data){
-				console.log(err);
-				console.log(data);
-				res.send(data);
+				Clinic.populate(data,{path:'clinic'},
+					function(err,data){
+						Person.populate(data,{path:'receivedBy'},
+							function(err,data){
+								console.log(err);
+								console.log(data);
+								res.send(data);
+							});
+					});
 			});
 			
 		});
@@ -374,13 +636,14 @@ function addNewPerson(req,res,next){
 	console.log("adding new person");
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	var person = new Person();
-	person.firstName = req.params.firstName;
-	person.lastName = req.params.lastName;
-	person.id = req.params.firstName.toUpperCase()+" "+req.params.lastName.toUpperCase();
-	person.isActive = req.params.isActive;
-	person.clinics = req.params.clinics;
-	person.roles = req.params.roles;
+	var person = new Person({
+		firstName : req.params.firstName,
+		lastName : req.params.lastName,
+		id : req.params.firstName.toUpperCase()+" "+req.params.lastName.toUpperCase(),
+		isActive : req.params.isActive,
+		clinics : req.params.clinics,
+		roles : req.params.roles
+	});
 
 	Person.count({},function(err,count){
 		person._id = 1001+count;
@@ -392,17 +655,69 @@ function addNewPerson(req,res,next){
 	});	
 };
 
+function getTreatments(req,res,next){
+	console.log('sending treatments like '+req.query.searchString);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	TreatmentsMaster.find({
+				"name" : {$regex : ".*"+req.query.searchString+".*"},
+				"category": req.query.category }).execFind(function(err,data){
+    					if(err) {console.log(err); res.send(err);}
+    					else res.send(data);
+	});
+};
+
+function addNewTreatment(req,res,next){
+	console.log("adding new person");
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	var treatment = new TreatmentsMaster({
+		name: req.params.name,
+		category: req.params.category,		
+	});
+
+	TreatmentsMaster.count({},function(err,count){
+		treatment._id = 1001+count;
+		treatment.save(function(err,data){
+			console.log(err);
+			console.log(data);
+			res.send(data);
+		});
+	});	
+};
+
+function getTreatmentStages(req,res,next){
+	console.log('sending treatments stages for category '+req.query.category);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	TreatmentCategory.find({_id:req.query.category}).execFind(function(err,data){
+    					if(err) {console.log(err); res.send(err);}
+    					else res.send(data[0].stages);
+	});
+};
 
 // set up our routes and start the server
 
 server.get('/persons',getPersons);
 server.post('/persons',addNewPerson);
 
+server.get('/treatments',getTreatments);
+server.post('/treatments',addNewTreatment);
+
+server.get('/treatmentStages',getTreatmentStages);
+
 server.get('/expendableInventoryTypes', getExpendableInventoryTypes);
 
 server.get('/expendableInventoryMaster',getExpendableInventoryItems);
 server.post('/expendableInventoryMaster',addExpendableInventoryItem);
 
+/*server.get('/clinicexpendableinventory',getClinicExpendableInventoryItem);
+server.post('/clinicexpendableinventory',addClinicExpendableInventoryItem);
+server.put('/clinicexpendableinventory',updateClinicExpendableInventoryItem);
+*/
 server.get('/roles',getRoles);
 
 server.get('/paymentOptions',getPaymentOptions);

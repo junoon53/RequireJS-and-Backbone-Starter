@@ -7,7 +7,6 @@ define(['backbone','jquery', 'underscore','vent','models/people/person','text!te
 		},
 		initialize: function(){
 			this.template = _.template(template);
-			
 		},
 		render: function(){
 			this.$el.html(this.template({}));

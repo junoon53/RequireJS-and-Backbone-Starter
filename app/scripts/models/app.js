@@ -15,6 +15,8 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             patientsFeedback: [],
             clinicIssues: [],
             inventoryRequired:[],
+            inventoryReceived:[],
+            treatments: [],
 
             person: null,
 
@@ -45,7 +47,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
         },
         viewTypes: function() {
             return ['revenue','bankDeposits','expenditure','patientsFeedback',
-                    'clinicIssues','inventoryRequired'];
+                    'clinicIssues','inventoryRequired','inventoryReceived','treatments'];
         },
         resetReport: function(){
             this.set('_id',null);
@@ -56,6 +58,8 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             this.set('patientsFeedback',[]);
             this.set('clinicIssues',[]);
             this.set('inventoryRequired',[]);
+            this.set('inventoryReceived',[]);
+            this.set('treatments',[]);
             this.set('person',null);
         },
         postReportStatus: function(){

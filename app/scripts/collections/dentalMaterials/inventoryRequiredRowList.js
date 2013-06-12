@@ -18,14 +18,6 @@ define([
 	    onClose: function(){
 
 	    },    
-		total: function() {
-			this._total = 0;
-			var self = this;
-			_.each(this.filterInvalidRows(),function(row, i,data) {
-				 self._total+= parseInt(row.get("amount"),10);
-			});
-			return this._total;
-		},
 		filterInvalidRows: function(models){
 			return _.reject(this.models,function(element){return !element.isValid()});
 		},

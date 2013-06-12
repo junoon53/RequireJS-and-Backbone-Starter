@@ -13,7 +13,7 @@ define([
 
 	var ClinicIssuesRowView = Backbone.View.extend({
 		//model: new ClinicIssues(),
-		className: 'clinicIssuesRow',
+		className: 'clinicIssuesRow row-fluid',
 		events: {
 			'click button.yesOption': 'addNewDoctor',
 			'click button.noOption' : 'hidePopover',	

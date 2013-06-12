@@ -1,0 +1,42 @@
+<div class='span2'>
+	<input type="text" class="expendableInventoryItem column" id= <%= "'expendableInventoryItem"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+genericName+"'" %>  valueId= <%= "'"+expendableInventoryItem+"'" %> /> 
+</div>
+
+<div class='span2'>
+<span class="brandName column uneditable-input" id= <%= "'brandName"+rowId+"'" %> > <%= brandName %></span>
+</div>
+
+<div class='span2'>
+<span  class="accountingUnit column uneditable-input" id= <%= "'accountingUnit"+rowId+"'" %> > <%= accountingUnit %> </span>
+</div>
+
+<div class='span1'>
+<span class="expendableInventoryType column uneditable-input input-small" id= <%= "'expendableInventoryType"+rowId+"'" %> ><%=  expendableInventoryType %> </span>
+</div>
+
+<div class='span1'>
+<input type="text" class="qtyReceived column input-small" data-toggle="tooltip"  autocomplete="off" value= <%= qtyReceived %>  >
+</div>
+
+<div class='span2'>
+<input type="text" class="receivedBy column" id= <%= "'receivedBy"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+receivedByName+"'" %>  valueId= <%= "'"+receivedBy+"'" %> />
+</div>
+
+<div class='span2'>
+	<div class='row-fluid'>
+		<div class='span6'>
+			<span id="dateExpiry" class="input-append">
+			  <input class='input-small' data-format="dd-MM-yyyy" type="text"></input>
+			  <span class="add-on">
+			    <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+			    </i>
+			  </span>
+			</span>                
+	    </div>
+		<div class='span4 offset2'>
+			<button class='btn delete'>X</button>	
+		</div>
+	</div>
+</div>
+
+  	

@@ -18,6 +18,8 @@ define([
     'views/patientsFeedback/patientsFeedbackTable',
     'views/clinicIssues/clinicIssuesTable',
     'views/inventoryRequired/inventoryRequiredTable',
+    'views/inventoryReceived/inventoryReceivedTable',
+    'views/treatments/treatmentsView',
 
     'views/utility/modal',
     'views/utility/submit',
@@ -43,6 +45,8 @@ define([
         PatientsFeedbackTableView,
         ClinicIssuesTableView,
         InventoryRequiredTableView,
+        InventoryReceivedTableView,
+        TreatmentsView,    
 
         ModalView,
         Submit,
@@ -60,6 +64,8 @@ define([
             'click li#patientsFeedback': 'addView',
             'click li#clinicIssues': 'addView',
             'click li#inventoryRequired': 'addView',
+            'click li#inventoryReceived': 'addView',
+            'click li#treatments': 'addView',
             'click li#submit a': 'showSubmitModal',
             'click li#logout a': 'handleLogoutClick',
             'click .clinicsList li a': 'handleClinicSelect',
@@ -81,6 +87,8 @@ define([
             this.listenTo(vent,'CDF.Views.PatientsFeedback.PatientsFeedbackRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor', this.displayAddDoctorModal);
             this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryRequiredRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
+            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
+            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewPerson', this.displayAddExpendableInventoryItemModal);
 
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
@@ -93,6 +101,7 @@ define([
             this.listenTo(this.model,'change:patientsFeedback',console.log('patientsFeedback updated in app model'));           
             this.listenTo(this.model,'change:clinicIssues',console.log('clinicIssues updated in app model'));           
             this.listenTo(this.model,'change:inventoryRequired',console.log('inventoryRequired updated in app model'));           
+            this.listenTo(this.model,'change:inventoryReceived',console.log('inventoryReceived updated in app model'));           
         },
         handleClinicSelect: function(ev){
             ev.preventDefault();
@@ -112,12 +121,12 @@ define([
             this.removeAllViews();
         }, 
         changeMenuSelection: function(selection) {
-            this.$('ul.nav-list li').each(function(index){
+            this.$('ul.nav-tabs li').each(function(index){
                 $(this).removeClass('active');
             })
 
             if(selection) {
-                this.$('ul.nav-list li#'+selection).attr("class","active");               
+                this.$('ul.nav-tabs li#'+selection).attr("class","active");               
             }
              
         },
@@ -340,6 +349,12 @@ define([
                     case 'inventoryRequired':
                         this.activeViews[viewType] = new InventoryRequiredTableView();
                         break;
+                    case 'inventoryReceived':
+                        this.activeViews[viewType] = new InventoryReceivedTableView();
+                        break;
+                    case 'treatments':
+                        this.activeViews[viewType] = new TreatmentsView({attributes:{role:this.model.get('role')}});
+                        break;
                 } 
 
                 this.activeViews[viewType].render();     
@@ -351,8 +366,8 @@ define([
                     case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:                        
                         break;
                     case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
-                        this.activeViews[viewType].model.reset();
-                        this.activeViews[viewType].model.addDataFromReport(this.model.get(viewType));
+                        this.activeViews[viewType].reset();
+                        this.activeViews[viewType].addDataFromReport(this.model.get(viewType));
                         break;
                 }
                 
@@ -388,12 +403,13 @@ define([
 
             this.model.viewTypes().forEach(function(prop){
                 if(self.activeViews[prop])
-                self.model.set(prop,self.activeViews[prop].model.getDataForReport());
+                self.model.set(prop,self.activeViews[prop].getDataForReport());
             });
 
             this.model.save(this.model.attributes,{
                 success: function(){
                     self.displayReportSubmittedModal();
+                    self.removeAllViews(); 
                 },
                 error: function(response1,response2,response3){
                     self.displayReportSubmitFailedModal();
