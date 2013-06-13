@@ -9,7 +9,7 @@ define([
 		defaults: {
 			treatments: []
 		},
-		tableTypes: ['filling','rootCanal','crownNBridge','dentures','perio','extractions' ],
+		tableTypes: ['fillings','rootCanal','crownNBridge','dentures','perio','extractions' ],
 		initialize: function(){
 			var self = this;
 	    },

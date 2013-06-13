@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/people/persons',
 	'collections/treatments/treatments',
 
@@ -12,7 +13,7 @@ define([
 	'text!templates/yesNo.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,Treatments,DenturesRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,Treatments,DenturesRow,vent,template,yesNoTemplate){
 
 	var DenturesRowView = Backbone.View.extend({
 		//model: new DenturesRow(),
@@ -227,7 +228,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.name;
+						 var name = utility.toTitleCase(element.name);
 							 result.push(name);
 					     map[name] = element._id;
 						});

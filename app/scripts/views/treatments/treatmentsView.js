@@ -31,13 +31,13 @@ define([
 	var TreatmentsView = Backbone.View.extend({
 		model: new TreatmentsViewModel(),
 	    events: {
-            'click li#extractions': 'addTable',
-            'click li#fillings': 'addTable',
-            'click li#rootCanal': 'addTable',
-            'click li#crownNBridge': 'addTable',
-            'click li#dentures': 'addTable',
-            'click li#perio': 'addTable',
-            'click li#implants': 'addTable',
+            'click li#extractions': 'handleTopMenuClick',
+            'click li#fillings': 'handleTopMenuClick',
+            'click li#rootCanal': 'handleTopMenuClick',
+            'click li#crownNBridge': 'handleTopMenuClick',
+            'click li#dentures': 'handleTopMenuClick',
+            'click li#perio': 'handleTopMenuClick',
+            'click li#implants': 'handleTopMenuClick',
 	    },
 		initialize: function() {
 			this.template = _.template(template);
@@ -105,13 +105,15 @@ define([
                 element = null;               
             });    
 		},
-		addTable: function(ev) {
+		handleTopMenuClick: function(ev) {
 			ev.preventDefault();
-            var tableType = ev.currentTarget.id;
-            this.changeMenuSelection(tableType);
-            this.createAndRenderTable(tableType);  
-            this.showTable(tableType);          
+            this.changeMenuSelection(ev.currentTarget.id);
+            this.addTable(ev.currentTarget.id);
+            this.showTable(ev.currentTarget.id);
 		},
+        addTable: function(tableType) {
+            this.createAndRenderTable(tableType);  
+        },
         showTable: function(tableType){
 
             // hide all Tables
@@ -140,9 +142,11 @@ define([
 			return this;
 		},
         addDataFromReport: function(data){
+            var self = this;
             this.model.set('treatments',data);
-            _.each(this.activeTables,function(table){
-                table.model.addDataFromReport(data);
+            _.each(this.model.tableTypes,function(tableType){
+                self.addTable(tableType);
+                if(tableType === self.selectedTableType) self.showTable(tableType);
             });
         },
         getDataForReport: function(){

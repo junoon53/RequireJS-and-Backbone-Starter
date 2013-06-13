@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/people/persons',
 	'collections/treatments/treatments',
 	'collections/dentalMaterials/expendableInventoryItems',
@@ -13,7 +14,7 @@ define([
 	'text!templates/yesNo.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,Treatments,ExpendableInventoryItems,FillingsRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,Treatments,ExpendableInventoryItems,FillingsRow,vent,template,yesNoTemplate){
 
 	var FillingsRowView = Backbone.View.extend({
 		//model: new FillingsRow(),
@@ -257,7 +258,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.name;
+						 var name = utility.toTitleCase(element.name);
 							 result.push(name);
 					     map[name] = element._id;
 						});

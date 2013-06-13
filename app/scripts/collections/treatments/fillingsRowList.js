@@ -2,9 +2,10 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/treatments/fillingsRow',
 	 'vent'
-	 ], function(Backbone,$,_,FillingsRow,vent){
+	 ], function(Backbone,$,_,utility,FillingsRow,vent){
 
 	var FillingsRowList = Backbone.Collection.extend({
 		model: FillingsRow,
@@ -29,7 +30,7 @@ define([
                     patient: element.patient._id,
                     doctorName: element.doctors[0].firstName + " " + element.doctors[0].lastName,
                     doctor: element.doctors[0]._id,
-                    treatmentName: element.treatment.name,
+                    treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
 
                     tooth: element.details.tooth,

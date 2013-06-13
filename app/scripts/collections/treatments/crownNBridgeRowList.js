@@ -2,9 +2,10 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/treatments/crownNBridgeRow',
 	 'vent'
-	 ], function(Backbone,$,_,CrownNBridgeRow,vent){
+	 ], function(Backbone,$,_,utility,CrownNBridgeRow,vent){
 
 	var CrownNBridgeRowList = Backbone.Collection.extend({
 		model: CrownNBridgeRow,
@@ -29,12 +30,12 @@ define([
                     patient: element.patient._id,
                     doctorName: element.doctors[0].firstName + " " + element.doctors[0].lastName,
                     doctor: element.doctors[0]._id,
-                    treatmentName: element.treatment.name,
+                    treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
                     
                     // details
                     tooth: element.details.tooth,
-                    stageName: element.details.stage.name,
+                    stageName: utility.toTitleCase(element.details.stage.name),
                     stage: element.details.stage._id,
                     expendableInventoryItem: element.details.expendableInventoryItem._id,
                     genericName: element.details.expendableInventoryItem.genericName

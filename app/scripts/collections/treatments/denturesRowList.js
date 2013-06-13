@@ -2,9 +2,10 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/treatments/denturesRow',
 	 'vent'
-	 ], function(Backbone,$,_,DenturesRow,vent){
+	 ], function(Backbone,$,_,utility,DenturesRow,vent){
 
 	var DenturesRowList = Backbone.Collection.extend({
 		model: DenturesRow,
@@ -29,10 +30,10 @@ define([
                     patient: element.patient._id,
                     doctorName: element.doctors[0].firstName + " " + element.doctors[0].lastName,
                     doctor: element.doctors[0]._id,
-                    treatmentName: element.treatment.name,
+                    treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
                     
-                    stageName: element.details.stage.name,
+                    stageName: utility.toTitleCase(element.details.stage.name),
                     stage: element.details.stage._id
                 })));
             });

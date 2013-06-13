@@ -1,4 +1,5 @@
-define(['backbone','jquery', 'underscore','models/app','views/app','views/auth','models/auth','vent'], function(Backbone,$,_,application,appView,authView,auth,vent){
+define(['backbone','jquery', 'underscore','models/app','views/app','views/auth','models/auth','vent','image!../resources/images/cdf_blur_Bg.png'],
+ function(Backbone,$,_,App,AppView,AuthView,Auth,vent,loginBg){
     var _instance = null;
 
     var MainView = Backbone.View.extend({
@@ -8,21 +9,25 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
             this.listenTo(vent,'CDF.Models.Auth:login:success',this.createAndAddAppView);
         },
         addView: function(view){
-            /*if (this.currentView){
-              this.$el.html('');
-            }*/
-         
+            if (this.currentView){
+              this.currentView.close();
+            }
+            
             this.currentView = view;
             this.currentView.render();
-         
-            this.$el.html(this.currentView.el);
+            this.currentView.$el.show();
+            this.$el.append(this.currentView.el);
         },
-        addAuthView: function() {
-            this.addView(authView);
+        addAuthView: function(){
+            document.body.background = '../resources/images/cdf_blur_Bg.png';
+            this.addView(new AuthView());
         },
         createAndAddAppView: function(){
-                var person = auth.get('person');
-                application.set({
+                //$('body').css('background','none');
+                document.body.background = '';
+                var person = this.currentView.model.get('person');
+                var appView = new AppView();
+                appView.model.set({
 
                     "clinicName":person.clinics[0].name,
                     "clinic":person.clinics[0]._id,
@@ -34,7 +39,6 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
                     "roleName":person.roles[person.roles.length - 1].name
             });
 
-           appView.model = application;
            this.addView(appView);
         }
 

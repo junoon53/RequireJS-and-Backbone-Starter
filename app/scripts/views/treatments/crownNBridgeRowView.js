@@ -11,9 +11,10 @@ define([
 	'vent',
 	'text!templates/crownNBridgeRow.html',
 	'text!templates/yesNo.html',
+	'utility',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,Treatments,ExpendableInventoryItems,CrownNBridgeRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,Persons,Treatments,ExpendableInventoryItems,CrownNBridgeRow,vent,template,yesNoTemplate,utility){
 
 	var CrownNBridgeRowView = Backbone.View.extend({
 		//model: new CrownNBridgeRow(),
@@ -269,7 +270,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.name;
+						 var name = utility.toTitleCase(element.name);
 							 result.push(name);
 					     map[name] = element._id;
 						});

@@ -41,10 +41,10 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
     },
 });
 
-function getInstance() {
+/*function getInstance() {
     if(_instance === null) _instance = new Auth();
     return _instance
-}
-  return getInstance();
+}*/
+  return Auth;
 
 });

@@ -8,9 +8,10 @@ define([
 	'vent',
 	'text!templates/extractionsRow.html',
 	'text!templates/yesNo.html',
+	'utility',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,Treatments,ExtractionsRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,Persons,Treatments,ExtractionsRow,vent,template,yesNoTemplate,utility){
 
 	var ExtractionsRowView = Backbone.View.extend({
 		//model: new ExtractionsRow(),
@@ -220,7 +221,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.name;
+						 var name = utility.toTitleCase(element.name);
 							 result.push(name);
 					     map[name] = element._id;
 						});

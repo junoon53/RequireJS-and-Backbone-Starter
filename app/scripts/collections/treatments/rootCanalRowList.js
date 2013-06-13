@@ -2,9 +2,10 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/treatments/rootCanalRow',
 	 'vent'
-	 ], function(Backbone,$,_,RootCanalRow,vent){
+	 ], function(Backbone,$,_,utility,RootCanalRow,vent){
 
 	var RootCanalRowList = Backbone.Collection.extend({
 		model: RootCanalRow,
@@ -29,11 +30,11 @@ define([
                     patient: element.patient._id,
                     doctorName: element.doctors[0].firstName + " " + element.doctors[0].lastName,
                     doctor: element.doctors[0]._id,
-                    treatmentName: element.treatment.name,
+                    treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
 
                     tooth: element.details.tooth,
-                    stageName: element.details.stage.name,
+                    stageName: utility.toTitleCase(element.details.stage.name),
                     stage: element.details.stage._id,
                 })));
             });
@@ -47,7 +48,7 @@ define([
                     treatment: element.get('treatment'),
                     details : {
     	                tooth: element.get('tooth'),
-	                    stage: { stageName: element.get('stageName'),stage: element.get('stage') },
+	                    stage: { name: element.get('stageName'),_id: element.get('stage') },
                     }
                 };
                 result.push(dataMember);

@@ -1,4 +1,5 @@
 require.config({
+  waitSeconds : 45, //should be enough to load images
   paths: {
     'jquery': 'vendor/jquery/jquery',
     'underscore': 'vendor/underscore-amd/underscore',
@@ -7,7 +8,10 @@ require.config({
     'datetimepicker': 'vendor/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
     'templates': '../templates',
     'backbone-validation':'vendor/backbone-validation/dist/backbone-validation-amd',  
-    'backbone': 'vendor/backbone-amd/backbone'    
+    'backbone': 'vendor/backbone-amd/backbone',  
+    'image' : 'vendor/requirejs-plugins/src/image',
+    'img' : '../resources/images',
+    'utility': 'utility'  
   },
   shim: {
   	'bootstrap' : {

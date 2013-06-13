@@ -31,7 +31,7 @@ define([
          
 
     ], function(Backbone,$,_,
-        app,
+        App,
         roles,
 
         AddDoctor,
@@ -56,7 +56,7 @@ define([
     var _instance = null;
 
     var AppView  = Backbone.View.extend({
-        model: app,
+        model: new App(),
         events: {
             'click li#revenue': 'addView',
             'click li#bankDeposits': 'addView',
@@ -74,6 +74,7 @@ define([
         },
         initialize: function(){
             var self = this;
+            this.model = new App();
             this.template = _.template(template);
             this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
 
@@ -420,12 +421,15 @@ define([
 
     });
 
-    function getInstance() {
-        if(_instance === null) _instance = new AppView();
+    /*function getInstance() {
+        if(_instance === null) {
+          _instance = new AppView();
+          _instance.render();  
+        } 
         return _instance;
     }
+*/
 
-
-    return getInstance();
+    return AppView;
 
 });

@@ -386,7 +386,7 @@ function updateReport(req,res,next){
 				clinicExpendableInventoryItems.push(item._id);
 				_updateClinicExpendableInventoryItem(item,function (err,data){
 					if(err){console.log(err);}
-					updateReport(index,array);
+					_updateReport(index,array);
 				});
 			} else {
 				var inventoryReceived = new ClinicExpendableInventory({
@@ -544,7 +544,7 @@ function getExpendableInventoryItems(req,res,next){
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
 	ExpendableInventoryMaster.find({
-				"genericName" : {$regex : ".*"+req.query.searchString.toUpperCase()+".*"}
+				"genericName" : {$regex : ".*"+req.query.searchString.toLowerCase()+".*"}
 				 })
 		.populate('expendableInventoryType')
 		.execFind(function(err,data){
@@ -661,7 +661,7 @@ function getTreatments(req,res,next){
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
 	TreatmentsMaster.find({
-				"name" : {$regex : ".*"+req.query.searchString+".*"},
+				"name" : {$regex : ".*"+req.query.searchString.toLowerCase()+".*"},
 				"category": req.query.category }).execFind(function(err,data){
     					if(err) {console.log(err); res.send(err);}
     					else res.send(data);

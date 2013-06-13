@@ -123,10 +123,10 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
  
     });
 
-    function getInstance() {
+    /*function getInstance() {
         if(_instance === null) _instance = new Application();
         return _instance;
-    }
+    }*/
 
-    return getInstance();
+    return Application;
 });

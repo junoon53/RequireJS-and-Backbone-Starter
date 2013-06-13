@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/people/persons',
 	'collections/treatments/treatments',
 
@@ -12,7 +13,7 @@ define([
 	'text!templates/yesNo.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,Treatments,PerioRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,Treatments,PerioRow,vent,template,yesNoTemplate){
 
 	var PerioRowView = Backbone.View.extend({
 		//model: new PerioRow(),
@@ -24,7 +25,7 @@ define([
 			'click .delete': 'delete',
 			'blur .column': 'exitColumn',
 			'keypress .column': 'onEnterUpdate',
-			'click select.quadrant option': 'updateQuadrant'					
+			'change select.quadrant': 'updateQuadrant'					
 		},
 		patientMap:  {},
         doctorsMap:  {},
@@ -40,7 +41,9 @@ define([
 		onClose: function(){
 		},
 		updateQuadrant: function(ev){
-			this.model.set('quadrant',ev.currentTarget.text);
+			this.$('select.quadrant').attr('value',ev.currentTarget.value);
+			this.model.set('quadrant',ev.currentTarget.value);
+			this.model.isValid(true);
 		},
 		edit: function(ev) {
 			ev.preventDefault();
@@ -66,7 +69,7 @@ define([
 					setModelProperties.call(this,'treatment','treatmentName');
 					break;  
 				case "quadrant":
-					this.model.set(targetClass,parseInt(this.$('.quadrant').attr('value'),10));
+					this.model.set(this.$('.quadrant').attr('value'));
 					this.model.isValid(true);
 					break;
 				case "sitting":
@@ -229,7 +232,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.name;
+						 var name = utility.toTitleCase(element.name);
 							 result.push(name);
 					     map[name] = element._id;
 						});
