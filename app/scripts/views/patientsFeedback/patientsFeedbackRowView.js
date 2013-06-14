@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/people/persons',
 	'models/patientsFeedback/patientsFeedbackRow',
 	'vent',
@@ -9,7 +10,7 @@ define([
 	'text!templates/yesNo.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,PatientsFeedback,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,PatientsFeedback,vent,template,yesNoTemplate){
 
 	var PatientsFeedbackRowView = Backbone.View.extend({
 		//model: new PatientsFeedback(),
@@ -143,7 +144,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.firstName+" "+element.lastName+' # '+element._id;
+						 var name = utility.toTitleCase(element.firstName+" "+element.lastName)+' # '+element._id;
 							 result.push(name);
 						 map[name] = (element._id);
 						});

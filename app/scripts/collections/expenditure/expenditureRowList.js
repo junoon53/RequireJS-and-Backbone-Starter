@@ -2,9 +2,10 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/expenditure/expenditureRow',
 	 'vent'
-	 ], function(Backbone,$,_,ExpenditureRow,vent){
+	 ], function(Backbone,$,_,utility,ExpenditureRow,vent){
 
 	var ExpenditureRowList = Backbone.Collection.extend({
 		model: ExpenditureRow,
@@ -34,9 +35,9 @@ define([
 			_.each(dataArray,function(element,index,array){
                 self.add((new ExpenditureRow({
                 	item: element.item,
-                    receivedByName: element.receivedBy.firstName + " " + element.receivedBy.lastName,
+                    receivedByName: utility.toTitleCase(element.receivedBy.firstName + " " + element.receivedBy.lastName),
                     receivedBy: element.receivedBy._id,
-                    sanctionedByName: element.sanctionedBy.firstName + " " + element.sanctionedBy.lastName,
+                    sanctionedByName: utility.toTitleCase(element.sanctionedBy.firstName + " " + element.sanctionedBy.lastName),
                     sanctionedBy: element.sanctionedBy._id,
                     amount: element.amount,
                     qty: element.qty

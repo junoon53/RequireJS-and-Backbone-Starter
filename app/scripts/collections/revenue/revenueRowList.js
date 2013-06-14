@@ -3,8 +3,9 @@ define([
 	 'jquery',
 	 'underscore',
 	 'models/revenue/revenueRow',
-	 'vent'
-	 ], function(Backbone,$,_,RevenueRow,vent){
+	 'vent',
+	 'utility'
+	 ], function(Backbone,$,_,RevenueRow,vent,utility){
 
 	var RevenueRowList = Backbone.Collection.extend({
 		model: RevenueRow,
@@ -51,9 +52,9 @@ define([
 			var self = this;
 			_.each(dataArray,function(element,index,array){
                 self.add((new RevenueRow({
-                    patientName: element.patient.firstName + " " + element.patient.lastName,
+                    patientName: utility.toTitleCase(element.patient.firstName + " " + element.patient.lastName),
                     patient: element.patient._id,
-                    doctorName: element.doctor.firstName + " " + element.doctor.lastName,
+                    doctorName: utility.toTitleCase(element.doctor.firstName + " " + element.doctor.lastName),
                     doctor: element.doctor._id,
                     amount: element.amount,
                     paymentOption: element.paymentOption._id,

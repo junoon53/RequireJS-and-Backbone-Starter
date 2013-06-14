@@ -2,13 +2,14 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/dentalMaterials/expendableInventoryItems',
 	'models/dentalMaterials/inventoryRequiredRow',
 	'vent',
 	'text!templates/inventoryRequiredRow.html',
 	'text!templates/yesNo.html',
 	'bootstrap'	
-	], function(Backbone,$,_,ExpendableInventoryItems,InventoryRequiredRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,ExpendableInventoryItems,InventoryRequiredRow,vent,template,yesNoTemplate){
 
 	var InventoryRequiredRowView = Backbone.View.extend({
 		model: new InventoryRequiredRow(),
@@ -150,13 +151,13 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.genericName+" "+element.brandName+' # '+element._id;
+						 var name = utility.toTitleCase(element.genericName+" "+element.brandName)+' # '+element._id;
 							 result.push(name);
 					     map[name] = {};
 						 map[name].expendableInventoryItem = element._id;
-						 map[name].accountingUnit = element.accountingUnit;
-						 map[name].brandName = element.brandName;
-						 map[name].expendableInventoryType = element.expendableInventoryType.name;
+						 map[name].accountingUnit = utility.toTitleCase(element.accountingUnit);
+						 map[name].brandName = utility.toTitleCase(element.brandName);
+						 map[name].expendableInventoryType = utility.toTitleCase(element.expendableInventoryType.name);
 						});
 
 						process(result);

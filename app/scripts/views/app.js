@@ -308,8 +308,6 @@ define([
                         this.showReportExistsWarning();
                         break;
                     case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
-                        this.activeViews[viewType].reset();
-                        this.activeViews[viewType].addDataFromReport(this.model.get(viewType));
                         _.each(this.model.viewTypes(),function(viewType){
                             self.createAndRenderView(viewType);
                         });

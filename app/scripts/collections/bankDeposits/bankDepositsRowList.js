@@ -2,8 +2,9 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/bankDeposit/bankDepositRow',
-	 'vent'], function(Backbone,$,_,BankDepositRow,vent) {
+	 'vent'], function(Backbone,$,_,utility,BankDepositRow,vent) {
 
 
 	var BankDepositsRowList = Backbone.Collection.extend({
@@ -21,7 +22,7 @@ define([
 			var self = this;
             _.each(dataArray,function(element,index,array){
                 self.add((new BankDepositRow({
-                    personName: element.person.firstName + " " + element.person.lastName,
+                    personName: utility.toTitleCase(element.person.firstName + " " + element.person.lastName),
                     person: element.person._id,
                     amount: element.amount
                 })));

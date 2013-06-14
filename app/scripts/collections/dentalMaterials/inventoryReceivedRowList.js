@@ -1,10 +1,11 @@
 define([
 	 'backbone',
 	 'jquery',
-	 'underscore',
+     'underscore',
+     'utility',
 	 'models/dentalMaterials/inventoryReceivedRow',
 	 'vent'
-	 ], function(Backbone,$,_,InventoryReceivedRow,vent){
+	 ], function(Backbone,$,_,utility,InventoryReceivedRow,vent){
 
 	var InventoryReceivedRowList = Backbone.Collection.extend({
 		model: InventoryReceivedRow,
@@ -27,14 +28,14 @@ define([
                 self.add((new InventoryReceivedRow({
                 	_id: element._id,
                 	expendableInventoryItem: element.expendableInventoryItem._id,
-                    genericName: element.expendableInventoryItem.genericName,
-                    brandName: element.expendableInventoryItem.brandName,
+                    genericName: utility.toTitleCase(element.expendableInventoryItem.genericName),
+                    brandName: utility.toTitleCase(element.expendableInventoryItem.brandName),
                     accountingUnit: element.expendableInventoryItem.accountingUnit,
-                    expendableInventoryType: element.expendableInventoryItem.expendableInventoryType.name,
+                    expendableInventoryType: utility.toTitleCase(element.expendableInventoryItem.expendableInventoryType.name),
                     qtyReceived: element.qtyReceived,
                     dateExpiry: new Date(element.dateExpiry),
                     receivedBy: element.receivedBy._id,
-                    receivedByName: element.receivedBy.firstName+" "+element.receivedBy.lastName
+                    receivedByName: utility.toTitleCase(element.receivedBy.firstName+" "+element.receivedBy.lastName)
                 })));
             });
 		},

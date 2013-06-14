@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/dentalMaterials/expendableInventoryItems',
 	'collections/people/persons',
 	'models/dentalMaterials/inventoryReceivedRow',
@@ -10,7 +11,7 @@ define([
 	'text!templates/yesNo.html',
 	'bootstrap',
 	'datetimepicker'	
-	], function(Backbone,$,_,ExpendableInventoryItems,Persons,InventoryReceivedRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,ExpendableInventoryItems,Persons,InventoryReceivedRow,vent,template,yesNoTemplate){
 
 	var InventoryReceivedRowView = Backbone.View.extend({
 		model: new InventoryReceivedRow(),
@@ -197,7 +198,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.genericName+" "+element.brandName+' # '+element._id;
+						 var name = utility.toTitleCase(element.genericName+" "+element.brandName)+' # '+element._id;
 							 result.push(name);
 					     map[name] = {};
 						 map[name].expendableInventoryItem = element._id;
@@ -230,7 +231,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.firstName+" "+element.lastName+' # '+element._id;
+						 var name = utility.toTitleCase(element.firstName+" "+element.lastName)+' # '+element._id;
 							 result.push(name);
 						 map[name] = (element._id);
 						});

@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/people/persons',
 	'collections/revenue/paymentOptions',
 	'models/revenue/revenueRow',
@@ -10,7 +11,7 @@ define([
 	'text!templates/yesNo.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,paymentOptions,RevenueRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,paymentOptions,RevenueRow,vent,template,yesNoTemplate){
 
 	var RevenueRowView = Backbone.View.extend({
 		//model: new RevenueRow(),
@@ -197,7 +198,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.firstName+" "+element.lastName+' # '+element._id;
+						 var name = utility.toTitleCase(element.firstName+" "+element.lastName)+' # '+element._id;
 							 result.push(name);
 						 map[name] = (element._id);
 						});

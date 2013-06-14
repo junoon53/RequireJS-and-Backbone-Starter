@@ -2,9 +2,10 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/dentalMaterials/inventoryRequiredRow',
 	 'vent'
-	 ], function(Backbone,$,_,InventoryRequiredRow,vent){
+	 ], function(Backbone,$,_,utility,InventoryRequiredRow,vent){
 
 	var InventoryRequiredRowList = Backbone.Collection.extend({
 		model: InventoryRequiredRow,
@@ -26,10 +27,10 @@ define([
 			_.each(dataArray,function(element,index,array){
                 self.add((new InventoryRequiredRow({
                 	expendableInventoryItem: element.expendableInventoryItem._id,
-                    genericName: element.expendableInventoryItem.genericName,
-                    brandName: element.expendableInventoryItem.brandName,
-                    accountingUnit: element.expendableInventoryItem.accountingUnit,
-                    expendableInventoryType: element.expendableInventoryItem.expendableInventoryType.name,
+                    genericName: utility.toTitleCase(element.expendableInventoryItem.genericName),
+                    brandName: utility.toTitleCase(element.expendableInventoryItem.brandName),
+                    accountingUnit: utility.toTitleCase(element.expendableInventoryItem.accountingUnit),
+                    expendableInventoryType: utility.toTitleCase(element.expendableInventoryItem.expendableInventoryType.name),
                     qty: element.qty
                 })));
             });

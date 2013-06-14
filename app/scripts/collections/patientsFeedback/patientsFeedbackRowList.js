@@ -2,8 +2,9 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/patientsFeedback/patientsFeedbackRow',
-	 'vent'], function(Backbone,$,_,PatientsFeedbackRow,vent) {
+	 'vent'], function(Backbone,$,_,utility,PatientsFeedbackRow,vent) {
 
 
 	var PatientsFeedbackRowList = Backbone.Collection.extend({
@@ -21,7 +22,7 @@ define([
 			var self = this;
             _.each(dataArray,function(element,index,array){
                 self.add((new PatientsFeedbackRow({
-                    patientName: element.patient.firstName + " " + element.patient.lastName,
+                    patientName: utility.toTitleCase(element.patient.firstName + " " + element.patient.lastName),
                     patient: element.patient._id,
                     feedback: element.feedback
                 })));

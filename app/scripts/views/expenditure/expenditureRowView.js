@@ -2,6 +2,7 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/people/persons',
 	'models/expenditure/expenditureRow',
 	'vent',
@@ -9,7 +10,7 @@ define([
 	'text!templates/yesNo.html',
 	'bootstrap',
 	
-	], function(Backbone,$,_,Persons,ExpenditureRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,ExpenditureRow,vent,template,yesNoTemplate){
 
 	var ExpenditureRowView = Backbone.View.extend({
 		//model: new ExpenditureRow(),
@@ -184,7 +185,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.firstName+" "+element.lastName+' # '+element._id;
+						 var name = utility.toTitleCase(element.firstName+" "+element.lastName)+' # '+element._id;
 							 result.push(name);
 						 map[name] = (element._id);
 						});

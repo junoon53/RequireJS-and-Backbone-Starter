@@ -21,7 +21,7 @@ define([
 			var self = this;
             _.each(dataArray,function(element,index,array){
                 self.add((new ClinicIssuesRow({
-                    doctorName: element.doctor.firstName + " " + element.doctor.lastName,
+                    doctorName: utility.toTitleCase(element.doctor.firstName + " " + element.doctor.lastName),
                     doctor: element.doctor._id,
                     issue: element.issue
                 })));
