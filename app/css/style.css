@@ -103,6 +103,14 @@ html {
 	width: 100%; height: 99%;
 }
 
+
+.input-prepend {
+	max-width: 70%;
+}
+.input-prepend.input-append {
+	max-width: 30%;
+}
+
 footer {
 	position:absolute;
 	bottom: 10px;

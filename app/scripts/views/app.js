@@ -166,7 +166,7 @@ define([
             });
             this.dateTimePicker = this.$('#datetimepicker').data('datetimepicker');
 
-            this.dateTimePicker.setLocalDate(this.model.get("date"));
+            this.dateTimePicker.setLocalDate(new Date(this.model.get("date")));
             return this;
         },
         displayModal: function(modalType){
