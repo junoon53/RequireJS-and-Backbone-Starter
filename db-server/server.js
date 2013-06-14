@@ -183,6 +183,9 @@ var ToothSchema = new Schema({
 mongoose.model('Tooth', ToothSchema, 'teeth');
 var Tooth = mongoose.model('Tooth');
 
+/***************************************Utility**************************/
+
+
 /****************************************Testing************************/
 
 User.find({username:"divyaGaur"}).populate('person').exec(function(err,docs){
@@ -544,7 +547,7 @@ function getExpendableInventoryItems(req,res,next){
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
 	ExpendableInventoryMaster.find({
-				"genericName" : {$regex : ".*"+req.query.searchString.toLowerCase()+".*"}
+				"genericName" : {$regex : ".*"+req.query.searchString.toUpperCase()+".*"}
 				 })
 		.populate('expendableInventoryType')
 		.execFind(function(err,data){
@@ -664,7 +667,7 @@ function getTreatments(req,res,next){
 				"name" : {$regex : ".*"+req.query.searchString.toLowerCase()+".*"},
 				"category": req.query.category }).execFind(function(err,data){
     					if(err) {console.log(err); res.send(err);}
-    					else res.send(data);
+    					else {res.send(data);}
 	});
 };
 
