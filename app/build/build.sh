@@ -7,6 +7,6 @@ mv css/style.css style.css && rm -rf css/* && mv style.css css/style.css
 mkdir -p scripts/vendor/bootstrap/docs/assets
 cp -r ../app/scripts/vendor/bootstrap/docs/assets/img scripts/vendor/bootstrap/docs/assets 
 mkdir -p scripts/vendor/font-awesome/font
-cp -r ../app/scripts/vendor/font-awesome/font scripts/vendor/font-awesome/font
+cp -r ../app/scripts/vendor/font-awesome/font scripts/vendor/font-awesome
 
 
