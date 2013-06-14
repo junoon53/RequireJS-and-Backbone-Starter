@@ -23,7 +23,7 @@
 .tableHeaderColumn {
 	display:inline-block;
 	font-weight: bold;
-	font-size: 23px;
+	/*font-size: 23px;*/
 	/*padding: 10px;
 	margin-right: 10px;	*/
 }
@@ -31,7 +31,7 @@
 .treatmentTableHeaderColumn {
 	display:inline-block;
 	font-weight: bold;
-	font-size: 19px;
+	/*font-size: 19px;*/
 }
 
 .column_prefix {
@@ -49,6 +49,12 @@ a.brand.logo {
         -o-background-size: contain; /*opera*/
         background-size: contain; /*generic*/
 }
+
+.column,
+.tableHeaderColumn {
+	max-width: 100%;
+}
+
 
 input.input-validation-error,
 textarea.input-validation-error,
@@ -113,7 +119,8 @@ footer .right {
 }
 
 
-@media (max-width: 980px) {
+
+@media (max-width: 1920px) {
 /* Enable use of floated navbar text */
 	.navbar-text.pull-right {
 	  float: none;
@@ -173,3 +180,4 @@ footer .right {
 	margin-bottom: 15px;
 	padding: 7px 9px;
 }
+
