@@ -302,13 +302,24 @@ define([
         addRetrievedViews: function(reportExists) {
             var self = this;
             if(reportExists){
-                _.each(this.model.viewTypes(),function(viewType){
-                    self.createAndRenderView(viewType);
-                });
-                if(this.selectedViewType !== null) {
-                    //this.createAndRenderView(this.selectedViewType);
-                    this.activeViews[this.selectedViewType].$el.show();
+                switch(this.model.get('role')){
+                    case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
+                    case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:   
+                        this.showReportExistsWarning();
+                        break;
+                    case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
+                        this.activeViews[viewType].reset();
+                        this.activeViews[viewType].addDataFromReport(this.model.get(viewType));
+                        _.each(this.model.viewTypes(),function(viewType){
+                            self.createAndRenderView(viewType);
+                        });
+                        if(this.selectedViewType !== null) {
+                            //this.createAndRenderView(this.selectedViewType);
+                            this.activeViews[this.selectedViewType].$el.show();
+                        }
+                        break;
                 }
+                
             }
             
         },
