@@ -1,7 +1,7 @@
 define(['backbone'], function(Backbone) {
 
 	var Person = Backbone.Model.extend({
-		url:'http://192.168.211.132:8080/persons',
+		url:'http://54.245.100.246:8080/persons',
 		defaults: {
 			firstName:"",
 			lastName:"",

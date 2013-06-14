@@ -249,7 +249,7 @@ define([
 
 				return function(query,process){
 					var map = this.options.map;
-					$.get('http://192.168.211.132:8080/treatmentStages',{category:category},function(data){
+					$.get('http://54.245.100.246:8080/treatmentStages',{category:category},function(data){
 						var result = [];
 						//var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){

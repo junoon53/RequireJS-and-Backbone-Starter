@@ -1,14 +1,33 @@
-<input type="text" class="patient column" id= <%= "'patient"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+patientName+"'" %>  valueId= <%= "'"+patient+"'" %> /> 
-
-<input type="text" class="doctor column" id= <%= "'doctor"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+doctorName+"'" %>  valueId= <%= "'"+doctor+"'" %> />
-
-<span>Rs</span>
-<input type="text" class="amount column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+amount+"'" %> />
-
-<div class="btn-group">
-<button class="btn btn-small dropdown-toggle paymentOption"  data-toggle="dropdown" valueId=  <%= "'"+paymentOption+"'" %> > <%= paymentOptionName %> <span class="caret"></span></button>
-<ul class="dropdown-menu">       
-</ul>
+<div class='span2'>
+	<input type="text" class="patient column" id= <%= "'patient"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off" value= <%= "'"+patientName+"'" %>  valueId= <%= "'"+patient+"'" %> /> 
 </div>
 
-<a href="#" class="delete"><i class="icon-remove delete-row-icon"></i></a>
+<div class='span2'>
+	<input type="text" class="doctor column" id= <%= "'doctor"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+doctorName+"'" %>  valueId= <%= "'"+doctor+"'" %> />
+</div>
+
+
+<div class='span4'>
+	<div class='row-fluid'>
+		<div class='span6'>
+			<div class="input-prepend input-append">
+	  			<span class="add-on">Rs</span>
+	  			<input type="text" class="amount column input-small" data-toggle="tooltip" autocomplete="off" value= <%= "'"+amount+"'" %> />
+				<div class="btn-group">
+					<button class="btn dropdown-toggle paymentOption"  data-toggle="dropdown" valueId=  <%= "'"+paymentOption+"'" %> > <%= paymentOptionName %> 
+						<span class="caret"></span>
+					</button>
+				<ul class="dropdown-menu"></ul>
+				</div>
+			</div>	 
+	    </div>
+		<div class='span2'>
+			<button class='btn delete'>X</button>	
+		</div>
+	</div>
+</div>
+
+
+
+
+

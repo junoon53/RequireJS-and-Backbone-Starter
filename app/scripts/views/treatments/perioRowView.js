@@ -195,8 +195,7 @@ define([
 		render: function() {
 			this.model.set("rowId",this.model.cid,{silent:true});
 			this.$el.html(this.template(this.model.toJSON()));
-
-			this.$('ul.dropdown-menu').html('<li id="0"><a href="#">CASH</a></li><li id="1"><a href="#">CARD</a></li>');
+			this.$('.quadrant').val(this.model.get('quadrant'));
 			this.model.isValid(true);
 			function personSource(collection,roles) {
 

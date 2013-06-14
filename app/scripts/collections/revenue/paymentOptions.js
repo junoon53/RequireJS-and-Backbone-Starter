@@ -4,7 +4,7 @@ define(['backbone','models/revenue/paymentOption'], function(Backbone,PaymentOpt
 
 	var PaymentOptions = Backbone.Collection.extend({
 		model: PaymentOption,
-		url: 'http://192.168.211.132:8080/paymentOptions' 
+		url: 'http://54.245.100.246:8080/paymentOptions' 
 	});
 
 	return function() {

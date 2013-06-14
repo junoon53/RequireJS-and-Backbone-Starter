@@ -4,7 +4,7 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
 
   var Auth = Backbone.Model.extend({
     
-	url:'http://192.168.211.132:8080/auth',
+	url:'http://54.245.100.246:8080/auth',
 	defaults:{
 		loggedIn:false,
 		username:"",

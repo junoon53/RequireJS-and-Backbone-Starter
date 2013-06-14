@@ -1,6 +1,22 @@
+<div class='span2'>
       <input type="text" class="person column" id= <%= "'person"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+personName+"'" %>  valueId= <%= "'"+person+"'" %> />
+</div>
 
-      <span>Rs</span>
-      <input type="text" class="amount column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+amount+"'" %> />
+<div class='span3'>
+	<div class='row-fluid'>
+		<div class='span4'>
+			<div class="input-prepend">
+	  			<span class="add-on">Rs</span>
+                <input type="text" class="amount column" data-toggle="tooltip"  autocomplete="off" value= <%= "'"+amount+"'" %> />
+			</div>	 
+		</div>
+		<div class='span1 offset5'>
+			<button class='btn delete'>X</button>
+		</div>
+	</div>
+</div>
 
-      <a href="#" class="delete"><i class="icon-remove delete-row-icon"></i></a>
+
+
+
+

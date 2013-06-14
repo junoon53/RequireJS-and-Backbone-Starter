@@ -2,7 +2,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
     var _instance = null;
 
     var Application = Backbone.Model.extend({
-        url: 'http://192.168.211.132:8080/report',
+        url: 'http://54.245.100.246:8080/report',
         defaults: {
             // Report properties
             _id:null,            

@@ -40,6 +40,7 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
         },
         addAuthView: function(){
             //document.body.background = '../resources/images/cdf_blur_Bg.png';
+            var bg = loginBg;
             this.addView(new AuthView(),'../resources/images/cdf_blur_Bg.png');
         },
         createAndAddAppView: function(){

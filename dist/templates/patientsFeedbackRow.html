@@ -1,5 +1,15 @@
+<div class='span5'>
+      <textarea rows="2" class="feedback column input-xxlarge" data-toggle="tooltip"  autocomplete="off"><%= feedback %></textarea>
+</div>
+
+<div class='span2'>
       <input type="text" class="patient column" id= <%= "'patient"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+patientName+"'" %>  valueId= <%= "'"+patient+"'" %> />
+</div>
 
-      <textarea rows="1" class="feedback column column2" data-toggle="tooltip"  autocomplete="off"><%= feedback %></textarea>
+<div class='span1'>
+	<button class='btn delete'>X</button>	
+</div>
 
-      <a href="#" class="delete"><i class="icon-remove delete-row-icon"></i></a>
+
+
+
