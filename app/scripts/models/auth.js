@@ -27,7 +27,7 @@ define(['backbone','underscore','jquery','vent'], function(Backbone,_,$,vent) {
         var pword = $("#password").val();
         this.save({username:user,password:pword},{
             success: function(model,response,options){
-                if(response.person){                    
+                if(response){  
                     vent.trigger('CDF.Models.Auth:login:success');
                 } else {
                     alert("Invalid Credentials!");

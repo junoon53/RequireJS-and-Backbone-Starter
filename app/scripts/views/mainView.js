@@ -8,23 +8,43 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
             this.listenTo(vent,'CDF.Router:index',this.addAuthView);
             this.listenTo(vent,'CDF.Models.Auth:login:success',this.createAndAddAppView);
         },
-        addView: function(view){
-            if (this.currentView){
-              this.currentView.close();
-            }
+        addView: function(view,background){
             
-            this.currentView = view;
-            this.currentView.render();
-            this.currentView.$el.show();
-            this.$el.append(this.currentView.el);
+            var self = this;
+            if (this.currentView){
+                
+                 $('html').fadeOut(1000, function () {             
+                        self.currentView.close();
+                        self.currentView = view;
+                        self.currentView.render();
+                        self.$el.html(self.currentView.el);
+                        self.currentView.$el.show();
+                        document.body.background = background;
+                        $('html').fadeIn(1000, function(){
+                            self.currentView.$el.show();
+                           
+                        });
+                        
+                  });
+            }else {
+                this.currentView = view;
+                this.currentView.render();
+                this.$el.html(this.currentView.el);
+                this.currentView.$el.show();
+                document.body.background = background;
+                $('html').fadeIn(1000, function(){
+                    self.currentView.$el.show();                   
+                });
+            }
+              
         },
         addAuthView: function(){
-            document.body.background = '../resources/images/cdf_blur_Bg.png';
-            this.addView(new AuthView());
+            //document.body.background = '../resources/images/cdf_blur_Bg.png';
+            this.addView(new AuthView(),'../resources/images/cdf_blur_Bg.png');
         },
         createAndAddAppView: function(){
                 //$('body').css('background','none');
-                document.body.background = '';
+                //document.body.background = '';
                 var person = this.currentView.model.get('person');
                 var appView = new AppView();
                 appView.model.set({
@@ -39,7 +59,7 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
                     "roleName":person.roles[person.roles.length - 1].name
             });
 
-           this.addView(appView);
+           this.addView(appView,'');
         }
 
 
