@@ -2,8 +2,9 @@ define([
 	 'backbone',
 	 'jquery',
 	 'underscore',
+	 'utility',
 	 'models/clinicIssues/clinicIssuesRow',
-	 'vent'], function(Backbone,$,_,ClinicIssuesRow,vent) {
+	 'vent'], function(Backbone,$,_,utility,ClinicIssuesRow,vent) {
 
 
 	var ClinicIssuesRowList = Backbone.Collection.extend({
