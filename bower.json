@@ -7,6 +7,10 @@
     "backbone-amd": "latest",
     "underscore-amd": "latest",
     "bootstrap": "latest",
-    "bootstrap-datetimepicker":"latest"
+    "bootstrap-datetimepicker":"latest",
+    "font-awesome":"latest",
+    "backbone-validation":"latest",
+    "requirejs-plugins":"latest",
+    "requirejs-text":"latest"
   }
 }
