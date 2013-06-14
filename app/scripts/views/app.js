@@ -110,8 +110,8 @@ define([
             if(selectedClinicId !== this.model.get('clinic')) {
                 this.model.set({clinic:selectedClinicId});
                 this.model.set({clinicName:_.findWhere(this.model.get('clinics'),{_id:selectedClinicId}).name});
-                this.$('a.selectedClinic').attr('id',this.model.get('clinic'));
-                this.$('a.selectedClinic').text(this.model.get('clinicName'));  
+                this.$('span.selectedClinic').attr('id',this.model.get('clinic'));
+                this.$('span.selectedClinic').text(this.model.get('clinicName'));  
                 this.removeAllViews(); 
             }                      
         },

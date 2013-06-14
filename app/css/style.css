@@ -2,6 +2,7 @@
 @import url('../scripts/vendor/bootstrap/docs/assets/css/bootstrap-responsive.css');
 @import url('../scripts/vendor/bootstrap/docs/assets/css/bootstrap.css');
 @import url('../scripts/vendor/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+@import url('../scripts/vendor/font-awesome/css/font-awesome.min.css');
 
 ./*column {
 	margin-top: 10px;
@@ -39,6 +40,14 @@
 
 a {
 	text-decoration: none;
+}
+
+a.brand.logo {
+	background: url('../resources/images/cdf_logo_only.png') no-repeat;
+        -webkit-background-size: contain; /*for webKit*/
+        -moz-background-size: contain; /*Mozilla*/
+        -o-background-size: contain; /*opera*/
+        background-size: contain; /*generic*/
 }
 
 input.input-validation-error,
@@ -85,12 +94,12 @@ body {
 }
 
 html {
-	width: 100%; height: 100%;
+	width: 100%; height: 99%;
 }
 
 footer {
 	position:absolute;
-	bottom: 0px;
+	bottom: 10px;
 	right:5px;
 }
 
