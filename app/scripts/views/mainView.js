@@ -8,40 +8,46 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
             this.listenTo(vent,'CDF.Router:index',this.addAuthView);
             this.listenTo(vent,'CDF.Models.Auth:login:success',this.createAndAddAppView);
         },
+        /*Private methods*/
+        _renderCurrentView: function(callback, background){
+            var self = this;
+            this.$el.html(this.currentView.el);
+            this.currentView.$el.show();
+            document.body.background = background;
+            $('html').fadeIn(1000, function(){
+                self.currentView.$el.show();
+                if(callback) callback();
+            });
+        },
+        _removeCurrentView: function(callback, background) {
+            var self = this;
+             $('html').fadeOut(1000, function () {             
+                    self.currentView.close();
+                    if(callback) callback();
+              });
+        },
+        /*Public methods*/
         addView: function(view,background){
             
             var self = this;
             if (this.currentView){
-                
-                 $('html').fadeOut(1000, function () {             
-                        self.currentView.close();
-                        self.currentView = view;
-                        self.currentView.render();
-                        self.$el.html(self.currentView.el);
-                        self.currentView.$el.show();
-                        document.body.background = background;
-                        $('html').fadeIn(1000, function(){
-                            self.currentView.$el.show();
-                           
-                        });
-                        
-                  });
+                this._removeCurrentView(function(){
+                    self.currentView = view;
+                    self._renderCurrentView(null,background);
+                },background);
+
             }else {
                 this.currentView = view;
-                this.currentView.render();
-                this.$el.html(this.currentView.el);
-                this.currentView.$el.show();
-                document.body.background = background;
-                $('html').fadeIn(1000, function(){
-                    self.currentView.$el.show();                   
-                });
+                this._renderCurrentView(null,background);
             }
-              
+
         },
         addAuthView: function(){
             //document.body.background = '../resources/images/cdf_blur_Bg.png';
             var bg = loginBg;
-            this.addView(new AuthView(),'../resources/images/cdf_blur_Bg.png');
+            var authView = new AuthView();
+            authView.render();
+            this.addView(authView,'../resources/images/cdf_blur_Bg.png');
         },
         createAndAddAppView: function(){
                 //$('body').css('background','none');
@@ -58,9 +64,9 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
                     "date": new Date(),
                     "role":person.roles[person.roles.length - 1]._id,
                     "roleName":person.roles[person.roles.length - 1].name
-            });
-
-           this.addView(appView,'');
+               });
+               appView.render();
+               this.addView(appView,'');
         }
 
 
