@@ -48,7 +48,11 @@ require(['backbone',
   };
 
   //_.extend(Backbone.Model.prototype, validation.mixin);
-
+  
+  console.log('CDF Clinics Feedback System - v0.1.0');
+  console.log('Designed and built by Vikram Pawar [ junoon.53@gmail.com ]');
+  console.log('initializing...');
+  
   roles().fetch();
   paymentOptions().fetch();
 
