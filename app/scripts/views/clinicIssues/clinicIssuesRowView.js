@@ -83,7 +83,7 @@ define([
 			var value =  this.$('.'+targetClass).val();
 			var self = this;
 				function newDoctorAdded(doctorModel) {
-					self.$('.doctor').val(doctorModel.get('firstName')+" "+doctorModel.get('lastName'));
+					self.$('.doctor').val(utility.toTitleCase(doctorModel.get('firstName')+" "+doctorModel.get('lastName')));
 					self.$('.doctor').attr('valueId',doctorModel.get('_id'));
 					self.model.set('doctor',doctorModel.get('_id'));
 					self.model.set('doctorName',doctorModel.get('firstName')+" "+doctorModel.get('lastName')); 

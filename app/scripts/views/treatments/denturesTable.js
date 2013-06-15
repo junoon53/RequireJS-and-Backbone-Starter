@@ -19,9 +19,6 @@ define([
 			
 			this.rowViews = [];
 
-			this.listenTo(vent,'CDF.Views.Dentures.DenturesRowView:exitColumn:amount', this.updateTotal);
-			this.listenTo(vent,'CDF.Views.Dentures.DenturesRowView:onValid', this.updateTotal);
-
 			this.listenTo(vent,'CDF.Views.Dentures.DenturesRowView:delete', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);

@@ -6,6 +6,7 @@ define(['backbone','jquery', 'underscore','vent','models/people/person','text!te
 			'click #add-patient-button' : 'addPatient'
 		},
 		initialize: function(){
+			this.model = new Person();
 			this.template = _.template(template);
 		},
 		render: function(){

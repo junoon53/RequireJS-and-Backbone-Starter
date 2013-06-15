@@ -19,10 +19,6 @@ define([
 			
 			this.rowViews = [];
 
-			this.listenTo(vent,'CDF.Views.RootCanal.RootCanalRowView:exitColumn:amount', this.updateTotal);
-			this.listenTo(vent,'CDF.Views.RootCanal.RootCanalRowView:onValid', this.updateTotal);
-
-			this.listenTo(vent,'CDF.Views.RootCanal.RootCanalRowView:delete', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);
 		},

@@ -112,31 +112,41 @@ define([
 					break;
 			}
 		},
-		addNewTreatmentStage: function(ev){
+		addNewTreatmentStage: function(value){
+			var self = this;
+			function newTreatmentStageAdded(treatmentStageObject){
+				self.$('.stage').val(utility.toTitleCase(treatmentStageObject.name));
+				self.$('.stage').attr('valueId',treatmentStageObject._id);
+				self.model.set('stageName',treatmentStageObject.name);
+				self.model.set('stage',treatmentStageObject._id); 
+				self.model.isValid(true);
+			}
+
+			vent.trigger('CDF.Views.Treatments.RootCanalRowView:addNewTreatmentStage',{treatmentStageNameString:propertyName,callback:newTreatmentStageAdded});
 
 		},
 		addNewPatient: function(propertyName){
-				var self = this;
-				function newPatientAdded(patientModel) {
-					utility.toTitleCase(self.$('.patient').val(patientModel.get('firstName')+" "+patientModel.get('lastName')));
-					self.$('.patient').attr('valueId',patientModel.get('_id'));
-					self.model.set('patient',patientModel.get('_id'));
-					self.model.set('patientName',patientModel.get('firstName')+" "+patientModel.get('lastName')); 
-					self.model.isValid(true);
-				}
+			var self = this;
+			function newPatientAdded(patientModel) {
+				self.$('.patient').val(utility.toTitleCase(patientModel.get('firstName')+" "+patientModel.get('lastName')));
+				self.$('.patient').attr('valueId',patientModel.get('_id'));
+				self.model.set('patient',patientModel.get('_id'));
+				self.model.set('patientName',patientModel.get('firstName')+" "+patientModel.get('lastName')); 
+				self.model.isValid(true);
+			}
 
-				vent.trigger('CDF.Views.RootCanal.RootCanalRowView:addNewPatient',{patientNameString:propertyName,callback:newPatientAdded});
+			vent.trigger('CDF.Views.Treatments.RootCanalRowView:addNewPatient',{patientNameString:propertyName,callback:newPatientAdded});
 		},
 		addNewDoctor: function(propertyName){
-			   var self = this;
-				function newDoctorAdded(doctorModel) {
-					utility.toTitleCase(self.$('.doctor').val(doctorModel.get('firstName')+" "+doctorModel.get('lastName')));
-					self.$('.doctor').attr('valueId',doctorModel.get('_id'));
-					self.model.set('doctor',doctorModel.get('_id'));
-					self.model.set('doctorName',doctorModel.get('firstName')+" "+doctorModel.get('lastName')); 
-					self.model.isValid(true);
-				}
-				vent.trigger('CDF.Views.RootCanal.RootCanalRowView:addNewDoctor',{doctorNameString:propertyName,callback:newDoctorAdded});
+		   var self = this;
+			function newDoctorAdded(doctorModel) {
+				self.$('.doctor').val(utility.toTitleCase(doctorModel.get('firstName')+" "+doctorModel.get('lastName')));
+				self.$('.doctor').attr('valueId',doctorModel.get('_id'));
+				self.model.set('doctor',doctorModel.get('_id'));
+				self.model.set('doctorName',doctorModel.get('firstName')+" "+doctorModel.get('lastName')); 
+				self.model.isValid(true);
+			}
+			vent.trigger('CDF.Views.Treatments.RootCanalRowView:addNewDoctor',{doctorNameString:propertyName,callback:newDoctorAdded});
 
 		},
 		addNewTreatment: function(propertyName){
@@ -168,12 +178,12 @@ define([
 		},
 		delete: function(ev) {
 			if(ev.preventDefault) ev.preventDefault();			
-			vent.trigger('CDF.Views.RootCanal.RootCanalRowView:delete');			
+			vent.trigger('CDF.Views.Treatments.RootCanalRowView:delete');			
 			this.close();
 		},
 		onValid: function(view,errors){
 			var self = this;
-			vent.trigger('CDF.Views.RootCanal.RootCanalRowView:onValid');
+			vent.trigger('CDF.Views.Treatments.RootCanalRowView:onValid');
 
 			_.each(this.model.attributes,function(value,key){
 				this.$('.'+key).popover('destroy');
@@ -240,7 +250,7 @@ define([
 
 						process(result);
 					}});
-			}
+				}
 			};
 			
 			function treatmentsUpdater(item){

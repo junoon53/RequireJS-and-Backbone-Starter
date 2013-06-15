@@ -111,25 +111,25 @@ define([
 		addNewPatient: function(propertyName){
 				var self = this;
 				function newPatientAdded(patientModel) {
-					utility.toTitleCase(self.$('.patient').val(patientModel.get('firstName')+" "+patientModel.get('lastName')));
+					self.$('.patient').val(utility.toTitleCase(patientModel.get('firstName')+" "+patientModel.get('lastName')));
 					self.$('.patient').attr('valueId',patientModel.get('_id'));
 					self.model.set('patient',patientModel.get('_id'));
 					self.model.set('patientName',patientModel.get('firstName')+" "+patientModel.get('lastName')); 
 					self.model.isValid(true);
 				}
 
-				vent.trigger('CDF.Views.Extractions.ExtractionsRowView:addNewPatient',{patientNameString:propertyName,callback:newPatientAdded});
+				vent.trigger('CDF.Views.Treatments.ExtractionsRowView:addNewPatient',{patientNameString:propertyName,callback:newPatientAdded});
 		},
 		addNewDoctor: function(propertyName){
 			   var self = this;
 				function newDoctorAdded(doctorModel) {
-					utility.toTitleCase(self.$('.doctor').val(doctorModel.get('firstName')+" "+doctorModel.get('lastName')));
+					self.$('.doctor').val(utility.toTitleCase(doctorModel.get('firstName')+" "+doctorModel.get('lastName')));
 					self.$('.doctor').attr('valueId',doctorModel.get('_id'));
 					self.model.set('doctor',doctorModel.get('_id'));
 					self.model.set('doctorName',doctorModel.get('firstName')+" "+doctorModel.get('lastName')); 
 					self.model.isValid(true);
 				}
-				vent.trigger('CDF.Views.Extractions.ExtractionsRowView:addNewDoctor',{doctorNameString:propertyName,callback:newDoctorAdded});
+				vent.trigger('CDF.Views.Treatments.ExtractionsRowView:addNewDoctor',{doctorNameString:propertyName,callback:newDoctorAdded});
 
 		},
 		addNewTreatment: function(propertyName){
@@ -157,12 +157,12 @@ define([
 		},
 		delete: function(ev) {
 			if(ev.preventDefault) ev.preventDefault();			
-			vent.trigger('CDF.Views.Extractions.ExtractionsRowView:delete');			
+			vent.trigger('CDF.Views.Treatments.ExtractionsRowView:delete');			
 			this.close();
 		},
 		onValid: function(view,errors){
 			var self = this;
-			vent.trigger('CDF.Views.Extractions.ExtractionsRowView:onValid');
+			vent.trigger('CDF.Views.Treatments.ExtractionsRowView:onValid');
 
 			_.each(this.model.attributes,function(value,key){
 				this.$('.'+key).popover('destroy');

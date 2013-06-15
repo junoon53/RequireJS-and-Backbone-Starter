@@ -81,15 +81,31 @@ define([
             this.activeViews = {};
             this.selectedViewType = null;
             
-            this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);
-            this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewDoctor', this.displayAddDoctorModal);
+
             this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:addNewPerson', this.displayAddPersonModal);
+            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewPerson', this.displayAddExpendableInventoryItemModal);
             this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:addNewPerson', this.displayAddPersonModal);
+
+            this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.PatientsFeedback.PatientsFeedbackRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.CrownNBridgeRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.DenturesRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.ExtractionsRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.FillingsRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.RootCanalRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.PerioRowView:addNewPatient', this.displayAddPatientModal);
+
+            this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewDoctor', this.displayAddDoctorModal);
             this.listenTo(vent,'CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.Treatments.CrownNBridgeRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.Treatments.DenturesRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.Treatments.ExtractionsRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.Treatments.FillingsRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.Treatments.RootCanalRowView:addNewDoctor', this.displayAddDoctorModal);
+            this.listenTo(vent,'CDF.Views.Treatments.PerioRowView:addNewDoctor', this.displayAddDoctorModal);
+
             this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryRequiredRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
             this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
-            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewPerson', this.displayAddExpendableInventoryItemModal);
 
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
@@ -311,6 +327,9 @@ define([
                         _.each(this.model.viewTypes(),function(viewType){
                             self.createAndRenderView(viewType);
                         });
+
+                        // select a view by default and show:
+
                         if(this.selectedViewType !== null) {
                             //this.createAndRenderView(this.selectedViewType);
                             this.activeViews[this.selectedViewType].$el.show();

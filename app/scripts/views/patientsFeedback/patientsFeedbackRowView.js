@@ -80,7 +80,7 @@ define([
 			var value =  this.$('.'+targetClass).val();
 			var self = this;
 				function newPatientAdded(personModel) {
-					utility.toTItleCase(self.$('.patient').val(personModel.get('firstName')+" "+personModel.get('lastName')));
+					self.$('.patient').val(utility.toTitleCase(personModel.get('firstName')+" "+personModel.get('lastName')));
 					self.$('.patient').attr('valueId',personModel.get('_id'));
 					self.model.set('patient',personModel.get('_id'));
 					self.model.set('patientName',personModel.get('firstName')+" "+personModel.get('lastName')); 

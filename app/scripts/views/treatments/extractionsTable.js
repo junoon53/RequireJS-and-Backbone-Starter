@@ -19,10 +19,6 @@ define([
 			
 			this.rowViews = [];
 
-			this.listenTo(vent,'CDF.Views.Extractions.ExtractionsRowView:exitColumn:amount', this.updateTotal);
-			this.listenTo(vent,'CDF.Views.Extractions.ExtractionsRowView:onValid', this.updateTotal);
-
-			this.listenTo(vent,'CDF.Views.Extractions.ExtractionsRowView:delete', this.updateTotal);
 			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
 			this.listenTo(this.model,'add', this.addRow);
 		},
