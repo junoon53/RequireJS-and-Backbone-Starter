@@ -13,6 +13,24 @@
 	padding: 5px;
 }*/
 
+@media (max-width: 2000px) {
+/* Enable use of floated navbar text */
+	 body { font-size:120%;}
+}
+
+
+@media (max-width: 1600px) {
+/* Enable use of floated navbar text */
+	 body { font-size:100%;}
+}
+
+@media (max-width: 1024px){
+	 body { font-size:50%;}
+}
+
+@media (max-width: 800px){
+	 body { font-size:30%;}
+}
 
 
 
@@ -128,13 +146,12 @@ footer .right {
 
 
 
-@media (max-width: 1920px) {
-/* Enable use of floated navbar text */
-	.navbar-text.pull-right {
+
+
+.navbar-text.pull-right {
 	  float: none;
 	  padding-left: 5px;
 	  padding-right: 5px;
-	}
 }
 
 .tables-container {
