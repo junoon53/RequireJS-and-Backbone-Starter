@@ -19,7 +19,7 @@ define(['backbone','jquery', 'underscore','models/treatments/treatmentStage','ve
 			var self = this;
 			vent.trigger('CDF.Views.Treatments.AddTreatmentStage:addTreatmentStage:called');
 
-			this.model.save({},{success: function(){
+			this.model.save({},{success: function(model,response,options){
 							console.log('Treatment stage added successfully');
 							if(self.callback) self.callback(self.model);
 							vent.trigger('CDF.Views.Treatments.AddTreatmentStage:addTreatmentStage:success');

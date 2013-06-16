@@ -303,7 +303,7 @@ define([
         displayAddTreatmentStageModal: function(msg){
 
             var addTreatmentStageView = new AddTreatmentStageView();
-            
+
             addTreatmentStageView.model.set({
                 stageName: msg.stageName,
                 category: msg.category
@@ -461,6 +461,7 @@ define([
                 success: function(){
                     self.displayReportSubmittedModal();
                     self.removeAllViews(); 
+                    self.changeMenuSelection();
                 },
                 error: function(response1,response2,response3){
                     self.displayReportSubmitFailedModal();

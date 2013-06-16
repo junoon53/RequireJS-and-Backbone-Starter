@@ -114,11 +114,11 @@ define([
 		},
 		addNewTreatmentStage: function(value){
 			var self = this;
-			function newTreatmentStageAdded(treatmentStageObject){
-				self.$('.stage').val(utility.toTitleCase(treatmentStageObject.name));
-				self.$('.stage').attr('valueId',treatmentStageObject._id);
-				self.model.set('stageName',treatmentStageObject.name);
-				self.model.set('stage',treatmentStageObject._id); 
+			function newTreatmentStageAdded(model){
+				self.$('.stage').val(utility.toTitleCase(model.get('stageName')));
+				self.$('.stage').attr('valueId',model.get('_id'));
+				self.model.set('stageName',model.get('stageName'));
+				self.model.set('stage',model.get("_id")); 
 				self.model.isValid(true);
 			}
 
