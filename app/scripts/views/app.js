@@ -117,6 +117,7 @@ define([
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
             this.listenTo(vent,"CDF.Models.Application:submitReport", this.submitReport);            
             this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.addRetrievedViews);
+            this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.updateReportStatusLabel);
             
             this.listenTo(this.model,'change:revenue',console.log('revenue updated in app model'));           
             this.listenTo(this.model,'change:bankDeposits',console.log('bankDeposits updated in app model'));           
@@ -340,6 +341,8 @@ define([
         addRetrievedViews: function(reportExists) {
             var self = this;
             if(reportExists){
+
+
                 switch(this.model.get('role')){
                     case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
                     case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:   
@@ -358,9 +361,19 @@ define([
                         }
                         break;
                 }
-                
+            } else {
             }
-            
+        },
+        updateReportStatusLabel: function(reportExists) {
+            if(reportExists) {
+                this.$('.reportStatus').addClass('label-warning');
+                this.$('.reportStatus').removeClass('label-success');
+                this.$('.reportStatus').text('Exists!');
+            }else {
+                this.$('.reportStatus').removeClass('label-warning');
+                this.$('.reportStatus').addClass('label-success');
+                this.$('.reportStatus').text('New!');
+            }
         },
         removeAllViews: function(){
             _.each(this.activeViews, function(value,key,list){

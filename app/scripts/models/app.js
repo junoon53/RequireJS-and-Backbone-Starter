@@ -28,7 +28,8 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             // Properties for display
             userFullname: "",            
             clinicName: "",            
-            roleName:""
+            roleName:"",
+            reportExists: false
             
         },
         events: {
@@ -37,9 +38,9 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
         initialize: function(){
            var self = this;
            
-           this.listenTo(this,'change:date',this.checkReportStatus);
-           this.listenTo(this,'change:clinic',this.checkReportStatus);
-           this.listenTo(vent,'CDF.Views.AppView:click:submit',this.checkReportStatusAndSubmit);
+           this.listenTo(this,'change:date',this.handleDateOrClinicChange);
+           this.listenTo(this,'change:clinic',this.handleDateOrClinicChange);
+           this.listenTo(vent,'CDF.Views.AppView:click:submit',this.handleReportSubmitRequest);
 
         },
         onClose: function(){
@@ -62,9 +63,20 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             this.set('treatments',[]);
             this.set('person',null);
         },
+        handleDateOrClinicChange: function(){
+            switch(this.attributes.role){
+                case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
+                case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:  
+                    this.checkReportStatus(this.broadcastReportStatus);
+                    break;
+                case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
+                    this.getExistingReport(this.broadcastReportStatus); 
+                    break;
+            }
+        },
         postReportStatus: function(){
             var self = this;
-            this.save(this.model.attributes,{
+            this.save(this.attributes,{
                 success: function(model,response,options){
                  self.set('date', new Date());
                  console.log("report posted successfully");
@@ -75,6 +87,13 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
                  vent.trigger("CDF.Models.Application:postReportStatus:failed","reportSubmitFailedModal");
                 }
 
+            });
+        },
+        checkReportStatus: function(callback){
+            var self = this;
+            $.get('http://54.245.100.246:8080/reportStatus',{date:this.get('date'),clinic:this.get('clinic')},function(data){
+                if(data.reportExists) callback.call(self,true);
+                else callback.call(self,false);
             });
         },
         getExistingReport: function(callback){
@@ -90,23 +109,13 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
                     
             },silent: true});
         },
-        checkReportStatus: function(){
-            this.getExistingReport(this.broadcastReportStatus);
-        },
-        checkReportStatusAndSubmit: function(){
-            this.getExistingReport(this.checkRoleAndSubmit);
+        handleReportSubmitRequest: function(){
+            this.checkReportStatus(this.sendSubmitMessageToView);
         },
         broadcastReportStatus: function(result){
-                                    
-            if(!result) {
-                this.resetReport();
-            } 
-
             vent.trigger("CDF.Models.Application:broadcastReportStatus",result );
-
-   
         },
-        checkRoleAndSubmit: function(result){
+        sendSubmitMessageToView: function(result){
                                              
             if(result &&  (this.get('role') !== _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id)) {
                 vent.trigger('CDF.Models.Application:submitReport:failed','reportExistsModal');
