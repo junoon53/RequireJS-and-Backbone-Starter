@@ -226,6 +226,31 @@ function getRoles(req,res,next){
 	});
 };
 
+function checkReportStatus(req,res,next){
+		var startDate = new Date(req.query.date);
+	startDate.setHours(0);
+	startDate.setMinutes(0);
+	startDate.setSeconds(0);
+	startDate.setMilliseconds(0);
+	console.log(startDate);
+	var endDate = new Date(startDate.getTime());
+	endDate.setHours(24);
+	console.log(endDate);
+
+	var clinic = parseInt(req.query.clinic,0);
+	console.log(clinic);
+
+	Report.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
+	.execFind(function(err,data){
+		if(err) {console.log(err); res.send(err);}
+		else if(data) {
+			res.send({reportExists:true});
+		} else {
+			res.send({reportExists:false});
+		}
+	});
+};
+
 function _getReport(req,callback){
 	var startDate = new Date(req.query.date);
 	startDate.setHours(0);
@@ -757,6 +782,7 @@ server.post('/auth',auth);
 server.get('/report',getReport);
 server.post('/report',addReport);
 server.put('/report', updateReport);
+server.get('/reportStatus',checkReportStatus);
 //server.del('/report/:_id', deleteReport);
 
 /*******************************************************************************************/
