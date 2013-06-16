@@ -108,8 +108,17 @@ define([
 					break;
 			}
 		},
-		addNewTreatmentStage: function(ev){
+		addNewTreatmentStage: function(value){
+			var self = this;
+			function newTreatmentStageAdded(model){
+				self.$('.stage').val(utility.toTitleCase(model.get('stageName')));
+				self.$('.stage').attr('valueId',model.get('_id'));
+				self.model.set('stageName',model.get('stageName'));
+				self.model.set('stage',model.get("_id")); 
+				self.model.isValid(true);
+			}
 
+			vent.trigger('CDF.Views.Treatments.DenturesRowView:addNewTreatmentStage',{stageName:value,category:1001,callback:newTreatmentStageAdded});
 		},
 		addNewPatient: function(propertyName){
 				var self = this;
@@ -253,7 +262,7 @@ define([
 						var result = [];
 						//var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element;
+						 var name = utility.toTitleCase(element);
 							 result.push(name);
 					     map[name] = index;
 						});
@@ -270,7 +279,6 @@ define([
 				 return item;
 		 
 			};
-
 
 			this.$('.patient').typeahead({source:personSource(new Persons(),[0]),updater:personUpdater,minLength:3,id:"patient"+this.model.cid,map:this.patientMap});
 			this.$('.doctor').typeahead({source:personSource(new Persons(),[1,2]),updater:personUpdater,minLength:3,id:"doctor"+this.model.cid,map:this.doctorsMap});

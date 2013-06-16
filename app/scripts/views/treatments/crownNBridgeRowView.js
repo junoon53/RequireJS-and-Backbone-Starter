@@ -124,8 +124,17 @@ define([
 					break;
 			}
 		},
-		addNewTreatmentStage: function(ev){
+		addNewTreatmentStage: function(value){
+			var self = this;
+			function newTreatmentStageAdded(model){
+				self.$('.stage').val(utility.toTitleCase(model.get('stageName')));
+				self.$('.stage').attr('valueId',model.get('_id'));
+				self.model.set('stageName',model.get('stageName'));
+				self.model.set('stage',model.get("_id")); 
+				self.model.isValid(true);
+			}
 
+			vent.trigger('CDF.Views.Treatments.CrownNBridgeRowView:addNewTreatmentStage',{stageName:value,category:1005,callback:newTreatmentStageAdded});
 		},
 		addNewExpendableInventoryItem: function(value){
 			ev.preventDefault();

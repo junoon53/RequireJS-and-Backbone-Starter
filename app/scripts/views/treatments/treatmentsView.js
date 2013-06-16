@@ -129,9 +129,9 @@ define([
 
         },
 		isValid: function() {
-    		var result = false;
+    		var result = true;
             _.each(this.activeTables,function(element){
-                result = element.isValid();
+                if(!element.isValid()) result = false;
             });            
             return result;
         },	

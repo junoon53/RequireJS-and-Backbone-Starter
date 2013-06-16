@@ -105,7 +105,7 @@ define([
 		addNewPatient: function(propertyName){
 				var self = this;
 				function newPatientAdded(patientModel) {
-					self.$('.patient').val(utility.toTitleCase(personModel.get('firstName')+" "+personModel.get('lastName')));
+					self.$('.patient').val(utility.toTitleCase(patientModel.get('firstName')+" "+patientModel.get('lastName')));
 					self.$('.patient').attr('valueId',patientModel.get('_id'));
 					self.model.set('patient',patientModel.get('_id'));
 					self.model.set('patientName',patientModel.get('firstName')+" "+patientModel.get('lastName')); 
