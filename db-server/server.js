@@ -708,20 +708,20 @@ function addNewTreatmentStage(req,res,next){
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
 	TreatmentCategory.find({_id:req.params.category}).execFind(function(err,data){
-    					if(err) {console.log(err)}
-    				    else {
-    				    	data.push(req.params.stageName);
+    					if(err) {console.log(err); res.send(err);}
+    				    else if(data) {
+    				    	data[0].stages.push(req.params.stageName);
     				    	TreatmentCategory.update({_id:req.params.category},
-    				    							 { $set : { stages: data  } },
+    				    							 { $set : { stages: data[0].stages  } },
     				    					    	 {},
 													 function(err,numAffectedRows,rawResponse){
 														if(err) {console.log('error: '+err); res.send(err) ;}
-														else res.send({name:data[data.indexOf(req.params.category)],
-															_id:data.indexOf(req.params.category)});														
+														else res.send({name:data[0].stages[data[0].stages.indexOf(req.params.category)],
+															_id:data[0].stages.indexOf(req.params.category)});														
 													 }
 												);
 
-    				    }
+    				    } else res.send(null);
 									
 	});
 };
