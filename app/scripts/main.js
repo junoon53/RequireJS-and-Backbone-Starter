@@ -3,7 +3,7 @@ require.config({
   paths: {
     'jquery': 'vendor/jquery/jquery',
     'underscore': 'vendor/underscore-amd/underscore',
-    'text': 'vendor/text/text',
+    'text': 'vendor/requirejs-text/text',
     'bootstrap' : 'vendor/bootstrap/docs/assets/js/bootstrap',
     'datetimepicker': 'vendor/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
     'templates': '../templates',
