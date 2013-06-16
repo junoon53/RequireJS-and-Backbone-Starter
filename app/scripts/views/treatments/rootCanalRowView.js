@@ -122,7 +122,7 @@ define([
 				self.model.isValid(true);
 			}
 
-			vent.trigger('CDF.Views.Treatments.RootCanalRowView:addNewTreatmentStage',{treatmentStageNameString:propertyName,callback:newTreatmentStageAdded});
+			vent.trigger('CDF.Views.Treatments.RootCanalRowView:addNewTreatmentStage',{stageName:value,category:1004,callback:newTreatmentStageAdded});
 
 		},
 		addNewPatient: function(propertyName){

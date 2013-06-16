@@ -672,7 +672,7 @@ function getTreatments(req,res,next){
 };
 
 function addNewTreatment(req,res,next){
-	console.log("adding new person");
+	console.log("adding new treatment");
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
@@ -702,6 +702,30 @@ function getTreatmentStages(req,res,next){
 	});
 };
 
+function addNewTreatmentStage(req,res,next){
+	console.log("adding new treatment stage for treatment category: "+req.params.category);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+	TreatmentCategory.find({_id:req.params.category}).execFind(function(err,data){
+    					if(err) {console.log(err)}
+    				    else {
+    				    	data.push(req.params.stageName);
+    				    	TreatmentCategory.update({_id:req.params.category},
+    				    							 { $set : { stages: data  } },
+    				    					    	 {},
+													 function(err,numAffectedRows,rawResponse){
+														if(err) {console.log('error: '+err); res.send(err) ;}
+														else res.send({name:data[data.indexOf(req.params.category)],
+															_id:data.indexOf(req.params.category)});														
+													 }
+												);
+
+    				    }
+									
+	});
+};
+
 // set up our routes and start the server
 
 server.get('/persons',getPersons);
@@ -711,6 +735,7 @@ server.get('/treatments',getTreatments);
 server.post('/treatments',addNewTreatment);
 
 server.get('/treatmentStages',getTreatmentStages);
+server.post('/treatmentStages',addNewTreatmentStage);
 
 server.get('/expendableInventoryTypes', getExpendableInventoryTypes);
 

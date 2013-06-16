@@ -11,6 +11,7 @@ define([
     'views/people/addPatient',
     'views/people/addPerson',
     'views/inventoryRequired/addExpInventoryItem',
+    'views/treatments/addTreatmentStage',
 
     'views/revenue/revenueTable',
     'views/bankDeposits/bankDepositsTable',
@@ -38,6 +39,7 @@ define([
         AddPatient,
         AddPerson,
         AddExpendableInventoryItem,
+        AddTreatmentStageView,
 
         RevenueTableView,
         BankDepositsTableView,
@@ -106,6 +108,10 @@ define([
 
             this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryRequiredRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
             this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
+
+            this.listenTo(vent,'CDF.Views.Treatments.CrownNBridgeRowView:addNewTreatmentStage', this.displayAddTreatmentStageModal);
+            this.listenTo(vent,'CDF.Views.Treatments.DenturesRowView:addNewTreatmentStage', this.displayAddTreatmentStageModal);
+            this.listenTo(vent,'CDF.Views.Treatments.RootCanalRowView:addNewTreatmentStage', this.displayAddTreatmentStageModal);
 
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
@@ -291,6 +297,22 @@ define([
             addPatientView.render();
             var modal = new ModalView();
             modal.model.set({header:"Add Patient",footer:"",body:addPatientView.$el});
+            this.addAlertView(modal);
+            modal.show();
+        },
+        displayAddTreatmentStageModal: function(msg){
+
+            var addTreatmentStageView = new AddTreatmentStageView();
+            
+            addTreatmentStageView.model.set({
+                stageName: msg.stageName,
+                category: msg.category
+            });
+
+            addTreatmentStageView.callback = msg.callback;
+            addTreatmentStageView.render();
+            var modal = new ModalView();
+            modal.model.set({header:"Add Treatment Stage",footer:"",body:addTreatmentStageView.$el});
             this.addAlertView(modal);
             modal.show();
         },
