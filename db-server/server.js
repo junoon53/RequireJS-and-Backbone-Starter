@@ -243,7 +243,7 @@ function checkReportStatus(req,res,next){
 	Report.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
 	.execFind(function(err,data){
 		if(err) {console.log(err); res.send(err);}
-		else if(data > 0) {
+		else if(data.length > 0) {
 			res.send({reportExists:true});
 		} else {
 			res.send({reportExists:false});

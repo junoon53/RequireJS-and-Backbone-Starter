@@ -2,13 +2,14 @@ define([
 	'backbone',
 	'jquery',
 	'underscore',
+	'utility',
 	'collections/people/persons',
 	'models/bankDeposit/bankDepositRow',
 	'vent',
 	'text!templates/bankDepositsRow.html',
 	'text!templates/yesNo.html',
 	'bootstrap'	
-	], function(Backbone,$,_,Persons,BankDepositsRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,BankDepositsRow,vent,template,yesNoTemplate){
 
 	var BankDepositsRowView = Backbone.View.extend({
 		model: new BankDepositsRow(),
