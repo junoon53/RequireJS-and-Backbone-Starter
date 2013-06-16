@@ -62,6 +62,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
             this.set('inventoryReceived',[]);
             this.set('treatments',[]);
             this.set('person',null);
+            vent.trigger("CDF.Models.Application:resetReport");
         },
         handleDateOrClinicChange: function(){
             switch(this.attributes.role){
@@ -70,7 +71,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
                     this.checkReportStatus(this.broadcastReportStatus);
                     break;
                 case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
-                    this.getExistingReport(this.broadcastReportStatus); 
+                    this.getExistingReport(this.broadcastReportFetchResult); 
                     break;
             }
         },
@@ -104,7 +105,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
                     model.set('id',model.get('_id'));
                     callback.call(self,true);
                 } else {
-                   callback.call(self,false);                   
+                   callback.call(self,false);                                 
                 }
                     
             },silent: true});
@@ -112,7 +113,11 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
         handleReportSubmitRequest: function(){
             this.checkReportStatus(this.sendSubmitMessageToView);
         },
-        broadcastReportStatus: function(result){
+        broadcastReportFetchResult: function(result){
+             if(!result)this.resetReport();
+            vent.trigger("CDF.Models.Application:broadcastReportFetchResult",result );
+        },
+        broadcastReportStatus: function(result){           
             vent.trigger("CDF.Models.Application:broadcastReportStatus",result );
         },
         sendSubmitMessageToView: function(result){

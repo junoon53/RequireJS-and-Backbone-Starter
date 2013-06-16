@@ -116,9 +116,11 @@ define([
             this.listenTo(vent,'CDF.Views.Utility.Modal:hide', this.displayModal);
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
             this.listenTo(vent,"CDF.Models.Application:submitReport", this.submitReport);            
-            this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.addRetrievedViews);
+            this.listenTo(vent,"CDF.Models.Application:broadcastReportFetchResult", this.addRetrievedViews);
+            this.listenTo(vent,"CDF.Models.Application:broadcastReportFetchResult", this.updateReportStatusLabel);
             this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.updateReportStatusLabel);
             
+
             this.listenTo(this.model,'change:revenue',console.log('revenue updated in app model'));           
             this.listenTo(this.model,'change:bankDeposits',console.log('bankDeposits updated in app model'));           
             this.listenTo(this.model,'change:expenditure',console.log('expenditure updated in app model'));           
@@ -135,24 +137,26 @@ define([
                 this.model.set({clinicName:_.findWhere(this.model.get('clinics'),{_id:selectedClinicId}).name});
                 this.$('span.selectedClinic').attr('id',this.model.get('clinic'));
                 this.$('span.selectedClinic').text(this.model.get('clinicName'));  
-                this.removeAllViews(); 
+                //this.removeAllViews(); 
             }                      
         },
         handleDateChange : function(ev) {
             ev.preventDefault();
             this.model.set("date",ev.localDate);
             this.dateTimePicker.hide();
-            this.removeAllViews();
+            //this.removeAllViews();
         }, 
-        changeMenuSelection: function(selection) {
-            this.$('ul.nav-tabs li').each(function(index){
+        unselectAllMenuItems: function(){
+           this.$('ul.nav-tabs li').each(function(index){
                 $(this).removeClass('active');
-            })
+            });
+        },
+        changeMenuSelection: function(selection) {
+            this.unselectAllMenuItems();
 
             if(selection) {
                 this.$('ul.nav-tabs li#'+selection).attr("class","active");               
             }
-             
         },
         onClose: function(){
             this.dateTimePicker.destroy();
@@ -340,8 +344,7 @@ define([
         },
         addRetrievedViews: function(reportExists) {
             var self = this;
-            if(reportExists){
-
+           // if(reportExists){
 
                 switch(this.model.get('role')){
                     case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
@@ -349,6 +352,7 @@ define([
                         this.showReportExistsWarning();
                         break;
                     case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
+                        self.removeAllViews();
                         _.each(this.model.viewTypes(),function(viewType){
                             self.createAndRenderView(viewType);
                         });
@@ -361,8 +365,8 @@ define([
                         }
                         break;
                 }
-            } else {
-            }
+          //  } else {
+          //  }
         },
         updateReportStatusLabel: function(reportExists) {
             if(reportExists) {
