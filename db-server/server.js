@@ -716,8 +716,7 @@ function addNewTreatmentStage(req,res,next){
     				    					    	 {},
 													 function(err,numAffectedRows,rawResponse){
 														if(err) {console.log('error: '+err); res.send(err) ;}
-														else res.send({stageName:data[0].stages[data[0].stages.indexOf(req.params.category)],
-															_id:data[0].stages.indexOf(req.params.category)});														
+														else res.send({stageName:req.params.stageName, _id:numAffectedRows});														
 													 }
 												);
 
