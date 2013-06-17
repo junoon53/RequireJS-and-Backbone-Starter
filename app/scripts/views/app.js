@@ -369,7 +369,7 @@ define([
                     console.log('disabled save & submit');
                     break;
                 case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
-                    this.$('#submit').removeClass('disabled');
+                    this.$('#submit').addClass('disabled');
                     this.$('#save').removeClass('disabled');
                     // enable save & submit
                     console.log('enabled save & submit');
@@ -498,7 +498,7 @@ define([
                 return;
             }
 
-            this.model.set('submitted', false);
+            this.model.set('person',this.model.get('user'));
             this._saveReport()
         },
         _saveReport: function() {
@@ -511,8 +511,7 @@ define([
             this.model.save(this.model.attributes,{
                 success: function(){
                     self.displayReportSubmittedModal();
-                    self.removeAllViews(); 
-                    self.changeMenuSelection();
+                    self.addRetrievedViews();
                 },
                 error: function(response1,response2,response3){
                     self.displayReportSubmitFailedModal();
