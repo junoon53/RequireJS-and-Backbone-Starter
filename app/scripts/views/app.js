@@ -510,15 +510,45 @@ define([
 
             this.model.save(this.model.attributes,{
                 success: function(){
-                    self.displayReportSubmittedModal();
+                    if(self.model.get('submitted'))
+                        self._playSuccessCheckmarkAnimation(this.$('li#submit a'));
+                    else {
+                        self._playSuccessCheckmarkAnimation(this.$('li#save a'));
+                    }
                     self.addRetrievedViews();
                 },
                 error: function(response1,response2,response3){
-                    self.displayReportSubmitFailedModal();
+                    //self.displayReportSubmitFailedModal();
+                    if(self.model.get('submitted'))
+                        self._playFailureCheckmarkAnimation(this.$('li#submit a'));
+                    else {
+                        self._playFailureCheckmarkAnimation(this.$('li#save a'));
+                    }
                 }
 
             });
+        },
+        _playSuccessCheckmarkAnimation: function(element) {
+            var self = this;
+            element.append('<span class="badge badge-success successCheckMark" style="float:right" ><i class="icon-ok"></i></span>');
+
+            this.$('.successCheckMark').fadeOut(5000, function () {             
+                    self.$('.successCheckMark').remove();
+              });
+
+
+        },
+        _playFailureCheckmarkAnimation: function(element) {
+            var self = this;
+            element.append('<span class="badge badge-important successCheckMark" style="float:right" ><i class="icon-remove"></i></span>');
+
+            this.$('.successCheckMark').fadeOut(5000, function () {             
+                    self.$('.successCheckMark').remove();
+              });
+
+
         }
+
 
     });
 

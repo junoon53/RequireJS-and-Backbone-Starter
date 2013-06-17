@@ -94,7 +94,8 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
                     model.set('id',model.get('_id'));
                     callback.call(self,true);
                 } else {
-                   callback.call(self,false);                                 
+                   callback.call(self,false);    
+                   model.set("submitted",false);                             
                 }
                     
             },silent: true});
