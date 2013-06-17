@@ -69,6 +69,7 @@ define([
             'click li#inventoryReceived': 'addView',
             'click li#treatments': 'addView',
             'click li#submit a': 'showSubmitModal',
+            'click li#save a': 'saveReport',
             'click li#logout a': 'handleLogoutClick',
             'click .clinicsList li a': 'handleClinicSelect',
             'changeDate #datetimepicker' : 'handleDateChange'
@@ -117,8 +118,9 @@ define([
             this.listenTo(vent,'CDF.Models.Application:submitReport:failed', this.displayModal);
             this.listenTo(vent,"CDF.Models.Application:submitReport", this.submitReport);            
             this.listenTo(vent,"CDF.Models.Application:broadcastReportFetchResult", this.addRetrievedViews);
+            this.listenTo(vent,"CDF.Models.Application:broadcastReportFetchResult", this.toggleReportSubmitPermission);
             this.listenTo(vent,"CDF.Models.Application:broadcastReportFetchResult", this.updateReportStatusLabel);
-            this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.updateReportStatusLabel);
+            //this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.updateReportStatusLabel);
             
 
             this.listenTo(this.model,'change:revenue',console.log('revenue updated in app model'));           
@@ -323,6 +325,8 @@ define([
         },
         showSubmitModal: function(ev){
             ev.preventDefault();
+            if(ev.currentTarget.parentElement.className == "disabled") return; 
+
               var modal = new ModalView();
               modal.model.set({header:"Submit Report",footer:(new Submit()).$el,body:"Phew! That was a lot of work! Well, looks like we're ready to submit! Do check if your inputs are correct before pressing the button."});
               this.addAlertView(modal);
@@ -344,29 +348,40 @@ define([
         },
         addRetrievedViews: function(reportExists) {
             var self = this;
-           // if(reportExists){
+            //this.model.resetReport();
+            self.removeAllViews();
+            _.each(this.model.viewTypes(),function(viewType){
+                self.createAndRenderView(viewType);
+            });
 
-                switch(this.model.get('role')){
-                    case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
-                    case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:   
-                        this.showReportExistsWarning();
-                        break;
-                    case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
-                        self.removeAllViews();
-                        _.each(this.model.viewTypes(),function(viewType){
-                            self.createAndRenderView(viewType);
-                        });
+            if(this.selectedViewType !== null) {
+                this.activeViews[this.selectedViewType].$el.show();
+            }
 
-                        // select a view by default and show:
-
-                        if(this.selectedViewType !== null) {
-                            //this.createAndRenderView(this.selectedViewType);
-                            this.activeViews[this.selectedViewType].$el.show();
-                        }
-                        break;
+        },
+        toggleReportSubmitPermission: function(reportExists) {
+            if(reportExists && this.model.get('submitted')) {
+              switch(this.model.get('role')){
+                case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
+                case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:   
+                    this.$('#submit').addClass('disabled');
+                    this.$('#save').addClass('disabled');
+                    console.log('disabled save & submit');
+                    break;
+                case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
+                    this.$('#submit').removeClass('disabled');
+                    this.$('#save').removeClass('disabled');
+                    // enable save & submit
+                    console.log('enabled save & submit');
+                    break;
                 }
-          //  } else {
-          //  }
+
+            } else {
+                console.log('enabled save & submit');
+                    this.$('#submit').removeClass('disabled');
+                    this.$('#save').removeClass('disabled');
+                // enable save & submit
+            }
         },
         updateReportStatusLabel: function(reportExists) {
             if(reportExists) {
@@ -432,7 +447,6 @@ define([
                 switch(this.model.get('role')){
                     case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
                     case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:                        
-                        break;
                     case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
                         this.activeViews[viewType].reset();
                         this.activeViews[viewType].addDataFromReport(this.model.get(viewType));
@@ -462,13 +476,33 @@ define([
             return result;
         },
         submitReport: function(){
-            var self = this;
+
+
             if(!this.validateReport()) {
                 console.log('report has invalid entries. Not submitting');
                 this.displayReportHasErrorsModal();
                 return;
             }
 
+            this.model.set('person',this.model.get('user'));
+            this.model.set('submitted', true);
+            this._saveReport()
+        },
+        saveReport: function(ev) {
+
+            if(ev.currentTarget.parentElement.className == "disabled") return; 
+
+            if(!this.validateReport()) {
+                console.log('report has invalid entries. Not saving');
+                this.displayReportHasErrorsModal();
+                return;
+            }
+
+            this.model.set('submitted', false);
+            this._saveReport()
+        },
+        _saveReport: function() {
+            var self = this;
             this.model.viewTypes().forEach(function(prop){
                 if(self.activeViews[prop])
                 self.model.set(prop,self.activeViews[prop].getDataForReport());

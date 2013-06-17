@@ -68,6 +68,7 @@ var ReportSchema = new Schema({
 	clinic: {type:Number, ref: 'Clinic'},
 	date:Date,
 	person: {type:Number,ref: 'Person'},
+	submitted: boolean,
 	revenue: [{				
 				patient: { type: Number, ref: 'Person'},
 				doctor: { type: Number, ref: 'Person'},	
@@ -332,6 +333,7 @@ function getReport(req,res,next){
 
 function _addReport(data,callback){
 	var report = new Report({
+		submitted: data.submitted,
 		date : data.date,
 		clinic : data.clinic,
 		person : data.person,
@@ -450,7 +452,9 @@ function updateReport(req,res,next){
 				    clinicIssues: req.params.clinicIssues,
 				    inventoryRequired: req.params.inventoryRequired,
 				    inventoryReceived: req.params.inventoryReceived,
-				    treatments: req.params.treatments
+				    treatments: req.params.treatments,
+				    submitted: req.params.submitted,
+				    person: req.params.person
 				},
 				{},
 				function(err,result){
