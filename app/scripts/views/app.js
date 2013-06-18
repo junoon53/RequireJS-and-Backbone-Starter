@@ -477,7 +477,6 @@ define([
         },
         submitReport: function(){
 
-
             if(!this.validateReport()) {
                 console.log('report has invalid entries. Not submitting');
                 this.displayReportHasErrorsModal();
@@ -485,8 +484,7 @@ define([
             }
 
             this.model.set('person',this.model.get('user'));
-            this.model.set('submitted', true);
-            this._saveReport()
+            this._saveReport(true);
         },
         saveReport: function(ev) {
 
@@ -499,27 +497,32 @@ define([
             }
 
             this.model.set('person',this.model.get('user'));
-            this._saveReport()
+            this._saveReport(false);
         },
-        _saveReport: function() {
+        _saveReport: function(submit) {
             var self = this;
+            
+
             this.model.viewTypes().forEach(function(prop){
                 if(self.activeViews[prop])
                 self.model.set(prop,self.activeViews[prop].getDataForReport());
             });
 
+            this.model.set('submitted', submit);
+
             this.model.save(this.model.attributes,{
                 success: function(){
-                    if(self.model.get('submitted'))
+                    if(submit)
                         self._playSuccessCheckmarkAnimation(this.$('li#submit a'));
                     else {
                         self._playSuccessCheckmarkAnimation(this.$('li#save a'));
                     }
                     self.addRetrievedViews();
+                    self.toggleReportSubmitPermission(true);
                 },
                 error: function(response1,response2,response3){
                     //self.displayReportSubmitFailedModal();
-                    if(self.model.get('submitted'))
+                    if(submit)
                         self._playFailureCheckmarkAnimation(this.$('li#submit a'));
                     else {
                         self._playFailureCheckmarkAnimation(this.$('li#save a'));
@@ -529,24 +532,26 @@ define([
             });
         },
         _playSuccessCheckmarkAnimation: function(element) {
+            if(animating) return;
+            var animating = true;
             var self = this;
             element.append('<span class="badge badge-success successCheckMark" style="float:right" ><i class="icon-ok"></i></span>');
 
             this.$('.successCheckMark').fadeOut(5000, function () {             
                     self.$('.successCheckMark').remove();
+                    animating = false;
               });
-
-
         },
         _playFailureCheckmarkAnimation: function(element) {
+            if(animating) return
+            var animating = true;
             var self = this;
             element.append('<span class="badge badge-important successCheckMark" style="float:right" ><i class="icon-remove"></i></span>');
 
             this.$('.successCheckMark').fadeOut(5000, function () {             
                     self.$('.successCheckMark').remove();
+                    animating = false;
               });
-
-
         }
 
 
