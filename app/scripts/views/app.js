@@ -497,7 +497,7 @@ define([
             }
 
             this.model.set('person',this.model.get('user'));
-            this._saveReport(false);
+            this._saveReport();
         },
         _saveReport: function(submit) {
             var self = this;
@@ -508,7 +508,8 @@ define([
                 self.model.set(prop,self.activeViews[prop].getDataForReport());
             });
 
-            this.model.set('submitted', submit);
+            if(submit)
+                this.model.set('submitted', submit);
 
             this.model.save(this.model.attributes,{
                 success: function(){
