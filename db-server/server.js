@@ -1,10 +1,27 @@
 /***********Restify***********************************/
 
 var restify = require('restify');
+
 var server = restify.createServer();
 server.use(restify.fullResponse());
 server.use(restify.bodyParser());
 server.use(restify.queryParser({ mapParams: false }));
+
+/*******************Encryption************************/
+
+var crypto = require('crypto');
+var pwdCipher = crypto.createCipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
+var pwdDecipher = crypto.createDecipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
+
+/******************Redis*******************************/
+
+var redis = require('redis');
+var redisClient = redis.createClient();
+
+redisClient.on('error', function(err){
+	console.log('redis error: '+error);
+});
+
 
 /*******************Mongoose**************************/
 
@@ -68,7 +85,7 @@ var ReportSchema = new Schema({
 	clinic: {type:Number, ref: 'Clinic'},
 	date:Date,
 	person: {type:Number,ref: 'Person'},
-	submitted: boolean,
+	submitted: Boolean,
 	revenue: [{				
 				patient: { type: Number, ref: 'Person'},
 				doctor: { type: Number, ref: 'Person'},	
@@ -471,13 +488,35 @@ function updateReport(req,res,next){
 
 };
 
+function authenticate(req,res,next){
+	console.log('starting new session with id: '+req.query.clientKey);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
-function auth(req,res,next){
+	if(_validateClientKey(req.query.clientKey)){
+
+    var clientValue = Math.floor((Math.random()*Math.pow(10,10))+1);
+   	
+   	client.hset("clientCredentials", req.query.clientKey, clientValue, redis.print);
+
+   	res.send({clientValue:clientValue});
+
+	} else {
+		res.send({message:'client auth failed'});
+	}
+};
+
+function _validateClientKey(key) {
+	return true;
+};
+
+function login(req,res,next){
 	console.log('authenticating...'+ req.params.username + " " + req.params.password);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 	var username = req.params.username;
-	var password = req.params.password;
+	pwdCipher.update(req.params.password,'utf8','base64');
+	var password = pwdCipher.final('base64');
 
 	User.find({username:username,password:password})
 	.populate('person')
@@ -781,7 +820,8 @@ server.get('/paymentOptions',getPaymentOptions);
 server.post('/clinics',saveClinic);
 server.get('/clinics',getClinics);
 
-server.post('/auth',auth);
+server.post('/login', login);
+server.post('/auth', authenticate);
 
 server.get('/report',getReport);
 server.post('/report',addReport);
