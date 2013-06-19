@@ -523,7 +523,7 @@ function login(req,res,next){
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 	var username = req.params.username;
     
-    redisClient.hget(['clientCredentials',req.params.clientKey],,function(err,clientValue){
+    redisClient.hget(['clientCredentials',req.params.clientKey],function(err,clientValue){
 
     	if(err) {
     		console.log('redis error: '+err);
