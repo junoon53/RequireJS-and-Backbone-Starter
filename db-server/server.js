@@ -489,15 +489,15 @@ function updateReport(req,res,next){
 };
 
 function authenticate(req,res,next){
-	console.log('starting new session with id: '+req.query.clientKey);
+	console.log('starting new session with id: '+req.params.clientKey);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
-	if(_validateClientKey(req.query.clientKey)){
+	if(_validateClientKey(req.params.clientKey)){
 
     var clientValue = Math.floor((Math.random()*Math.pow(10,10))+1);
    	
-   	client.hset("clientCredentials", req.query.clientKey, clientValue, redis.print);
+   	client.hset("clientCredentials", req.params.clientKey, clientValue, redis.print);
 
    	res.send({clientValue:clientValue});
 
@@ -821,7 +821,7 @@ server.post('/clinics',saveClinic);
 server.get('/clinics',getClinics);
 
 server.post('/login', login);
-server.post('/auth', authenticate);
+server.get('/auth', authenticate);
 
 server.get('/report',getReport);
 server.post('/report',addReport);
