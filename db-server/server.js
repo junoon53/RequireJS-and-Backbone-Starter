@@ -9,6 +9,7 @@ server.use(restify.queryParser({ mapParams: false }));
 
 /*******************Encryption************************/
 
+var CryptoJS = require('cryptojs').Crypto;
 var crypto = require('crypto');
 var pwdCipher = crypto.createCipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
 var pwdDecipher = crypto.createDecipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
@@ -529,11 +530,8 @@ function login(req,res,next){
     		console.log('redis error: '+err);
     		res.send({message:err});
     	}else if(_validateClientValue(clientValue)) {
-	    	var paramsPwdDecipher = crypto.createDecipher('aes192', req.params.clientKey);
-	    	paramsPwdDecipher.update(req.params.password,'base64','utf8');
-	    	var decryptedPwd = paramsPwdDecipher.final('utf8');
-			pwdCipher.update(decryptedPwd,'utf8','base64');
-			var password = pwdCipher.final('base64');
+    		var decryptedPwd = Crypto.AES.decrypt(req.params.password,req.params.clientKey);
+			var password = pwdCipher.update(decryptedPwd,'utf8','base64').final('base64');
 
 			User.find({username:username,password:password})
 			.populate('person')
