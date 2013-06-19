@@ -497,7 +497,7 @@ function authenticate(req,res,next){
 
     var clientValue = Math.floor((Math.random()*Math.pow(10,10))+1);
    	
-   	client.hset("clientCredentials", req.params.clientKey, clientValue, redis.print);
+   	redisClient.hset("clientCredentials", req.params.clientKey, clientValue, redis.print);
 
    	res.send({clientValue:clientValue});
 
