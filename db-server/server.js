@@ -508,6 +508,12 @@ function authenticate(req,res,next){
 };
 
 function _validateClientKey(key) {
+	if(key)
+	return true;
+};
+
+function _validateClientValue(value) {
+	if(value)
 	return true;
 };
 
@@ -516,24 +522,39 @@ function login(req,res,next){
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 	var username = req.params.username;
-	pwdCipher.update(req.params.password,'utf8','base64');
-	var password = pwdCipher.final('base64');
+    
+    redisClient.hget(['clientCredentials',req.params.clientKey],,function(err,clientValue){
 
-	User.find({username:username,password:password})
-	.populate('person')
-	.execFind(function(err,data){
-		Role.populate(data, {
-	    path: 'person.roles'
-	  	}, function(err,data){
-	  		console.log(err);
-	  		Clinic.populate(data,{
-	  			path: 'person.clinics'
-	  		}, function(err, data){
-	  		    console.log(err);
-	  			res.send(data[0]);
-	  		});
-	     });			
-	});
+    	if(err) {
+    		console.log('redis error: '+err);
+    		res.send({message:err});
+    	}else if(_validateClientValue(clientValue)) {
+	    	var paramsPwdDecipher = crypto.createDecipher('aes192', req.params.clientKey);
+	    	paramsPwdDecipher.update(req.params.password,'base64','utf8');
+	    	var decryptedPwd = paramsPwdDecipher.final('utf8');
+			pwdCipher.update(decryptedPwd,'utf8','base64');
+			var password = pwdCipher.final('base64');
+
+			User.find({username:username,password:password})
+			.populate('person')
+			.execFind(function(err,data){
+				Role.populate(data, {
+			    path: 'person.roles'
+			  	}, function(err,data){
+			  		console.log(err);
+			  		Clinic.populate(data,{
+			  			path: 'person.clinics'
+			  		}, function(err, data){
+			  		    console.log(err);
+			  			res.send(data[0]);
+			  		});
+			     });			
+			});
+    	}else {
+    		console.log('unauthorized client');
+    		res.send({message:'unauthorized client'});
+    	}
+    });
 };
 
 
