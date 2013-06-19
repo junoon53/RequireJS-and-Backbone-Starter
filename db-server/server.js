@@ -497,13 +497,13 @@ function authenticate(req,res,next){
 	if(_validateClientKey(req.query.clientKey)){
 
     var clientValue = Math.floor((Math.random()*Math.pow(10,10))+1);
-  console.log('generated new client value :'+clientValue); 	
+  	console.log('generated new client value :'+clientValue); 	
    	redisClient.hset("clientCredentials", req.query.clientKey, clientValue, redis.print);
 
-   	res.send({clientValue:clientValue});
+   	res.send({result:true});
 
 	} else {
-		res.send({message:'client auth failed'});
+		res.send({result:false,message:'client auth failed'});
 	}
 };
 
