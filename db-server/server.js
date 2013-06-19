@@ -19,7 +19,7 @@ var redis = require('redis');
 var redisClient = redis.createClient();
 
 redisClient.on('error', function(err){
-	console.log('redis error: '+error);
+	console.log('redis error: '+err);
 });
 
 
@@ -511,7 +511,7 @@ function _validateClientKey(key) {
 };
 
 function login(req,res,next){
-	console.log('authenticating...'+ req.params.username + " " + req.params.password);
+	console.log('logging in...'+ req.params.username + " " + req.params.password);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 	var username = req.params.username;
