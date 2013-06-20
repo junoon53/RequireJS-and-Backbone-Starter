@@ -236,6 +236,9 @@ function getExpendableInventoryTypes(req,res,next){
 
 function getRoles(req,res,next){
 	console.log('getting roles...');
+
+	if(!_validateClient(req.query.clientKey)) return;
+
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
@@ -518,6 +521,24 @@ function _validateClientValue(value) {
 	return true;
 };
 
+function _validateClient(clientKey,res) {
+ 	redisClient.hget(['clientCredentials',clientKey],function(err,clientValue){
+ 	if(err) {
+    		console.log('redis error: '+err);
+    		res.send({message:err});
+    		return false;
+    	}else if(_validateClientValue(clientValue)){
+			console.log('client validated'); 
+			return true;
+		}else {
+    		console.log('unauthorized client');
+    		res.send({message:'unauthorized client'});
+    		return false;
+    	}
+    });
+
+};
+
 function _login(username,decryptedPwd,res){
 	var password = pwdCipher.update(decryptedPwd,'utf8','base64')
 	var password = pwdCipher.final('base64');
@@ -545,25 +566,17 @@ function login(req,res,next){
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 	var username = req.params.username;
+	var password = req.params.password;
    	var clientKey = req.params.clientKey;
  
 	//var b = new Buffer(req.params.password,'hex');
    	//var decryptedPwd = b.toString('utf8');
 	//decryptedPwd = CryptoJS.AES.decrypt(decryptedPwd,req.params.clientKey);
 	//console.log('decryptedPwd: '+decryptedPwd);
-   
- 	redisClient.hget(['clientCredentials',req.params.clientKey],function(err,clientValue){
- 	if(err) {
-    		console.log('redis error: '+err);
-    		res.send({message:err});
-    	}else if(_validateClientValue(clientValue)){
-		console.log('client validated'); 
-   		_login(req.params.username,req.params.password,res);
-	}else {
-    		console.log('unauthorized client');
-    		res.send({message:'unauthorized client'});
-    	}
-    });
+	
+	if(_validateClient(clientKey,username,password,res))
+   			_login(username,password,res);
+
 };
 
 
