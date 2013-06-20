@@ -5,10 +5,13 @@ require.config({
     'underscore': 'vendor/underscore-amd/underscore',
     'text': 'vendor/requirejs-text/text',
     'bootstrap' : 'vendor/bootstrap/docs/assets/js/bootstrap',
+    'cryptojs':'vendor/cryptojs/rollups/aes',
+    'cryptojs-enc-utf16':'vendor/cryptojs/components/enc-utf16-min',
     'datetimepicker': 'vendor/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
     'templates': '../templates',
     'backbone-validation':'vendor/backbone-validation/dist/backbone-validation-amd',  
     'backbone': 'vendor/backbone-amd/backbone',  
+    'localStorage': 'vendor/backbone.localStorage/backbone.localStorage',
     'image' : 'vendor/requirejs-plugins/src/image',
     'img' : '../resources/images',
     'utility': 'utility'  
@@ -19,17 +22,23 @@ require.config({
   	},
   	'datetimepicker' : {
   		deps: ['bootstrap']
-  	}
+  	},
+    'cryptojs': {
+
+    },
+    'cryptojs-enc-utf16': {
+
+    }
   }
 });
 
 require(['backbone',         
          'views/mainView',
          'router/router',
-         'models/people/roles',
-         'collections/revenue/paymentOptions',
-         'backbone-validation'], 
-         function(Backbone,MainView,router,roles,paymentOptions,validation) {
+         'models/client',
+         'backbone-validation'
+         ], 
+         function(Backbone,MainView,router,client,validation) {
 
   Backbone.View.prototype.close = function(){
     this.remove();
@@ -52,9 +61,24 @@ require(['backbone',
   console.log('CDF Clinics Feedback System - v0.1.0');
   console.log('Designed and built by Vikram Pawar [ junoon.53@gmail.com ]');
   console.log('initializing...');
-  
-  roles().fetch();
-  paymentOptions().fetch();
+
+ var clientInstance = client();
+
+ clientInstance.fetch({
+
+    success:function(model, response,options){
+      if(!model.get('clientKey')) {
+        clientInstance.authenticate();
+     } 
+      else {
+       console.log('using existing client credentials')}
+    },
+    error:function(){
+      clientInstance.authenticate();
+    }
+
+});
+
 
   Backbone.history.start({pushState: true, hashChange: true });
 
