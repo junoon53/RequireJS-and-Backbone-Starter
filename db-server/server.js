@@ -518,20 +518,9 @@ function _validateClientValue(value) {
 	return true;
 };
 
-function login(req,res,next){
-	console.log('logging in...'+ req.params.username + " " + req.params.password);
-	res.header("Access-Control-Allow-Origin","*");
-	res.header("Access-Control-Allow-Headers","X-Requested-With");
-	var username = req.params.username;
-    
-    redisClient.hget(['clientCredentials',req.params.clientKey],function(err,clientValue){
-
-    	if(err) {
-    		console.log('redis error: '+err);
-    		res.send({message:err});
-    	}else if(_validateClientValue(clientValue)) {
-    		var decryptedPwd = Crypto.AES.decrypt(req.params.password,req.params.clientKey);
-			var password = pwdCipher.update(decryptedPwd,'utf8','base64').final('base64');
+function _login(username,decryptedPwd,res){
+	var password = pwdCipher.update(decryptedPwd,'utf8','base64')
+	var password = pwdCipher.final('base64');
 
 			User.find({username:username,password:password})
 			.populate('person')
@@ -548,7 +537,29 @@ function login(req,res,next){
 			  		});
 			     });			
 			});
-    	}else {
+
+};
+
+function login(req,res,next){
+	console.log('logging in...'+ req.params.username + " " + req.params.password+" client key: "+req.params.clientKey);
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-Allow-Headers","X-Requested-With");
+	var username = req.params.username;
+   	var clientKey = req.params.clientKey;
+ 
+	//var b = new Buffer(req.params.password,'hex');
+   	//var decryptedPwd = b.toString('utf8');
+	//decryptedPwd = CryptoJS.AES.decrypt(decryptedPwd,req.params.clientKey);
+	//console.log('decryptedPwd: '+decryptedPwd);
+   
+ 	redisClient.hget(['clientCredentials',req.params.clientKey],function(err,clientValue){
+ 	if(err) {
+    		console.log('redis error: '+err);
+    		res.send({message:err});
+    	}else if(_validateClientValue(clientValue)){
+		console.log('client validated'); 
+   		_login(req.params.username,req.params.password,res);
+	}else {
     		console.log('unauthorized client');
     		res.send({message:'unauthorized client'});
     	}
