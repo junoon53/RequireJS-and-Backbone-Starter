@@ -1,5 +1,5 @@
-define(['backbone','jquery', 'underscore','models/app','views/app','views/auth','models/auth','vent','image!../resources/images/cdf_blur_Bg.png'],
- function(Backbone,$,_,App,AppView,AuthView,Auth,vent,loginBg){
+define(['backbone','jquery','underscore','utility','models/app','views/app','views/auth','models/auth','vent','image!../resources/images/cdf_blur_Bg.png'],
+ function(Backbone,$,_,utility,App,AppView,AuthView,Auth,vent,loginBg){
     var _instance = null;
 
     var MainView = Backbone.View.extend({
@@ -59,7 +59,7 @@ define(['backbone','jquery', 'underscore','models/app','views/app','views/auth',
                     "clinicName":person.clinics[0].name,
                     "clinic":person.clinics[0]._id,
                     "clinics":person.clinics,
-                    "userFullname":person.firstName+" "+person.lastName,
+                    "userFullname":utility.toTitleCase(person.firstName+" "+person.lastName),
                     "user":person._id,
                     "date": new Date(),
                     "role":person.roles[person.roles.length - 1]._id,
