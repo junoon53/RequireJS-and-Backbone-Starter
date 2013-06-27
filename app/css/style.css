@@ -19,6 +19,10 @@ body {
         background-size: cover; /*generic*/
 }
 
+#main {
+	width: 100%; height: 100%;
+}
+
 a {
 	text-decoration: none;
 }

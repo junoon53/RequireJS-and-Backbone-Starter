@@ -33,10 +33,9 @@ define([
 		isValid: function() {
 			var result = this.model.isValid();
 			if(!result){
-				this.$('.alert').hide();
-				this.$('.alert-error').show(); 
+				this.$('.error-message').show(); 
 			} else {
-				this.$('.alert').hide();
+				this.$('.error-message').hide();
 			}
 			return result;
 		},	

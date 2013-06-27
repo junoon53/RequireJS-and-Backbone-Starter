@@ -400,6 +400,7 @@ define([
             });
             this.activeViews = {};
             this.$('#content').html('');
+            this.$('.alert-error-global').hide();
         },
         addAlertView: function(view){
             if (this.currentAlertView){
@@ -471,18 +472,24 @@ define([
             var result = true
             _.each(this.activeViews,function(element){
 
-                if(!element.isValid()) result = false
+                if(!element.isValid()) {
+
+                    result = false;
+                }
             });
+
             return result;
         },
         submitReport: function(){
 
             if(!this.validateReport()) {
                 console.log('report has invalid entries. Not submitting');
-                this.displayReportHasErrorsModal();
+                //this.displayReportHasErrorsModal();
+                this.$('.alert-error-global').show();
                 return;
-            }
+            } 
 
+            this.$('.alert-error-global').hide();
             this.model.set('person',this.model.get('user'));
             this._saveReport(true);
         },
@@ -492,10 +499,12 @@ define([
 
             if(!this.validateReport()) {
                 console.log('report has invalid entries. Not saving');
-                this.displayReportHasErrorsModal();
+                //this.displayReportHasErrorsModal();
+                this.$('.alert-error-global').show();
                 return;
             }
 
+            this.$('.alert-error-global').hide();
             this.model.set('person',this.model.get('user'));
             this._saveReport();
         },
