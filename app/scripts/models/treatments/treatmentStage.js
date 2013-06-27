@@ -1,7 +1,7 @@
-define(['backbone'], function(Backbone) {
+define(['backbone','config'], function(Backbone,config) {
 
 	var TreatmentStage = Backbone.Model.extend({
-		url:'http://54.245.100.246:8080/treatmentStages',
+		url:config.serverUrl+'treatmentStages',
 		defaults: {
 			stageName:"",
 			category:"",

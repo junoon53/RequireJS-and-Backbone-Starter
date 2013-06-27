@@ -1,7 +1,7 @@
-define(['backbone'], function(Backbone) {
+define(['backbone','config'], function(Backbone,config) {
 
 	var Treatment = Backbone.Model.extend({
-		url:'http://54.245.100.246:8080/treatments',
+		url:config.serverUrl+'treatments',
 		defaults: {
 			name:"",
 			category:"",

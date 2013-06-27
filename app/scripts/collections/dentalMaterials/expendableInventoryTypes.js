@@ -1,8 +1,8 @@
-define(['backbone','models/dentalMaterials/expendableInventoryType'], function(Backbone,ExpendableInventoryType) {
+define(['backbone','models/dentalMaterials/expendableInventoryType','config'], function(Backbone,ExpendableInventoryType,config) {
 
 	var ExpendableInventoryTypes = Backbone.Collection.extend({
 		model: ExpendableInventoryType,
-		url: 'http://54.245.100.246:8080/expendableInventoryTypes'
+		url: config.serverUrl+'expendableInventoryTypes'
 	});
 
 	return ExpendableInventoryTypes;

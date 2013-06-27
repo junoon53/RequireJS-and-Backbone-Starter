@@ -1,10 +1,10 @@
-define(['backbone','models/revenue/paymentOption'], function(Backbone,PaymentOption) {
+define(['backbone','models/revenue/paymentOption','config'], function(Backbone,PaymentOption,config) {
 
 	var _instance = null;
 
 	var PaymentOptions = Backbone.Collection.extend({
 		model: PaymentOption,
-		url: 'http://54.245.100.246:8080/paymentOptions' 
+		url: config.serverUrl+'paymentOptions' 
 	});
 
 	return function() {

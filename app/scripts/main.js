@@ -14,7 +14,8 @@ require.config({
     'localStorage': 'vendor/backbone.localStorage/backbone.localStorage',
     'image' : 'vendor/requirejs-plugins/src/image',
     'img' : '../resources/images',
-    'utility': 'utility'  
+    'utility': 'utility',
+    'config' : 'config'  
   },
   shim: {
   	'bootstrap' : {
@@ -72,6 +73,7 @@ require(['backbone',
      } 
       else {
        console.log('using existing client credentials')}
+       clientInstance.getStaticData();
     },
     error:function(){
       clientInstance.authenticate();

@@ -1,8 +1,8 @@
-define(['backbone','models/people/person'], function(Backbone,Person) {
+define(['backbone','models/people/person','config'], function(Backbone,Person,config) {
 
 	var Persons = Backbone.Collection.extend({
 		model: Person,
-		url: 'http://54.245.100.246:8080/persons'
+		url: config.serverUrl+'persons'
 	});
 
 	return Persons;

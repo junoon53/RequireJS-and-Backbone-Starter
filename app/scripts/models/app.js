@@ -1,8 +1,8 @@
-define(['backbone','underscore','jquery','vent','models/people/roles'], function(Backbone,_,$,vent,roles) {
+define(['backbone','underscore','jquery','vent','models/people/roles','config'], function(Backbone,_,$,vent,roles,config) {
     var _instance = null;
 
     var Application = Backbone.Model.extend({
-        url: 'http://54.245.100.246:8080/report',
+        url: config.serverUrl+'report',
         defaults: {
             // Report properties
             _id:null,            
@@ -81,7 +81,7 @@ define(['backbone','underscore','jquery','vent','models/people/roles'], function
         },
         checkReportStatus: function(callback){
             var self = this;
-            $.get('http://54.245.100.246:8080/reportStatus',{date:this.get('date'),clinic:this.get('clinic')},function(data){
+            $.get(config.serverUrl+'reportStatus',{date:this.get('date'),clinic:this.get('clinic')},function(data){
                 if(data.reportExists) callback.call(self,true);
                 else callback.call(self,false);
             });

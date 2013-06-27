@@ -1,10 +1,10 @@
-define(['backbone','underscore','jquery','vent','models/client','cryptojs',"cryptojs-enc-utf16"], function(Backbone,_,$,vent,client) {
+define(['backbone','underscore','jquery','vent','models/client','config','cryptojs',"cryptojs-enc-utf16"], function(Backbone,_,$,vent,client,config) {
 
   var _instance = null;  
 
   var Auth = Backbone.Model.extend({
     
-	url:'http://54.245.100.246:8080/login',
+	url:config.serverUrl+'login',
 	defaults:{
 		loggedIn:false,
 		username:"",

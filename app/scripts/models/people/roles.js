@@ -1,8 +1,8 @@
-define(['backbone'], function(Backbone) {
+define(['backbone','config'], function(Backbone,config) {
 	var _instance = null;
 
 	var Roles = Backbone.Model.extend({
-		url:'http://54.245.100.246:8080/roles',
+		url:config.serverUrl+'roles',
 
 		initialize: function(){
 			/*this.fetch({success:function(model,response,options){

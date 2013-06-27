@@ -1,8 +1,8 @@
-define(['backbone'], function(Backbone) {
+define(['backbone','config'], function(Backbone,config) {
 
 	var Clinics = Backbone.Collection.extend({
 		model: CDF.Models.Infra.Clinic,
-		url: 'http://54.245.100.246:8080/clinics'
+		url: config.serverUrl+'clinics'
 	});
 
 	return Clinics;

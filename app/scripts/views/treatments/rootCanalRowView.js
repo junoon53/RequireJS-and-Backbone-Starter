@@ -11,9 +11,10 @@ define([
 	'vent',
 	'text!templates/rootCanalRow.html',
 	'text!templates/yesNo.html',
+	'config',
 	'bootstrap',
 	
-	], function(Backbone,$,_,utility,Persons,Treatments,RootCanalRow,vent,template,yesNoTemplate){
+	], function(Backbone,$,_,utility,Persons,Treatments,RootCanalRow,vent,template,yesNoTemplate,config){
 
 	var RootCanalRowView = Backbone.View.extend({
 		//model: new RootCanalRow(),
@@ -264,7 +265,7 @@ define([
 
 				return function(query,process){
 					var map = this.options.map;
-					$.get('http://54.245.100.246:8080/treatmentStages',{category:category},function(data){
+					$.get(config.serverUrl+'treatmentStages',{category:category},function(data){
 						var result = [];
 						//var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){

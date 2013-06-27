@@ -11,9 +11,9 @@ server.use(restify.queryParser({ mapParams: false }));
 
 var CryptoJS = require('cryptojs').Crypto;
 var crypto = require('crypto');
-var pwdCipher = crypto.createCipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
-var pwdDecipher = crypto.createDecipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
 
+var pwdDecipher = crypto.createDecipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
+ 
 /******************Redis*******************************/
 
 var redis = require('redis');
@@ -541,6 +541,7 @@ function _validateClient(clientKey,res,callback) {
 
 function _login(username,decryptedPwd,res){
 	console.log('logging in...'+ username + " " + decryptedPwd);
+	var pwdCipher = crypto.createCipher('aes192','55U8YP%!pjWhwy!JM8wZ6K');
 	var password = pwdCipher.update(decryptedPwd,'utf8','base64')
 	var password = pwdCipher.final('base64');
 

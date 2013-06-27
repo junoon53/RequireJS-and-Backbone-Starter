@@ -1,7 +1,7 @@
-define(['backbone','underscore'], function(Backbone,_) {
+define(['backbone','underscore','config'], function(Backbone,_,config) {
 
 	var RevenueRow = Backbone.Model.extend({
-		//url: 'http://54.245.100.246:8080/revenue',
+		//url: config.serverUrl+'revenue',
 		defaults: function() {
 			return {
 				patientName: '',

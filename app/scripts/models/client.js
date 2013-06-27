@@ -1,5 +1,5 @@
-define(['backbone','underscore','jquery','vent','models/people/roles','collections/revenue/paymentOptions','localStorage'],
-function(Backbone,_,$,vent,roles,paymentOptions) {
+define(['backbone','underscore','jquery','vent','models/people/roles','collections/revenue/paymentOptions','config','localStorage'],
+function(Backbone,_,$,vent,roles,paymentOptions,config) {
 
 var _instance = null;
 
@@ -19,7 +19,7 @@ var Client = Backbone.Model.extend({
         var self = this;
         var clientKey = Math.floor((Math.random()*Math.pow(10,10))+1);
         this.set('clientKey',clientKey);
-		$.get('http://54.245.100.246:8080/auth',{clientKey:clientKey},function(data){
+		$.get(config.serverUrl+'auth',{clientKey:clientKey},function(data){
     	if(data.result) {
 	        // store key in local storage
 	        console.log('new client session started');
