@@ -236,16 +236,16 @@ function getExpendableInventoryTypes(req,res,next){
 
 function getRoles(req,res,next){
 	console.log('getting roles...');
-
-	if(!_validateClient(req.query.clientKey)) return;
-
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
-	Role.find().execFind(function(err,data){
+	_validateClient(req.query.clientKey,res,function(){
+		Role.find().execFind(function(err,data){
 		if(err) console.log(err)
 			res.send(data);
-	});
+		});
+
+	}); 
 };
 
 function checkReportStatus(req,res,next){
@@ -521,25 +521,26 @@ function _validateClientValue(value) {
 	return true;
 };
 
-function _validateClient(clientKey,res) {
+function _validateClient(clientKey,res,callback) {
+	var result = false;
  	redisClient.hget(['clientCredentials',clientKey],function(err,clientValue){
  	if(err) {
     		console.log('redis error: '+err);
     		res.send({message:err});
-    		return false;
     	}else if(_validateClientValue(clientValue)){
 			console.log('client validated'); 
-			return true;
+			result =  true;
+			callback();
 		}else {
     		console.log('unauthorized client');
     		res.send({message:'unauthorized client'});
-    		return false;
     	}
     });
-
+	
 };
 
 function _login(username,decryptedPwd,res){
+	console.log('logging in...'+ username + " " + decryptedPwd);
 	var password = pwdCipher.update(decryptedPwd,'utf8','base64')
 	var password = pwdCipher.final('base64');
 
@@ -562,7 +563,6 @@ function _login(username,decryptedPwd,res){
 };
 
 function login(req,res,next){
-	console.log('logging in...'+ req.params.username + " " + req.params.password+" client key: "+req.params.clientKey);
 	res.header("Access-Control-Allow-Origin","*");
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 	var username = req.params.username;
@@ -574,8 +574,10 @@ function login(req,res,next){
 	//decryptedPwd = CryptoJS.AES.decrypt(decryptedPwd,req.params.clientKey);
 	//console.log('decryptedPwd: '+decryptedPwd);
 	
-	if(_validateClient(clientKey,username,password,res))
-   			_login(username,password,res);
+	_validateClient(clientKey,res,function(){
+		_login(username,password,res);
+		
+	})
 
 };
 
