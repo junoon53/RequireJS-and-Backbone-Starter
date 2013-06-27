@@ -1,4 +1,4 @@
-define(['backbone','underscore','jquery','vent','models/client','cryptojs',"cryptojs-enc-utf16"], function(Backbone,_,$,vent,client) {
+define(['backbone','underscore','jquery','vent','models/client','gibberish-aes'], function(Backbone,_,$,vent,client,GibberishAES) {
 
   var _instance = null;  
 
@@ -14,6 +14,7 @@ define(['backbone','underscore','jquery','vent','models/client','cryptojs',"cryp
     initialize: function() {
         var self = this;
         this.listenTo(vent,'CDF.Views.AppView:handleLogoutClick',this.logout);
+        GibberishAES.size(192);
     },
     onClose: function(){
     },
@@ -25,12 +26,9 @@ define(['backbone','underscore','jquery','vent','models/client','cryptojs',"cryp
         var self = this;
         var user=  $("#username").val();
         var clientKey = client().get('clientKey').toString();
-        var pword = $("#password").val();
-        //var pword = GibberishAES.enc($("#password").val(),clientKey);
-/*        Lpword = CryptoJS.AES.encrypt(pword, clientKey).toString(); 
-        pword  = CryptoJS.enc.Utf8.parse(pword);
-        pword = CryptoJS.enc.Hex.stringify(pword);
-*/        
+        GibberishAES.size(192);
+        var pword = GibberishAES.enc($("#password").val(),clientKey);
+        
         this.save({username:user,password:pword,clientKey:clientKey},{
             success: function(model,response,options){
                 if(response){  

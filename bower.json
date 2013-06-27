@@ -11,6 +11,8 @@
     "font-awesome":"latest",
     "backbone-validation":"latest",
     "requirejs-plugins":"latest",
-    "requirejs-text":"latest"
+    "requirejs-text":"latest",
+    "backbone.localStorage":"latest",
+    "node-crypto":"latest"
   }
 }

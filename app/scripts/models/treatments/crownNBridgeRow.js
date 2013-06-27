@@ -54,13 +54,6 @@ define(['backbone','underscore'], function(Backbone,_) {
 		    	range: [11, 100],
 		    	msg: "Please enter a valid tooth"
 		    },
-  		    numCrownNBridge: {
-		    	pattern: 'digits',
-		    	required: true,
-		    	range: [1, 6],
-		    	msg: "Please enter a valid number of fillings"
-		    }
-
 		},
 		onClose: function(){
 			if(this.collection)

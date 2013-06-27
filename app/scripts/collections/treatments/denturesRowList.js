@@ -12,13 +12,12 @@ define([
 		initialize: function(){
 			var self = this;
 
-			this.listenTo(vent,'CDF.Models.Application:postReportStatus:success', this.reset);
 			this.listenTo(vent,'CDF.Views.AppView:handleLogoutClick', this.reset);
 
 	    },
 	    onClose: function(){
 
-	    },    
+    },    
 		filterInvalidRows: function(models){
 			return _.reject(this.models,function(element){return !element.isValid()});
 		},
