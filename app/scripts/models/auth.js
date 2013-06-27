@@ -9,7 +9,7 @@ define(['backbone','underscore','jquery','vent','models/client','config','crypto
 		loggedIn:false,
 		username:"",
 		password:"",
-		person:""
+		person:null
 	},
     initialize: function() {
         var self = this;
@@ -20,6 +20,7 @@ define(['backbone','underscore','jquery','vent','models/client','config','crypto
     logout: function(){
 
         this.set('loggedIn',false);
+        this.set('person',null);
     },
     login: function(){
         var self = this;

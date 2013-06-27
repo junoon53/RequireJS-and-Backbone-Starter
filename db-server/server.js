@@ -551,12 +551,18 @@ function _login(username,decryptedPwd,res){
 				Role.populate(data, {
 			    path: 'person.roles'
 			  	}, function(err,data){
-			  		console.log(err);
+			  		if(err) console.log(err);
 			  		Clinic.populate(data,{
 			  			path: 'person.clinics'
 			  		}, function(err, data){
-			  		    console.log(err);
-			  			res.send(data[0]);
+			  		    if(err) console.log(err);
+			  		    if(data) {
+			  		    	console.log('login successful')
+			  		    	res.send(data[0]);
+			  		    } else {
+			  		    	console.log('login failed');
+			  		    	res.send(null);
+			  		    }
 			  		});
 			     });			
 			});
