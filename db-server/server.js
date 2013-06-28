@@ -698,6 +698,7 @@ function addExpendableInventoryItem(req,res,next){
 			function(err,data){
 				console.log(err);
 				console.log(data);
+				res.send(data);
 			});
 			
 		});
