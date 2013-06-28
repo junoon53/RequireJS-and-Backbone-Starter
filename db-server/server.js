@@ -698,7 +698,7 @@ function addExpendableInventoryItem(req,res,next){
 	ClinicExpendableInventory.count({},function(err,count){
 		expendableInventoryItem._id = Math.floor(Math.random()*10000)+count;
 		expendableInventoryItem.save(function(err,data){
-			ExpendableInventoryType.populate(data,{path:'item.expendableInventoryType'},
+			ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
 			function(err,data){
 				Clinic.populate(data,{path:'clinic'},
 					function(err,data){

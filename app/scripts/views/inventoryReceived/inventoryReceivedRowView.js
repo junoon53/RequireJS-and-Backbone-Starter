@@ -105,10 +105,10 @@ define([
 			var self = this;
 
 				function newExpendableInventoryItemAdded(expendableInventoryItemModel) {
-					self.$('.expendableInventoryItem').val(expendableInventoryItemModel.get('genericName')+" "+expendableInventoryItemModel.get('brandName'));
-					self.$('.brandName').text(expendableInventoryItemModel.get('brandName'));
-					self.$('.accountingUnit').text(expendableInventoryItemModel.get('accountingUnit'));
-					self.$('.expendableInventoryType').text(expendableInventoryItemModel.get('expendableInventoryType').name);
+					self.$('.expendableInventoryItem').val(utility.toTitleCase(expendableInventoryItemModel.get('genericName')+" "+expendableInventoryItemModel.get('brandName')));
+					self.$('.brandName').text(utility.toTitleCase(expendableInventoryItemModel.get('brandName')));
+					self.$('.accountingUnit').text(utility.toTitleCase(expendableInventoryItemModel.get('accountingUnit')));
+					self.$('.expendableInventoryType').text(utility.toTitleCase(expendableInventoryItemModel.get('expendableInventoryType').name));
 
 					self.$('.expendableInventoryItem').attr('valueId',expendableInventoryItemModel.get('_id'));
 					self.model.set('expendableInventoryItem',expendableInventoryItemModel.get('_id'));

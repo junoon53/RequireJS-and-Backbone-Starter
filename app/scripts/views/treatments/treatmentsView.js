@@ -86,7 +86,6 @@ define([
                 switch(this.attributes.role){
                     case _.findWhere(roles().attributes,{name:'DOCTOR'})._id:                        
                     case _.findWhere(roles().attributes,{name:'CONSULTANT'})._id:                        
-                        break;
                     case _.findWhere(roles().attributes,{name:'ADMINISTRATOR'})._id: 
                         this.activeTables[tableType].model.reset();
                         this.activeTables[tableType].model.addDataFromReport(this.model.get('treatments'));

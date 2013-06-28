@@ -1,9 +1,9 @@
-define(['backbone','jquery', 'underscore','vent','collections/dentalMaterials/inventoryRequiredRowList','collections/dentalMaterials/expendableInventoryTypes'
+define(['backbone','jquery', 'underscore','vent','models/dentalMaterials/expendableInventoryItem','collections/dentalMaterials/expendableInventoryTypes'
 	   ,'text!templates/addExpInventoryItem.html','text!templates/expendableInventoryTypesListRow.html'],
-	    function(Backbone,$,_,vent,InventoryRequiredRowList,ExpendableInventoryTypes,template,expendableInventoryTypesListRowTemplate){
+	    function(Backbone,$,_,vent,ExpendableInventoryItem,ExpendableInventoryTypes,template,expendableInventoryTypesListRowTemplate){
 
 	var AddExpendableInventoryItem = Backbone.View.extend({
-		model: new  InventoryRequiredRowList(),
+		model: new  ExpendableInventoryItem(),
 		inventoryTypesCollection: new ExpendableInventoryTypes(),
 		events: {
 			'click #add-inventory-item-button' : 'addExpendableInventoryItem',

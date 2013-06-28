@@ -232,7 +232,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.firstName+" "+element.lastName+' # '+element._id;
+						 var name = utility.toTitleCase(element.firstName+" "+element.lastName)+' # '+element._id;
 							 result.push(name);
 						 map[name] = (element._id);
 						});
@@ -283,7 +283,7 @@ define([
 						var result = [];
 						var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
-						 var name = element.genericName+" "+element.brandName+' # '+element._id;
+						 var name = utility.toTitleCase(element.genericName+" "+element.brandName)+' # '+element._id;
 							 result.push(name);
 					     map[name] = element._id;
 						});

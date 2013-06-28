@@ -281,7 +281,7 @@ define([
                 lastName:names[1],
                 isActive:1,
                 clinics:[this.model.get("clinic")],
-                roles: [_.findWhere(roles().attributes,{name:'STAKEHOLDER'})._id]
+                roles: [_.findWhere(roles().attributes,{name:'STAFF'})._id]
             });
             addPersonView.callback = msg.callback;
             addPersonView.render();
@@ -473,7 +473,7 @@ define([
             _.each(this.activeViews,function(element){
 
                 if(!element.isValid()) {
-
+                    //this.$('#'+)
                     result = false;
                 }
             });

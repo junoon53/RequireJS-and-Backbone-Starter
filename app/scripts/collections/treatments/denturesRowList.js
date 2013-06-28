@@ -4,8 +4,9 @@ define([
 	 'underscore',
 	 'utility',
 	 'models/treatments/denturesRow',
-	 'vent'
-	 ], function(Backbone,$,_,utility,DenturesRow,vent){
+	 'vent',
+	 'utility'
+	 ], function(Backbone,$,_,utility,DenturesRow,vent,utility){
 
 	var DenturesRowList = Backbone.Collection.extend({
 		model: DenturesRow,
@@ -25,9 +26,9 @@ define([
 			var self = this;
 			_.each(_.reject(dataArray,function(element){return !(element.treatment.category._id === 1001)}),function(element,index,array){
                 self.add((new DenturesRow({
-                    patientName: element.patient.firstName + " " + element.patient.lastName,
+                    patientName: utility.toTitleCase(element.patient.firstName + " " + element.patient.lastName),
                     patient: element.patient._id,
-                    doctorName: element.doctors[0].firstName + " " + element.doctors[0].lastName,
+                    doctorName: utility.toTitleCase(element.doctors[0].firstName + " " + element.doctors[0].lastName),
                     doctor: element.doctors[0]._id,
                     treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
