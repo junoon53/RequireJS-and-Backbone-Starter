@@ -3,10 +3,13 @@
       <label for='brandName'>Brand Name:</label> <input type="text" id="brandName"><br>
       <label for='accountingUnit'>Accounting Unit:</label> <input type="text" id="accountingUnit"><br>
       <label for='inventoryType'>Expendable Inventory Type:</label>
-            <div class="dropdown">
-		  <a class="dropdown-toggle expendableInventoryType" data-toggle="dropdown" href="#"></a>
-		  <ul class="dropdown-menu expendableInventoryTypesList" role="menu" aria-labelledby="dLabel">
-		    ...
+	  <div class="btn-group dropup">
+		  <button class="btn" ><a class="expendableInventoryType"  href="#"></a></button>
+		  <button class="btn dropdown-toggle" data-toggle="dropdown">
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu expendableInventoryTypesList">
+		    <!-- dropdown menu links -->
 		  </ul>
 	  </div>
       <button id="add-inventory-item-button">Add Item</button>

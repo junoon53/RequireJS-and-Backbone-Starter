@@ -685,30 +685,19 @@ function addExpendableInventoryItem(req,res,next){
 	res.header("Access-Control-Allow-Headers","X-Requested-With");
 
 	var expendableInventoryItem = new ExpendableInventoryMaster({
-		clinic : req.params.clinic,
-		item : req.params.item,
-		qtyReceived : req.params.qtyReceived,
-		qtyRemaining : req.params.qtyRemaining,
-		dateReceived : req.params.dateReceived,
-		dateUpdated : req.params.dateUpdated,
-		dateExpiry : req.params.dateExpiry,
-		receivedBy : req.params.receivedBy
+		genericName:req.params.genericName,
+		brandName:req.params.brandName,
+		accountingUnit:req.params.accountingUnit,
+		expendableInventoryType:req.params.expendableInventoryType
 	});
 
-	ClinicExpendableInventory.count({},function(err,count){
+	ExpendableInventoryMaster.count({},function(err,count){
 		expendableInventoryItem._id = Math.floor(Math.random()*10000)+count;
 		expendableInventoryItem.save(function(err,data){
 			ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
 			function(err,data){
-				Clinic.populate(data,{path:'clinic'},
-					function(err,data){
-						Person.populate(data,{path:'receivedBy'},
-							function(err,data){
-								console.log(err);
-								console.log(data);
-								res.send(data);
-							});
-					});
+				console.log(err);
+				console.log(data);
 			});
 			
 		});
