@@ -36,8 +36,17 @@ var Client = Backbone.Model.extend({
 		});
     },
     getStaticData: function() {
-        roles().fetch();
-        paymentOptions().fetch();
+        roles().fetch({ data: { clientKey: this.get('clientKey') },'clientKey':this.get('clientKey'),success:function(model,response,option){
+            console.log('roles fetched successfully');
+            paymentOptions().fetch({success:function()  {
+                console.log('payment options fetched successfully');
+            },error:function(model,response,options){
+                console.log('error fetching payment options');
+            }})
+
+        },error: function(model,error,option){
+            console.log('error fetching roles');
+        }});
     }
 });
 

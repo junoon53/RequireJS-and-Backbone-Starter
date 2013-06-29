@@ -556,8 +556,9 @@ function _login(username,decryptedPwd,res){
 			  			path: 'person.clinics'
 			  		}, function(err, data){
 			  		    if(err) console.log(err);
-			  		    if(data) {
+			  		    if(data.length) {
 			  		    	console.log('login successful')
+			  		    	console.log(data[0]);
 			  		    	res.send(data[0]);
 			  		    } else {
 			  		    	console.log('login failed');

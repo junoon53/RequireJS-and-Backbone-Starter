@@ -69,6 +69,7 @@ define([
 		},
 		whenValueIsNotSelected : function(targetClass,value){			
 			this.$("."+targetClass).tooltip('destroy');
+			this.$("."+targetClass).popover('destroy');
 			var yesNoTemplate = this.yesNoTemplate({message:'Add new '+targetClass+'?',id:targetClass});
 			
 			this.$("."+targetClass).popover({html: true, placement:'top',content:yesNoTemplate});
