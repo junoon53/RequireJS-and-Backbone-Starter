@@ -1,5 +1,5 @@
-define(['backbone','underscore','jquery','vent','models/people/roles','collections/revenue/paymentOptions','config','localStorage'],
-function(Backbone,_,$,vent,roles,paymentOptions,config) {
+define(['backbone','underscore','jquery','vent','models/people/roles','collections/revenue/paymentOptions','config','utility','localStorage'],
+function(Backbone,_,$,vent,roles,paymentOptions,config,utility) {
 
 var _instance = null;
 
@@ -22,7 +22,7 @@ var Client = Backbone.Model.extend({
 		$.get(config.serverUrl+'auth',{clientKey:clientKey},function(data){
     	if(data.result) {
 	        // store key in local storage
-	        console.log('new client session started');
+	        utility.appendTextToMain('new client session started');
 	        self.save();
 	        if(callback) callback();
             vent.trigger('CDF.Client:authenticate:success');
@@ -30,7 +30,7 @@ var Client = Backbone.Model.extend({
 	        return true;
 
     	} else {
-    		console.log('client auth failed');
+    		utility.appendTextToMain('client auth failed');
             vent.trigger('CDF.Client:authenticate:failed');
 	       	return false;
 	    }
@@ -39,18 +39,18 @@ var Client = Backbone.Model.extend({
     },
     getStaticData: function() {
         roles().fetch({ data: { clientKey: this.get('clientKey') },'clientKey':this.get('clientKey'),success:function(model,response,option){
-            console.log('roles fetched successfully');
+            utility.appendTextToMain('roles fetched successfully');
             paymentOptions().fetch({success:function()  {
-                console.log('payment options fetched successfully');
+                utility.appendTextToMain('payment options fetched successfully');
                 vent.trigger('CDF.Client:getStaticData:success');
 
             },error:function(model,response,options){
                 vent.trigger('CDF.Client:getStaticData:failed');
-                console.log('error fetching payment options');
+                utility.appendTextToMain('error fetching payment options');
             }})
 
         },error: function(model,error,option){
-            console.log('error fetching roles');
+            utility.appendTextToMain('error fetching roles');
             vent.trigger('CDF.Client:getStaticData:failed');
         }});
     }

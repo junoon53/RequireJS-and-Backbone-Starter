@@ -1,4 +1,4 @@
-define(['backbone','models/auth','views/auth','vent'], function(Backbone,auth,authView,vent) {
+define(['backbone','models/auth','views/auth','vent','utility'], function(Backbone,auth,authView,vent,utility) {
   
   var _instance = null;
 
@@ -20,15 +20,15 @@ define(['backbone','models/auth','views/auth','vent'], function(Backbone,auth,au
       
   },
   onAppInitSuccess: function(){
-    console.log('launching application...');
+    utility.appendTextToMain('launching application...');
     vent.trigger('CDF.Router:index:appInitSucceeded');
   },
   onLogout: function(){
     vent.trigger('CDF.Router:index:onLogout');
-    console.log('logging out...');
+    //utility.appendTextToMain('logging out...');
   },
   onAppInitFailure: function(){
-    console.log('initialization failed. halting...');
+    utility.appendTextToMain('initialization failed. halting...');
     vent.trigger('CDF.Router:index:appInitFailed');
   }
 

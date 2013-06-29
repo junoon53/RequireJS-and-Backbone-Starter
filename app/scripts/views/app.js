@@ -121,15 +121,7 @@ define([
             this.listenTo(vent,"CDF.Models.Application:broadcastReportFetchResult", this.toggleReportSubmitPermission);
             this.listenTo(vent,"CDF.Models.Application:broadcastReportFetchResult", this.updateReportStatusLabel);
             //this.listenTo(vent,"CDF.Models.Application:broadcastReportStatus", this.updateReportStatusLabel);
-            
 
-            this.listenTo(this.model,'change:revenue',console.log('revenue updated in app model'));           
-            this.listenTo(this.model,'change:bankDeposits',console.log('bankDeposits updated in app model'));           
-            this.listenTo(this.model,'change:expenditure',console.log('expenditure updated in app model'));           
-            this.listenTo(this.model,'change:patientsFeedback',console.log('patientsFeedback updated in app model'));           
-            this.listenTo(this.model,'change:clinicIssues',console.log('clinicIssues updated in app model'));           
-            this.listenTo(this.model,'change:inventoryRequired',console.log('inventoryRequired updated in app model'));           
-            this.listenTo(this.model,'change:inventoryReceived',console.log('inventoryReceived updated in app model'));           
         },
         handleClinicSelect: function(ev){
             ev.preventDefault();
@@ -466,7 +458,7 @@ define([
         handleLogoutClick: function(ev){
             ev.preventDefault();
              vent.trigger('CDF.Views.AppView:handleLogoutClick');
-             router.index();
+             router.on();
         },
         validateReport: function(){
             var result = true

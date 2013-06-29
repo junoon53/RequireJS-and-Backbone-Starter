@@ -27,8 +27,8 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
         },
         _removeCurrentView: function(callback, background) {
             var self = this;
-             $('html').fadeOut(1000, function () {             
-                    self.currentView.close();
+             $('html').fadeOut(1000, function () { 
+                    if(self.currentView) self.currentView.close();
                     if(callback) callback();
               });
         },
@@ -36,17 +36,10 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
         addView: function(view,background){
             
             var self = this;
-            if (this.currentView){
-                this._removeCurrentView(function(){
-                    self.currentView = view;
-                    self._renderCurrentView(null,background);
-                },background);
-
-            }else {
-                this.currentView = view;
-                this._renderCurrentView(null,background);
-            }
-
+            this._removeCurrentView(function(){
+                self.currentView = view;
+                self._renderCurrentView(null,background);
+            },background);
         },
         showAppInitFailedMessage: function(){
             alert('Application Launch Failed! Please try again by refreshing the page. If the problem persists, please contact an administrator');

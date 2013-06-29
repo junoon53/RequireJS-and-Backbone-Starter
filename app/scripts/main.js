@@ -37,9 +37,14 @@ require(['backbone',
          'views/mainView',
          'router/router',
          'models/client',
-         'backbone-validation'
+         'backbone-validation',
+         'utility'
          ], 
-         function(Backbone,MainView,router,client,validation) {
+         function(Backbone,MainView,router,client,validation,utility) {
+
+ 
+
+utility.appendTextToMain('initializing...');
 
   Backbone.View.prototype.close = function(){
     this.remove();
@@ -60,9 +65,6 @@ require(['backbone',
   //_.extend(Backbone.Model.prototype, validation.mixin);
 
  
-  console.log('CDF Clinics Feedback System - v0.1.0');
-  console.log('Designed and built by Vikram Pawar [ junoon.53@gmail.com ]');
-  console.log('initializing...');
 
  var clientInstance = client();
 
@@ -73,8 +75,9 @@ require(['backbone',
         clientInstance.authenticate();
      } 
       else {
-       console.log('using existing client credentials')}
+       utility.appendTextToMain('using existing client credentials');
        clientInstance.getStaticData();
+     }
     },
     error:function(){
       clientInstance.authenticate();
