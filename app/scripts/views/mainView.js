@@ -5,7 +5,9 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
     var MainView = Backbone.View.extend({
         el:  $('#main'),
         initialize: function(){
-            this.listenTo(vent,'CDF.Router:index',this.addAuthView);
+            this.listenTo(vent,'CDF.Router:index:appInitSucceeded',this.addAuthView);
+            this.listenTo(vent,'CDF.Router:index:onLogout',this.addAuthView);
+            this.listenTo(vent,'CDF.Router:index:appInitFailed',this.showAppInitFailedMessage);
             this.listenTo(vent,'CDF.Models.Auth:login:success',this.createAndAddAppView);
         },
         /*Private methods*/
@@ -13,7 +15,11 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
             var self = this;
             this.$el.html(this.currentView.el);
             this.currentView.$el.show();
-            document.body.background = background;
+
+            if(background)
+                $('#main').append(background);
+            this.currentBackground = background;
+
             $('html').fadeIn(1000, function(){
                 self.currentView.$el.show();
                 if(callback) callback();
@@ -42,16 +48,16 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
             }
 
         },
+        showAppInitFailedMessage: function(){
+            alert('Application Launch Failed! Please try again by refreshing the page. If the problem persists, please contact an administrator');
+        },
         addAuthView: function(){
-            //document.body.background = '../resources/images/cdf_blur_Bg.png';
             var bg = loginBg;
             var authView = new AuthView();
             authView.render();
-            this.addView(authView,'../resources/images/cdf_blur_Bg.png');
+            this.addView(authView,bg);
         },
         createAndAddAppView: function(){
-                //$('body').css('background','none');
-                //document.body.background = '';
                 var person = this.currentView.model.get('person');
                 var appView = new AppView();
                 appView.model.set({

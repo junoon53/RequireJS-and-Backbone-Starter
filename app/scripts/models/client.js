@@ -25,11 +25,13 @@ var Client = Backbone.Model.extend({
 	        console.log('new client session started');
 	        self.save();
 	        if(callback) callback();
+            vent.trigger('CDF.Client:authenticate:success');
 	        self.getStaticData();
 	        return true;
 
     	} else {
     		console.log('client auth failed');
+            vent.trigger('CDF.Client:authenticate:failed');
 	       	return false;
 	    }
 		
@@ -40,12 +42,16 @@ var Client = Backbone.Model.extend({
             console.log('roles fetched successfully');
             paymentOptions().fetch({success:function()  {
                 console.log('payment options fetched successfully');
+                vent.trigger('CDF.Client:getStaticData:success');
+
             },error:function(model,response,options){
+                vent.trigger('CDF.Client:getStaticData:failed');
                 console.log('error fetching payment options');
             }})
 
         },error: function(model,error,option){
             console.log('error fetching roles');
+            vent.trigger('CDF.Client:getStaticData:failed');
         }});
     }
 });
