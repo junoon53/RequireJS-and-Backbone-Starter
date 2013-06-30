@@ -562,7 +562,7 @@ function _login(username,decryptedPwd,res){
 			  		    	res.send(data[0]);
 			  		    } else {
 			  		    	console.log('login failed');
-			  		    	res.send(null);
+			  		    	res.send(data);
 			  		    }
 			  		});
 			     });			

@@ -42,7 +42,7 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
             },background);
         },
         showAppInitFailedMessage: function(){
-            alert('Application Launch Failed! Please try again by refreshing the page. If the problem persists, please contact an administrator');
+            utility.appendTextToMain('Application Launch Failed! Please try again by refreshing the page. If the problem persists, please contact an administrator');
         },
         addAuthView: function(){
             var bg = loginBg;

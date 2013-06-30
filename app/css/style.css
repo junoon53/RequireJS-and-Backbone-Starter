@@ -30,10 +30,15 @@ body {
 	z-index:-1;
 }
 
-#main .progress, #main p {
+#main .progress {
 	margin-left: 1%;
 	margin-top: 1%;
     width: 20%;
+    font-size: small;
+}
+
+#main p {
+	width: 20%;
 }
 
 a {
