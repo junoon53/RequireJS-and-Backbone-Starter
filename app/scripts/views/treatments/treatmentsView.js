@@ -11,6 +11,7 @@ define([
     'views/treatments/crownNBridgeTable',
     'views/treatments/rootCanalTable',
     'views/treatments/denturesTable',
+    'views/treatments/consultationTable',
 	'views/treatments/perioTable',
 	'vent',
 	'text!templates/treatmentsView.html'
@@ -24,6 +25,7 @@ define([
         CrownNBridgeTable,
         RootCanalTable,
         DenturesTable,
+        ConsultationTable,
         PerioTable,
 
 		vent,template){
@@ -31,6 +33,7 @@ define([
 	var TreatmentsView = Backbone.View.extend({
 		model: new TreatmentsViewModel(),
 	    events: {
+            'click li#consultation': 'handleTopMenuClick',
             'click li#extractions': 'handleTopMenuClick',
             'click li#fillings': 'handleTopMenuClick',
             'click li#rootCanal': 'handleTopMenuClick',
@@ -59,6 +62,9 @@ define([
             var self = this;
             if(!this.activeTables[tableType]) {
                 switch(tableType){
+                    case 'consultation':
+                        this.activeTables[tableType] = new ConsultationTable();
+                        break;
                     case 'extractions':
                         this.activeTables[tableType] = new ExtractionsTable();
                         break;

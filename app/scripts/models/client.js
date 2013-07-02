@@ -32,6 +32,7 @@ var Client = Backbone.Model.extend({
     	} else {
     		utility.appendTextToMain('client auth failed');
             vent.trigger('CDF.Client:authenticate:failed');
+            if(callback) callback();
 	       	return false;
 	    }
 		

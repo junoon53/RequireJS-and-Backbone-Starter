@@ -14,6 +14,7 @@ define(['backbone','underscore','jquery','vent','models/client','config','crypto
     initialize: function() {
         var self = this;
         this.listenTo(vent,'CDF.Views.AppView:handleLogoutClick',this.logout);
+        this.attempts = 0;
     },
     onClose: function(){
     },
@@ -24,6 +25,7 @@ define(['backbone','underscore','jquery','vent','models/client','config','crypto
     },
     login: function(){
         var self = this;
+        this.attempts+=1;
         var user=  $("#username").val();
         var clientKey = client().get('clientKey').toString();
         var pword = $("#password").val();
@@ -38,10 +40,13 @@ define(['backbone','underscore','jquery','vent','models/client','config','crypto
                     vent.trigger('CDF.Models.Auth:login:success');
                 } else {
                     alert("Invalid Credentials!");
+                    if(self.attempts <= 3)
+                        self.login();
                 }
             },
             error: function(model,xhr,options){
-
+                if(self.attempts <= 3)
+                    self.login();
             }
         });
         return false;

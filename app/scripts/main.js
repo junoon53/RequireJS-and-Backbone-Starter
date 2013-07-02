@@ -87,7 +87,6 @@ utility.appendTextToMain('initializing...');
 
 
 
-
   Backbone.history.start({pushState: true, hashChange: true });
 
     $(document).on("click", "a[href]:not([data-bypass])", function(evt) {
