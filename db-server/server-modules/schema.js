@@ -83,6 +83,8 @@ function Schemas() {
 	    clinicIssues: [{
 						doctor: { type: Number, ref: 'Person'},	
 						issue: String,
+						status: String,
+						priority: String
 	    }],
 	    inventoryRequired: [{
 	    					  expendableInventoryItem: {type:Number, ref: 'ExpendableInventoryMaster'},

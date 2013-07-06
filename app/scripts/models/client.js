@@ -1,4 +1,4 @@
-define(['backbone','underscore','jquery','vent','models/people/roles','collections/revenue/paymentOptions','config','utility','localStorage'],
+define(['backbone','underscore','jquery','vent','models/formModels/people/roles','collections/formCollections/revenue/paymentOptions','config','utility','localStorage'],
 function(Backbone,_,$,vent,roles,paymentOptions,config,utility) {
 
 var _instance = null;

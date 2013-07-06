@@ -24,14 +24,14 @@ function Treatment(schemata) {
 		res.header("Access-Control-Allow-Headers","X-Requested-With");
 
 		var treatment = new schemata.TreatmentsMaster({
-			name: req.params.name,
+			name: req.params.name.toLowerCase(),
 			category: req.params.category,		
 		});
 
 		schemata.TreatmentsMaster.count({},function(err,count){
 			treatment._id = 1001+count;
 			treatment.save(function(err,data){
-				console.log(err);
+				if(err) console.log(err);
 				console.log(data);
 				res.send(data);
 			});

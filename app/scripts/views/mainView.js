@@ -66,6 +66,7 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
                });
                appView.render();
                this.addView(appView,'');
+               appView.addView('feedbackForm');
         }
 
 

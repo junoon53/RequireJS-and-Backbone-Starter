@@ -1,0 +1,66 @@
+define([
+	'backbone',
+	'jquery', 
+	'underscore',
+	'models/formModels/treatments/crownNBridgeRow',
+	'collections/formCollections/treatments/crownNBridgeRowList',
+	'views/formViews/treatments/crownNBridgeRowView',
+	'vent',
+	'text!templates/crownNBridgeTable.html'
+	], function(Backbone,$,_,CrownNBridgeRow,CrownNBridgeRowList,CrownNBridgeRowView,vent,template){
+
+	var CrownNBridgeTableView = Backbone.View.extend({
+		model: new CrownNBridgeRowList(),
+	    events: {
+			'click .new-row' : 'handleNewRowSubmit'		
+	    },
+		initialize: function() {
+			this.template = _.template(template);
+			
+			this.rowViews = [];
+
+			this.listenTo(vent,'CDF.Views.Treatments.CrownNBridgeRowView:delete', this.updateTotal);
+			this.listenTo(this.model,'reset' , this.removeAllRowViews);	
+			this.listenTo(this.model,'add', this.addRow);
+		},
+		onClose: function(){
+
+			this.removeAllRowViews();
+		},
+		handleNewRowSubmit: function(ev){
+			ev.preventDefault();
+			this.model.add(new CrownNBridgeRow());
+		},
+		isValid: function() {
+			var result = this.model.isValid();
+			if(!result){
+				this.$('.error-message').show(); 
+			} else {
+				this.$('.error-message').hide();
+			}
+			return result;
+		},	
+		addRow: function(rowModel){		
+
+	    	var rowView = new CrownNBridgeRowView({model: rowModel});
+	    	rowView.render();    			
+
+	    	this.rowViews.push(rowView);
+			this.$('#rows-container').append((rowView.$el));
+		},
+		removeAllRowViews: function() {
+			for(var i=0;i<this.rowViews.length;i++){
+				this.rowViews[i].close();
+			}
+		},
+		render: function() {
+
+			var self = this;
+			this.$el.html(this.template(this.model.toJSON()));	
+			return this;
+		}
+	});
+
+	return CrownNBridgeTableView;
+
+});
