@@ -92,12 +92,15 @@ define([
 
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.PatientsFeedback.PatientsFeedbackRowView:addNewPatient', this.displayAddPatientModal);
+
             this.listenTo(vent,'CDF.Views.Treatments.CrownNBridgeRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Treatments.DenturesRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Treatments.ExtractionsRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Treatments.FillingsRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Treatments.RootCanalRowView:addNewPatient', this.displayAddPatientModal);
             this.listenTo(vent,'CDF.Views.Treatments.PerioRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.ConsultationRowView:addNewPatient', this.displayAddPatientModal);
+            this.listenTo(vent,'CDF.Views.Treatments.MiscRowView:addNewPatient', this.displayAddPatientModal);
 
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewDoctor', this.displayAddDoctorModal);
             this.listenTo(vent,'CDF.Views.ClinicIssues.ClinicIssuesRowView:addNewDoctor', this.displayAddDoctorModal);
