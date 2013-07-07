@@ -119,8 +119,7 @@ define([
 					break;
 			}
 		},
-		addNewExpendableInventoryItem: function(ev){
-			ev.preventDefault();
+		addNewExpendableInventoryItem: function(value){
 			this.$('.expendableInventoryItem').popover('destroy');
 			var value =  this.$('.expendableInventoryItem').val();
 			var self = this;

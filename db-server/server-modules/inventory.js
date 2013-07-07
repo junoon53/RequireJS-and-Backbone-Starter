@@ -2,15 +2,15 @@ var _instance = null;
 
 function Inventory(schemata) {
 
-	
+	var self = this;
 
-	function _addClinicExpendableInventoryItem(clinicExpendableInventoryItem,callback){
+	this._addClinicExpendableInventoryItem = function(clinicExpendableInventoryItem,callback){
 		schemata.ClinicExpendableInventory.count({},function(err,count){
 			clinicExpendableInventoryItem._id = Math.floor(Math.random()*10000)+count;
 			clinicExpendableInventoryItem.save(function(err,data){
-				ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
+				schemata.ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
 				function(err,data){
-					Person.populate(data,{path:'receivedBy'},
+					schemata.Person.populate(data,{path:'receivedBy'},
 					function(err,data){
 						if(callback) callback(err,data);
 					});
@@ -20,7 +20,7 @@ function Inventory(schemata) {
 		});
 	};
 
-	function _updateClinicExpendableInventoryItem(attributes,callback){
+	this._updateClinicExpendableInventoryItem = function(attributes,callback){
 		var _id = attributes._id;
 		delete attributes._id;
 		schemata.ClinicExpendableInventory.update(
@@ -50,6 +50,7 @@ function Inventory(schemata) {
 
 
 	this.addClinicExpendableInventoryItem = function(req,res,next){
+
 			console.log("adding expendable inventory item");
 		res.header("Access-Control-Allow-Origin","*");
 		res.header("Access-Control-Allow-Headers","X-Requested-With");
@@ -65,7 +66,7 @@ function Inventory(schemata) {
 			clinic : req.params.clinic
 		});
 		
-		_addClinicExpendableInventoryItem(clinicExpendableInventoryItem,function(err,data){
+		self._addClinicExpendableInventoryItem(clinicExpendableInventoryItem,function(err,data){
 			console.log(err);
 			console.log(data);
 			res.send(data);
@@ -95,8 +96,8 @@ function Inventory(schemata) {
 		res.header("Access-Control-Allow-Headers","X-Requested-With");
 
 		var expendableInventoryItem = new schemata.ExpendableInventoryMaster({
-			genericName:req.params.genericName,
-			brandName:req.params.brandName,
+			genericName:req.params.genericName.toUpperCase(),
+			brandName:req.params.brandName.toUpperCase(),
 			accountingUnit:req.params.accountingUnit,
 			expendableInventoryType:req.params.expendableInventoryType
 		});

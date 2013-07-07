@@ -123,7 +123,7 @@ define([
 			vent.trigger('CDF.Views.InventoryReceived.InventoryReceivedRowView:addNewExpendableInventoryItem',{genericName:value,callback:newExpendableInventoryItemAdded});
 		},
 		addNewPerson: function(value){
-			this.$('.'+targetClass).popover('destroy');
+			this.$('.receivedBy').popover('destroy');
 			var self = this;
 
 				function newPersonAdded(personModel) {

@@ -1,6 +1,8 @@
 var _instance = null;
 
 function Report(schemata) {
+    
+	var Inventory = require('./inventory.js')(schemata);
 
 	function _addReport(data,callback){
 		var report = new schemata.Report({
@@ -154,7 +156,7 @@ function Report(schemata) {
 					clinic : req.params.clinic
 				});
 
-		 		_addClinicExpendableInventoryItem(inventoryReceived,function(err,data){
+		 		Inventory._addClinicExpendableInventoryItem(inventoryReceived,function(err,data){
 		 			if(err){console.log(err);}
 					clinicExpendableInventoryItems.push(data._id);
 
@@ -197,7 +199,7 @@ function Report(schemata) {
 			req.params.inventoryReceived.forEach(function(item,index,array){
 				if(item._id) {
 					clinicExpendableInventoryItems.push(item._id);
-					_updateClinicExpendableInventoryItem(item,function (err,data){
+					Inventory._updateClinicExpendableInventoryItem(item,function (err,data){
 						if(err){console.log(err);}
 						_updateReport(index,array);
 					});
@@ -212,7 +214,7 @@ function Report(schemata) {
 						receivedBy : item.receivedBy,
 						clinic : req.params.clinic
 					});
-					_addClinicExpendableInventoryItem(inventoryReceived,function (err,data){
+					Inventory._addClinicExpendableInventoryItem(inventoryReceived,function (err,data){
 						if(err){console.log(err);}
 						clinicExpendableInventoryItems.push(data._id);
 						_updateReport(index,array);

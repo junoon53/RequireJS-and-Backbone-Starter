@@ -6,7 +6,10 @@ define([
     
     'models/app',
     'models/formModels/people/roles',
+    
     'views/formViews/feedbackForm',
+    'views/issueTracking/issueTrackingView',
+
     'router/router',
     'vent',
     'text!templates/app.html',
@@ -14,7 +17,10 @@ define([
     ], function(Backbone,$,_,
         App,
         roles,
+
         FeedbackForm,
+        IssueTracking,
+
         router,vent,template){
 
     var _instance = null;
@@ -23,6 +29,7 @@ define([
         model: new App(),
         events: {
             'click li#feedbackForm': 'handleMainMenuClick',
+            //'click li#issueTracking': 'handleMainMenuClick',
             'click li#logout a': 'handleLogoutClick',
         },
         initialize: function(){
@@ -117,7 +124,10 @@ define([
                             user:this.model.get('user')
 
                         });
-                    break;
+                        break;
+                    case 'issueTracking':
+                        this.activeViews[viewType] = new IssueTracking();
+                        break;
                 } 
 
                 this.activeViews[viewType].render();     

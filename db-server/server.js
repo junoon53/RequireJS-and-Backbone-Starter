@@ -17,6 +17,10 @@ mongoose.connection.on("open", function(){
   console.log("mongodb is connected!!");
 });
 
+/******************Async Utilities**********************/
+
+/*var async = require('async');*/
+
 /******************Load Server Modules******************/
 
 var Schemata = require('./server-modules/schema.js');
@@ -43,6 +47,9 @@ Schemata.User.find({username:"divyaGaur"}).populate('person').exec(function(err,
      });	
 });
 
+/**************************Utility Functions********************************/
+
+
 /**************************Functions****************************************/
 
 
@@ -54,6 +61,50 @@ function getPaymentOptions(req,res,next){
     	res.send(data);
 	});
 };
+
+/*function getClinicIssues(req,res,next){
+  console.log('getting clinic issues');
+  res.header("Access-Control-Allow-Origin","*");
+  res.header("Access-Control-Allow-Headers","X-Requested-With");
+  var fromDate = req.query.fromDate
+  var toDate = req.query.toDate
+  
+  fromDate.setHours(0);
+  fromDate.setMinutes(0);
+  fromDate.setSeconds(0);
+  fromDate.setMilliseconds(0);
+  console.log(fromDate);
+
+  toDate.setHours(24);
+  console.log(toDate);
+
+  if(req.query.clinic){
+    var clinic = parseInt(req.query.clinic,0);
+    console.log(clinic);
+  }
+
+  Schemata.Report.find({ date: {  $gte: startDate, $lt: endDate  }, clinic:clinic }).execFind(function(err,data){
+       if(err) {
+          res.send(err);
+          return;
+       } else {
+          async.map(data,
+            function(item,callback) {
+              callback(null,item.clinicIssues);
+            },
+            function(err, results){
+              if(err){
+                res.send(err);
+              } else {
+                var data = []
+                data.concat.apply(data, results);
+                res.send(data);
+              }
+          });
+       }
+       
+  });
+}*/
 
 // set up our routes and start the server
 
@@ -89,6 +140,9 @@ server.get('/report',Report.getReport);
 server.post('/report',Report.addReport);
 server.put('/report', Report.updateReport);
 server.get('/reportStatus', Report.checkReportStatus);
+
+//server.get('/clinicIssues', getClinicIssues);
+
 //server.del('/report/:_id', deleteReport);
 
 /*******************************************************************************************/

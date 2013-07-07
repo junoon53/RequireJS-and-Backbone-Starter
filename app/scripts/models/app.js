@@ -15,7 +15,7 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
             
         },
         viewTypes: function() {
-            return ['feedbackForm','issueTracker'];
+            return ['feedbackForm','issueTracking'];
         },
         events: {
             //'change:date' : 'checkReportStatus'

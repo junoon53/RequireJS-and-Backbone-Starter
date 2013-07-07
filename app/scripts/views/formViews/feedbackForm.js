@@ -87,7 +87,7 @@ define([
             
 
             this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:addNewPerson', this.displayAddPersonModal);
-            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewPerson', this.displayAddExpendableInventoryItemModal);
+            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewPerson', this.displayAddPersonModal);
             this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:addNewPerson', this.displayAddPersonModal);
 
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);
@@ -115,7 +115,8 @@ define([
             this.listenTo(vent,'CDF.Views.Treatments.MiscRowView:addNewDoctor', this.displayAddDoctorModal);
 
             this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryRequiredRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
-            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
+            this.listenTo(vent,'CDF.Views.InventoryReceived.InventoryReceivedRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
+            this.listenTo(vent,'CDF.Views.Treatments.FillingsRowView:addNewExpendableInventoryItem', this.displayAddExpendableInventoryItemModal);
 
             this.listenTo(vent,'CDF.Views.Treatments.CrownNBridgeRowView:addNewTreatmentStage', this.displayAddTreatmentStageModal);
             this.listenTo(vent,'CDF.Views.Treatments.DenturesRowView:addNewTreatmentStage', this.displayAddTreatmentStageModal);
