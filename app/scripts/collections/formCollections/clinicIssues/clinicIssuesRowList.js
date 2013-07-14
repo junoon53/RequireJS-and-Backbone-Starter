@@ -25,7 +25,8 @@ define([
                     doctor: element.doctor._id,
                     issue: element.issue,
                     status: element.status,
-                    priority: element.priority
+                    priority: element.priority,
+                    dueDate: element.dueDate
                 })));
             });
 		},
@@ -36,7 +37,8 @@ define([
                         doctor: element.get('doctor'),
                         issue: element.get('issue'),
                         status: element.get('status'),
-                        priority: element.get('priority')
+                        priority: element.get('priority'),
+                        dueDate: element.get('dueDate')
                     };
                     result.push(dataMember);
                 });

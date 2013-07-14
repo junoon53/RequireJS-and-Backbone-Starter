@@ -1,26 +1,31 @@
-<tr>
-	<td class="center"> <% = issue %> </td>
-	<td class="center"> <% = date %> </td>
-	<td class="center"> <% = priority %> </td>
 	<td class="center">
-		<span class="label"> <% = status %>  </span>
+		<div class="btn-group priority" data-toggle="buttons-radio">
+		  <button type="button" class="low btn btn-small">Low</button> <!-- btn-info -->
+		  <button type="button" class="medium btn btn-small">Med</button> <!-- btn-warning -->
+		  <button type="button" class="high btn btn-small btn-danger active">High</button> <!-- btn-danger -->
+		</div>
 	</td>
+	<td class="center"> <%= issue %> </td>
+	<td class="center"> <%= date %> </td>
 	<td class="center">
-		<a class="btn btn-success" href="#">
-			<i class="halflings-icon zoom-in halflings-icon"></i>
-			Mark as Complete                                            
-		</a>
-		<a class="btn btn-success" href="#">
-			<i class="halflings-icon zoom-in halflings-icon"></i>
-			Mark as Pending                                            
-		</a>
-		<a class="btn btn-info" href="#">
-			<i class="halflings-icon edit halflings-icon"></i> 
-			Reduce Priority                                           
-		</a>
-		<a class="btn btn-danger" href="#">
-			<i class="halflings-icon trash halflings-icon"></i> 
-			Increase Priority
-		</a>
+		<div id="dueDatePicker" class="input-append">
+            <input data-format="dd-MM-yyyy" type="text"></input>
+            <span class="add-on">
+              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+              </i>
+            </span>
+        </div>
 	</td>
-</tr>
+	<td class="center"> <%= doctorName %> </td>
+	
+	<td class="center">
+		<div class="btn-group status" data-toggle="buttons-radio">
+		  <button type="button" class="start btn btn-small">Start</button> <!-- btn-inverse  -->
+		  <button type="button" class="inProcess btn btn-small">In Process</button> <!-- btn-info -->
+		  <button type="button" class="pending btn btn-small">Pending</button> <!-- btn-warning -->
+		  <button type="button" class="complete btn btn-small btn-success active">Complete</button>
+		</div>
+	</td>
+	<!-- <td class="center">
+		<input type="text" class="assignedTo" id= <%= "'assignedTo"+rowId+"'" %> data-toggle="tooltip" data-provide="typeahead" autocomplete="off"  value= <%= "'"+assignedToName+"'" %>  valueId= <%= "'"+assignedTo+"'" %> />
+    </td> -->

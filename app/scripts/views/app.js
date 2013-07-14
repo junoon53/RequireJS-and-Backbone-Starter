@@ -29,7 +29,7 @@ define([
         model: new App(),
         events: {
             'click li#feedbackForm': 'handleMainMenuClick',
-            //'click li#issueTracking': 'handleMainMenuClick',
+            'click li#issueTracking': 'handleMainMenuClick',
             'click li#logout a': 'handleLogoutClick',
         },
         initialize: function(){
@@ -127,6 +127,14 @@ define([
                         break;
                     case 'issueTracking':
                         this.activeViews[viewType] = new IssueTracking();
+                        this.activeViews[viewType].model.set({
+                            clinics:this.model.get('clinics'),
+                            clinic:this.model.get('clinic'),
+                            clinicName:this.model.get('clinicName'),
+                            date:this.model.get('date')
+                        });
+                        this.activeViews[viewType].fetchIssues();
+                        
                         break;
                 } 
 

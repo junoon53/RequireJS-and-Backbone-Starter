@@ -127,7 +127,10 @@ select.input-validation-error
 /*Responsive Stuff*/
 
 
-#datetimepicker input {
+#datetimepicker input,
+#fromDatetimepicker input,
+#toDatetimepicker input,
+#dueDatePicker input {
 	width: 80px;
 }
 
@@ -148,10 +151,17 @@ i {
 	margin-right: 5px;
 }
 
-#datetimepicker {
+#datetimepicker,
+#fromDatetimepicker,
+#toDatetimepicker
+ {
 	margin-top: 5px;
 	margin-bottom: 5px;
 
+}
+
+input.hideCompletedIssues {
+	margin-top:13px;
 }
 
 footer {

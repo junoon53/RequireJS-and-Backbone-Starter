@@ -1,19 +1,17 @@
 <div class="navbar">
-  <div class="navbar-inner">
-     
-      <ul class="nav">
-        <li><a class='reportStatus' href="#"><i class='icon-circle'></i></a></li>  
-        <li><a href="#"></a></li>
-          <li id="datetimepicker" class="input-append">
-            <input data-format="dd-MM-yyyy" type="text"></input>
-            <span class="add-on">
-              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-              </i>
-            </span>
-          </li>
-
-        <li class="divider-vertical"></li>
-        <li class="dropdown">
+  <div class="navbar-inner">     
+    <ul class="nav">
+      <li><a class='reportStatus' href="#"><i class='icon-circle'></i></a></li>  
+      <li><a href="#"></a></li>
+      <li id="datetimepicker" class="input-append">
+        <input data-format="dd-MM-yyyy" type="text"></input>
+        <span class="add-on">
+          <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+          </i>
+        </span>
+      </li>
+      <li class="divider-vertical"></li>
+      <li class="dropdown">
         <a href="#" class="dropdown-toggle" id= <%= clinic %> data-toggle="dropdown"><i class="icon-home"></i><span class='selectedClinic'> <%= clinicName %> </span> <b class="caret"></b></a>
         <ul class="dropdown-menu clinicsList">
           <!-- List of clinics -->

@@ -7,7 +7,8 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
             fromDate: new Date(),
             toDate: new Date(),
 			clinic: null,  
-			clinics: []         
+			clinics: [],
+            showCompleted: false,         
         },
         events: {
 

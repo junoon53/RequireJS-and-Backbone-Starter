@@ -39,7 +39,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 		    treatment: {
 		      pattern: 'digits',
 		      required: true,
-		      range: [1000,10000],
+		      range: [1000,100000],
 		      msg: "Please select a treatment"
 		    },
 		    doctor: {

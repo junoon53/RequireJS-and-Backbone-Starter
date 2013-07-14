@@ -19,7 +19,7 @@ mongoose.connection.on("open", function(){
 
 /******************Async Utilities**********************/
 
-/*var async = require('async');*/
+var async = require('async');
 
 /******************Load Server Modules******************/
 
@@ -62,12 +62,37 @@ function getPaymentOptions(req,res,next){
 	});
 };
 
-/*function getClinicIssues(req,res,next){
+function updateClinicIssue(req,res,next){
+  console.log('updating clinic issue');
+  res.header("Access-Control-Allow-Origin","*");
+  res.header("Access-Control-Allow-Headers","X-Requested-With");
+
+  Schemata.Report.findOneAndUpdate(
+          { _id:req.params.reportId, 'clinicIssues._id':req.params._id }, 
+          { 'clinicIssues.$.priority':req.params.priority,
+            'clinicIssues.$.status':req.params.status , 
+            'clinicIssues.$.dueDate':req.params.dueDate }, 
+          {select:'clinicIssues'},
+          function(err,data){
+            if(err) {
+              console.log(err);
+              res.send(err);
+           } else {
+              console.log(data);
+              res.send({message:"updated"});
+            }
+          }
+  );
+
+};
+
+
+function getClinicIssues(req,res,next){
   console.log('getting clinic issues');
   res.header("Access-Control-Allow-Origin","*");
   res.header("Access-Control-Allow-Headers","X-Requested-With");
-  var fromDate = req.query.fromDate
-  var toDate = req.query.toDate
+  var fromDate = new Date(req.query.fromDate);
+  var toDate = new Date(req.query.toDate);
   
   fromDate.setHours(0);
   fromDate.setMinutes(0);
@@ -83,28 +108,29 @@ function getPaymentOptions(req,res,next){
     console.log(clinic);
   }
 
-  Schemata.Report.find({ date: {  $gte: startDate, $lt: endDate  }, clinic:clinic }).execFind(function(err,data){
+  Schemata.Report.find({ date: {  $gte: fromDate, $lt: toDate  }, clinic:clinic })
+  .select('clinicIssues clinic date')
+  .populate('clinicIssues.doctor')
+  .sort('clinicIssues.status')
+  .lean().execFind(function(err,data){
        if(err) {
           res.send(err);
           return;
        } else {
-          async.map(data,
-            function(item,callback) {
-              callback(null,item.clinicIssues);
-            },
-            function(err, results){
-              if(err){
-                res.send(err);
-              } else {
-                var data = []
-                data.concat.apply(data, results);
-                res.send(data);
-              }
+
+          var result = [];
+          data.forEach(function(element){
+              element.clinicIssues.forEach(function(item){
+                item.reportId = element._id;
+                item.clinic = element.clinic;
+                item.date = element.date;
+                result.push(item);
+              });
           });
+          res.send(result);
        }
-       
   });
-}*/
+};
 
 // set up our routes and start the server
 
@@ -141,7 +167,8 @@ server.post('/report',Report.addReport);
 server.put('/report', Report.updateReport);
 server.get('/reportStatus', Report.checkReportStatus);
 
-//server.get('/clinicIssues', getClinicIssues);
+server.get('/clinicIssues', getClinicIssues);
+server.put('/clinicIssue', updateClinicIssue);
 
 //server.del('/report/:_id', deleteReport);
 

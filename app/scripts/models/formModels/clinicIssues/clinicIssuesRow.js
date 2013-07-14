@@ -6,7 +6,8 @@ define(['backbone','underscore'], function(Backbone,_) {
 			doctorName:"",
 			issue:"",
 			status:"start",
-			priority:""
+			priority:"",
+			dueDate: new Date()
 		},
 		validation: {
 		    doctor: {

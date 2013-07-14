@@ -3,6 +3,7 @@ var _instance = null;
 function Report(schemata) {
     
 	var Inventory = require('./inventory.js')(schemata);
+	var self = this;
 
 	function _addReport(data,callback){
 		var report = new schemata.Report({
@@ -111,7 +112,17 @@ function Report(schemata) {
 
 	
 	this.checkReportStatus = function (req,res,next){
-		var startDate = new Date(req.query.date);
+		console.log('checking report status...');
+		res.header("Access-Control-Allow-Origin","*");
+		res.header("Access-Control-Allow-Headers","X-Requested-With");
+		self._checkReportStatus(req.query.date,req.query.clinic,function(result){
+			res.send(result);
+		});
+
+	};
+
+	this._checkReportStatus = function(date,clinic, callback){
+		var startDate = new Date(date);
 		startDate.setHours(0);
 		startDate.setMinutes(0);
 		startDate.setSeconds(0);
@@ -121,16 +132,16 @@ function Report(schemata) {
 		endDate.setHours(24);
 		console.log(endDate);
 
-		var clinic = parseInt(req.query.clinic,0);
+		var clinic = parseInt(clinic,0);
 		console.log(clinic);
 
 		schemata.Report.find({date:{$gte: startDate, $lt: endDate},clinic:clinic})
 		.execFind(function(err,data){
 			if(err) {console.log(err); res.send(err);}
 			else if(data.length > 0) {
-				res.send({reportExists:true});
+				callback({reportExists:true});
 			} else {
-				res.send({reportExists:false});
+				callback({reportExists:false});
 			}
 		});
 	};
@@ -141,51 +152,58 @@ function Report(schemata) {
 		res.header("Access-Control-Allow-Origin","*");
 		res.header("Access-Control-Allow-Headers","X-Requested-With");
 		
-		var clinicExpendableInventoryItems = [];
+		self._checkReportStatus(req.params.date,req.params.clinic,function(result){
 
-		if(req.params.inventoryReceived.length){
-		 	req.params.inventoryReceived.forEach(function(item,index,array) {
-		 		var inventoryReceived = new schemata.ClinicExpendableInventory({
-					expendableInventoryItem : item.expendableInventoryItem,
-					dateReceived : req.params.date,
-					dateUpdated : req.params.date,
-					dateExpiry : item.dateExpiry,
-					qtyReceived : item.qtyReceived,
-					qtyRemaining : item.qtyReceived,
-					receivedBy : item.receivedBy,
-					clinic : req.params.clinic
-				});
+			if(!result.reportExists){
+				var clinicExpendableInventoryItems = [];
 
-		 		Inventory._addClinicExpendableInventoryItem(inventoryReceived,function(err,data){
-		 			if(err){console.log(err);}
-					clinicExpendableInventoryItems.push(data._id);
+				if(req.params.inventoryReceived.length){
+				 	req.params.inventoryReceived.forEach(function(item,index,array) {
+				 		var inventoryReceived = new schemata.ClinicExpendableInventory({
+							expendableInventoryItem : item.expendableInventoryItem,
+							dateReceived : req.params.date,
+							dateUpdated : req.params.date,
+							dateExpiry : item.dateExpiry,
+							qtyReceived : item.qtyReceived,
+							qtyRemaining : item.qtyReceived,
+							receivedBy : item.receivedBy,
+							clinic : req.params.clinic
+						});
 
-					if(index === array.length -1) {
-						req.params.inventoryReceived = clinicExpendableInventoryItems;
-					 	console.log(req.params.inventoryReceived);
+				 		Inventory._addClinicExpendableInventoryItem(inventoryReceived,function(err,data){
+				 			if(err){console.log(err);}
+							clinicExpendableInventoryItems.push(data._id);
 
-						_addReport(req.params,function(err,data){
-							if(err){
-								console.log(err);
-								res.send(err);
-							} else if(data){
-								res.send(data);
+							if(index === array.length -1) {
+								req.params.inventoryReceived = clinicExpendableInventoryItems;
+							 	console.log(req.params.inventoryReceived);
+
+								_addReport(req.params,function(err,data){
+									if(err){
+										console.log(err);
+										res.send(err);
+									} else if(data){
+										res.send(data);
+									}
+								});
 							}
 						});
-					}
-				});
-		 	});
-		 } else {
-		 	_addReport(req.params,function(err,data){
-							if(err){
-								console.log(err);
-								res.send(err);
-							} else if(data){
-								res.send(data);
-							}
-					});
-		 }
+				 	});
+				 } else {
+				 	_addReport(req.params,function(err,data){
+									if(err){
+										console.log(err);
+										res.send(err);
+									} else if(data){
+										res.send(data);
+									}
+							});
+				 }
 
+			} else {	
+				res.send({message:'report exists for this date'});
+			}
+		});
 	};
 
 	this.updateReport = function (req,res,next){
@@ -196,31 +214,32 @@ function Report(schemata) {
 		var clinicExpendableInventoryItems = [];
 
 		if(req.params.inventoryReceived.length){
-			req.params.inventoryReceived.forEach(function(item,index,array){
-				if(item._id) {
-					clinicExpendableInventoryItems.push(item._id);
-					Inventory._updateClinicExpendableInventoryItem(item,function (err,data){
-						if(err){console.log(err);}
-						_updateReport(index,array);
-					});
-				} else {
-					var inventoryReceived = new schemata.ClinicExpendableInventory({
-						expendableInventoryItem : item.expendableInventoryItem,
-						dateReceived : req.params.date,
-						dateUpdated : req.params.date,
-						dateExpiry : item.dateExpiry,
-						qtyReceived : item.qtyReceived,
-						qtyRemaining : item.qtyReceived,
-						receivedBy : item.receivedBy,
-						clinic : req.params.clinic
-					});
-					Inventory._addClinicExpendableInventoryItem(inventoryReceived,function (err,data){
-						if(err){console.log(err);}
-						clinicExpendableInventoryItems.push(data._id);
-						_updateReport(index,array);
-					});
-				}
-			});
+		req.params.inventoryReceived.forEach(function(item,index,array){
+			if(item._id) {
+				clinicExpendableInventoryItems.push(item._id);
+				Inventory._updateClinicExpendableInventoryItem(item,function (err,data){
+					if(err){console.log(err);}
+					_updateReport(index,array);
+				});
+			} else {
+				var inventoryReceived = new schemata.ClinicExpendableInventory({
+					expendableInventoryItem : item.expendableInventoryItem,
+					dateReceived : req.params.date,
+					dateUpdated : req.params.date,
+					dateExpiry : item.dateExpiry,
+					qtyReceived : item.qtyReceived,
+					qtyRemaining : item.qtyReceived,
+					receivedBy : item.receivedBy,
+					clinic : req.params.clinic
+				});
+				Inventory._addClinicExpendableInventoryItem(inventoryReceived,function (err,data){
+					if(err){console.log(err);}
+					clinicExpendableInventoryItems.push(data._id);
+					_updateReport(index,array);
+				});
+			}
+		});
+
 		}else {
 			_updateReport(0,[0]);
 		}
