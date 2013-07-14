@@ -160,6 +160,8 @@ define([
             this.toDateTimePicker = this.$('#toDatetimepicker').data('datetimepicker');
             this.toDateTimePicker.setLocalDate(new Date(this.model.get("date")));
 
+            this.$('input.hideCompletedIssues').attr('checked', true);
+
             return this;
         },
 
