@@ -127,10 +127,10 @@ define([
 			var self = this;
 
 				function newPersonAdded(personModel) {
-					self.$('.'+targetClass).val(personModel.get('firstName')+" "+personModel.get('lastName'));
-					self.$('.'+targetClass).attr('valueId',personModel.get('_id'));
-					self.model.set(targetClass,personModel.get('_id'));
-					self.model.set(targetClass+'Name',personModel.get('firstName')+" "+personModel.get('lastName')); 
+					self.$('.receivedBy').val(utility.toTitleCase(personModel.get('firstName')+" "+personModel.get('lastName')));
+					self.$('.receivedBy').attr('valueId',personModel.get('_id'));
+					self.model.set('receivedBy',personModel.get('_id'));
+					self.model.set('receivedBy'+'Name',personModel.get('firstName')+" "+personModel.get('lastName')); 
 					self.model.isValid(true);
 				};
 	
@@ -259,7 +259,7 @@ define([
 				expendableInventoryTypeId:"expendableInventoryType"+this.model.cid,
 				map:this.expendableInventoryItemsMap});
 			this.$('.receivedBy').typeahead({
-				source:receivedBySource(new Persons(),[1,2,3,4]),
+				source:receivedBySource(new Persons(),[1,2,3,4,5]),
 				updater:receivedByUpdater,
 				minLength:3,
 				id:"receivedBy"+this.model.cid,

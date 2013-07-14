@@ -87,7 +87,8 @@ define([
             
 
             this.listenTo(vent,'CDF.Views.BankDeposits.BankDepositsRowView:addNewPerson', this.displayAddPersonModal);
-            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryReceivedRowView:addNewPerson', this.displayAddPersonModal);
+            this.listenTo(vent,'CDF.Views.InventoryReceived.InventoryReceivedRowView:addNewPerson', this.displayAddPersonModal);
+            this.listenTo(vent,'CDF.Views.InventoryRequired.InventoryRequiredRowView:addNewPerson', this.displayAddPersonModal);
             this.listenTo(vent,'CDF.Views.Expenditure.ExpenditureRowView:addNewPerson', this.displayAddPersonModal);
 
             this.listenTo(vent,'CDF.Views.Revenue.RevenueRowView:addNewPatient', this.displayAddPatientModal);

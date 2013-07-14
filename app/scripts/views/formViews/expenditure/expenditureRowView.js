@@ -110,7 +110,7 @@ define([
 			var self = this;
 
 				function newPersonAdded(personModel) {
-					self.$('.'+targetClass).val(personModel.get('firstName')+" "+personModel.get('lastName'));
+					self.$('.'+targetClass).val(utility.toTitleCase(personModel.get('firstName')+" "+personModel.get('lastName')));
 					self.$('.'+targetClass).attr('valueId',personModel.get('_id'));
 					self.model.set(targetClass,personModel.get('_id'));
 					self.model.set(targetClass+'Name',personModel.get('firstName')+" "+personModel.get('lastName')); 
@@ -203,8 +203,8 @@ define([
 				 return item;
 		 
 			};
-			this.$('.receivedBy').typeahead({source:source(new Persons(),[1,2,3,4]),updater:updater,minLength:3,id:"receivedBy"+this.model.cid,map:this.receivedByMap});
-			this.$('.sanctionedBy').typeahead({source:source(new Persons(),[1,2,3,4]),updater:updater,minLength:3,id:"sanctionedBy"+this.model.cid,map:this.sanctionedByMap});
+			this.$('.receivedBy').typeahead({source:source(new Persons(),[1,2,3,4,5]),updater:updater,minLength:3,id:"receivedBy"+this.model.cid,map:this.receivedByMap});
+			this.$('.sanctionedBy').typeahead({source:source(new Persons(),[1,2,3,4,5]),updater:updater,minLength:3,id:"sanctionedBy"+this.model.cid,map:this.sanctionedByMap});
 			
 			return this;
 		}

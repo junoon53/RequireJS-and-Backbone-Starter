@@ -86,7 +86,7 @@ define([
 			var value =  this.$('.'+propertyName).val();
 			var self = this;
 				function newPersonAdded(personModel) {
-					self.$('.person').val(personModel.get('firstName')+" "+personModel.get('lastName'));
+					self.$('.person').val(utility.toTitleCase(personModel.get('firstName')+" "+personModel.get('lastName')));
 					self.$('.person').attr('valueId',personModel.get('_id'));
 					self.model.set('person',personModel.get('_id'));
 					self.model.set('personName',personModel.get('firstName')+" "+personModel.get('lastName')); 
@@ -167,7 +167,7 @@ define([
 				 return item;
 		 
 			};
-			this.$('.person').typeahead({source:source(new Persons(),[1,2,3,4]),updater:updater,minLength:3,id:"person"+this.model.cid,map:this.personsMap});
+			this.$('.person').typeahead({source:source(new Persons(),[1,2,3,4,5]),updater:updater,minLength:3,id:"person"+this.model.cid,map:this.personsMap});
 			return this;
 		}
 	
