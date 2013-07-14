@@ -131,10 +131,12 @@ define([
                             clinics:this.model.get('clinics'),
                             clinic:this.model.get('clinic'),
                             clinicName:this.model.get('clinicName'),
-                            date:this.model.get('date')
+                            toDate:this.model.get('date'),
                         });
-                        this.activeViews[viewType].fetchIssues();
-                        
+                        var fromDate = new Date(this.model.get('date'));
+                        fromDate.setDate(fromDate.getDate()-30);
+                        this.activeViews[viewType].model.set('fromDate',fromDate);
+                        this.activeViews[viewType].fetchIssues();                        
                         break;
                 } 
 

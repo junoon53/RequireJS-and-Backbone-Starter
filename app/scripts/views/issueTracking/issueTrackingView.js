@@ -152,13 +152,13 @@ define([
               pickTime: false
             });
             this.fromDateTimePicker = this.$('#fromDatetimepicker').data('datetimepicker');
-            this.fromDateTimePicker.setLocalDate(new Date(this.model.get("date")));
+            this.fromDateTimePicker.setLocalDate(this.model.get('fromDate'));
 
             this.$('#toDatetimepicker').datetimepicker({
               pickTime: false
             });
             this.toDateTimePicker = this.$('#toDatetimepicker').data('datetimepicker');
-            this.toDateTimePicker.setLocalDate(new Date(this.model.get("date")));
+            this.toDateTimePicker.setLocalDate(new Date(this.model.get("toDate")));
 
             this.$('input.hideCompletedIssues').attr('checked', true);
 
