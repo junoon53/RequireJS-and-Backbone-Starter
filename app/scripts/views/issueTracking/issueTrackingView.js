@@ -14,6 +14,7 @@ define([
     'text!templates/issueTrackingView.html',
     'text!templates/clinicsListRow.html',
     'text!templates/issueTrackingRow.html',
+    'text!templates/loading.html',
     'datetimepicker',
          
 
@@ -23,7 +24,7 @@ define([
         roles,
         IssueTracking,
         IssueRow,
-        vent,template,clinicsListRowTemplate,rowTemplate){
+        vent,template,clinicsListRowTemplate,rowTemplate,loadingTemplate){
 
     var _instance = null;
 
@@ -45,6 +46,7 @@ define([
             this.template = _.template(template);
             this.rowTemplate = _.template(rowTemplate);
             this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
+            this.loadingTemplate = _.template(loadingTemplate);
 
             this.rowViews = [];
 
@@ -59,15 +61,24 @@ define([
         },
         handleFromDateChange : function(ev) {
             ev.preventDefault();
-            this.model.set("fromDate",ev.localDate);
             this.fromDateTimePicker.hide();
-            this.fetchIssues();
+
+            if(!utility.areSameDate(ev.localDate,this.model.get('fromDate'))){
+                this.model.set("fromDate",ev.localDate);
+                this.fetchIssues();
+                this.showLoadingGif();
+            }
         }, 
         handleToDateChange : function(ev) {
             ev.preventDefault();
-            this.model.set("toDate",ev.localDate);
             this.toDateTimePicker.hide();
-            this.fetchIssues();
+
+            if(!utility.areSameDate(ev.localDate,this.model.get('toDate'))){
+                this.model.set("toDate",ev.localDate);
+                this.fetchIssues();
+                this.showLoadingGif();
+
+            }
         },
         handleClinicSelect: function(ev){
             ev.preventDefault();
@@ -117,6 +128,7 @@ define([
         populateTable: function() {
             var self = this;
             var models =  this.collection.models;
+            this.$('.issuesTableBody').html('');
             models.forEach(function(model){self.addRow(model)});
             this.toggleCompletedIssues();
         },
@@ -161,8 +173,12 @@ define([
             this.toDateTimePicker.setLocalDate(new Date(this.model.get("toDate")));
 
             this.$('input.hideCompletedIssues').attr('checked', true);
+            this.showLoadingGif();
 
             return this;
+        },
+        showLoadingGif: function() {
+            this.$(".issuesTableBody").html(this.loadingTemplate());
         },
 
     });

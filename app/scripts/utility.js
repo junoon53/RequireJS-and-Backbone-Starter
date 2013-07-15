@@ -41,6 +41,13 @@ define([], function(){
 
 			return (d_names[curr_day] + " " + curr_date + "<SUP>"
 			+ sup + "</SUP> " + m_names[curr_month] + " " + curr_year);
+		},
+		areSameDate: function(d1,d2) {
+			d1 = new Date(d1);
+			d2 = new Date(d2);
+			if (d1.getDate() == d2.getDate() && d1.getMonth() == d2.getMonth() && d1.getFullYear() == d2.getFullYear())
+				return true;
+			return false;
 		}
 	};
 	return UtilityFunctions;

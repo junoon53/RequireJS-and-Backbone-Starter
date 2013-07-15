@@ -3,6 +3,7 @@ define([
     'backbone',
     'jquery', 
     'underscore',
+    'utility',
     
     'models/formModels/feedbackForm',
     'models/formModels/people/roles',
@@ -29,10 +30,12 @@ define([
     'vent',
     'text!templates/feedbackFormView.html',
     'text!templates/clinicsListRow.html',
+    'text!templates/loading.html',
     'datetimepicker',
          
 
-    ], function(Backbone,$,_,
+    ], function(Backbone,$,_,utility,
+
         FeedbackForm,
         roles,
 
@@ -55,7 +58,7 @@ define([
         ModalView,
         Submit,
 
-        router,vent,template,clinicsListRowTemplate){
+        router,vent,template,clinicsListRowTemplate,loadingTemplate){
 
     var _instance = null;
 
@@ -81,6 +84,7 @@ define([
             this.model = new FeedbackForm();
             this.template = _.template(template);
             this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
+            this.loadingTemplate = _.template(loadingTemplate);
 
             this.activeViews = {};
             this.selectedViewType = null;
@@ -150,14 +154,19 @@ define([
                 this.model.set({clinicName:_.findWhere(this.model.get('clinics'),{_id:selectedClinicId}).name});
                 this.$('span.selectedClinic').attr('id',this.model.get('clinic'));
                 this.$('span.selectedClinic').text(this.model.get('clinicName'));  
-                //this.removeAllViews(); 
+                this.removeAllViews(); 
+                this.showLoadingGif();
             }                      
         },
         handleDateChange : function(ev) {
             ev.preventDefault();
-            this.model.set("date",ev.localDate);
             this.dateTimePicker.hide();
-            //this.removeAllViews();
+
+            if(!utility.areSameDate(ev.localDate,this.model.get('date'))){    
+                this.model.set("date",ev.localDate);
+                this.removeAllViews();
+                this.showLoadingGif();
+            }
         }, 
         unselectAllMenuItems: function(){
            this.$('ul.nav-tabs li').each(function(index){
@@ -482,6 +491,9 @@ define([
                 }
                 
             } 
+        },
+        showLoadingGif: function() {
+            this.$("#feedbackFormContent").html(this.loadingTemplate());
         },
         addView: function(ev) {
             ev.preventDefault();

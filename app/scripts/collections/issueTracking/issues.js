@@ -6,7 +6,9 @@ define(['underscore','backbone','models/issueTracking/issue','vent','config'], f
 		initialize: function(){
 			var self = this;
 
-			this.listenTo(vent,'CDF.Views.AppView:handleLogoutClick', this.reset);
+           this.listenTo(vent,'CDF.Views.AppView:handleLogoutClick', this.reset);
+           //this.listenTo(this,'change:fromDate',this.fetchIssues);
+           //this.listenTo(this,'change:toDate',this.fetchIssues);
 
 	    },
 	    priorityComparator :function(model) {
