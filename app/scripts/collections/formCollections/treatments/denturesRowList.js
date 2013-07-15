@@ -35,7 +35,7 @@ define([
                     
                     stageName: utility.toTitleCase(element.details.stage.name),
                     stage: element.details.stage._id,
-                    remarks:element.details.remarks
+                    remarks:element.details ?  element.details.remarks: ""  
                 })));
             });
 		},

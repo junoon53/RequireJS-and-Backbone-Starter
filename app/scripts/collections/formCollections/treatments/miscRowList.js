@@ -32,7 +32,7 @@ define([
                     doctor: element.doctors[0]._id,
                     treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
-                    remarks: element.details.remarks
+                    remarks: element.details ?  element.details.remarks: ""  
                 })));
             });
 		},

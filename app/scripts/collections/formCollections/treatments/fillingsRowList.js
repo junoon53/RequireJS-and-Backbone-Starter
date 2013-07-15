@@ -36,7 +36,7 @@ define([
                     numFillings: element.details.numFillings,
                     expendableInventoryItem: element.details.expendableInventoryItem._id,
                     genericName: element.details.expendableInventoryItem.genericName,
-                    remarks: element.details.remarks
+                    remarks: element.details ?  element.details.remarks: ""  
                 })));
             });
 		},

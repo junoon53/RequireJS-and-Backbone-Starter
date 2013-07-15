@@ -32,7 +32,7 @@ define([
                     treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
 
-                    remarks: element.details.remarks,
+                    remarks: element.details ?  element.details.remarks: "",
                     quadrant: element.details.quadrant,
                     sitting: element.details.sitting,
                 })));

@@ -33,7 +33,7 @@ define([
                     treatment: element.treatment._id,
                     tooth: element.details.tooth,
                     numInjections: element.details.numInjections,
-                    remarks: element.details.remarks
+                    remarks: element.details ?  element.details.remarks: ""  
                 })));
             });
 		},
