@@ -89,6 +89,7 @@ define([
                 this.$('span.selectedClinic').attr('id',this.model.get('clinic'));
                 this.$('span.selectedClinic').text(this.model.get('clinicName'));  
                 this.fetchIssues();
+                this.showLoadingGif();
             }                      
         }, 
         hideCompletedIssue: function(view) {
