@@ -19,10 +19,14 @@ function Schemas() {
 
 	var PersonSchema = new Schema({
 		_id:Number,
+		salutation: String,
 		firstName:String,
 		lastName:String,
 		id:String,
 		isActive:Number,
+		sex: String,
+		age: Number,
+		address: String,
 		roles: [{ type: Number, ref: 'Role'}],
 		clinics: [{ type:Number, ref: 'Clinic' }]
 	});
@@ -62,6 +66,7 @@ function Schemas() {
 					patient: { type: Number, ref: 'Person'},
 					doctor: { type: Number, ref: 'Person'},	
 					amount: Number,
+					consultantFee: Number,
 					paymentOption: { type: Number, ref: 'PaymentOption'}
 
 		}],
@@ -107,7 +112,8 @@ function Schemas() {
 				    		quadrant: String,
 				    		sitting: Number,
 				    		numInjections: Number,
-				    		numFillings: Number
+				    		numFillings: Number,
+				    		remarks: String,
 				    	}
 
 	    }]	

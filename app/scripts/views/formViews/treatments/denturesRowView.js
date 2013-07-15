@@ -67,6 +67,9 @@ define([
 				case "stage":
 					setModelProperties.call(this,'stage','stageName');
 					break;
+			case "remarks":
+					this.model.set('remarks',this.$('.remarks').attr("value"));
+					break;
 			}
 
 			function setModelProperties(property,propertyName){
@@ -108,6 +111,7 @@ define([
 				case "stage":
 					this.addNewTreatmentStage(value);
 					break;
+ 	
 			}
 		},
 		addNewTreatmentStage: function(value){
@@ -270,7 +274,6 @@ define([
 					var map = this.options.map;
 					$.get(config.serverUrl+'treatmentStages',{category:category},function(data){
 						var result = [];
-						//var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
 						 var name = utility.toTitleCase(element);
 							 result.push(name);

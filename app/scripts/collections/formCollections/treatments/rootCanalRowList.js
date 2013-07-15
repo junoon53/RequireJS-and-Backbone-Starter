@@ -35,6 +35,7 @@ define([
                     tooth: element.details.tooth,
                     stageName: utility.toTitleCase(element.details.stage.name),
                     stage: element.details.stage._id,
+                    remarks: element.details.remarks
                 })));
             });
 		},
@@ -48,6 +49,7 @@ define([
                     details : {
     	                tooth: element.get('tooth'),
 	                    stage: { name: element.get('stageName'),_id: element.get('stage') },
+	                    remarks: element.get('remarks')
                     }
                 };
                 result.push(dataMember);

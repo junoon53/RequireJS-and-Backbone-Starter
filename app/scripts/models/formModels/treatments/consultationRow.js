@@ -9,6 +9,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 				doctor:null,
 				treatmentName: '',
 				treatment:null,
+				remarks: '',
 				rowId:0,
 			}
 		},

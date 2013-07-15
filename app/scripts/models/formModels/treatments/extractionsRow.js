@@ -11,6 +11,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 				treatment:null,
 				tooth:0,
 				numInjections:0,
+				remarks:'',
 				rowId:0,
 			}
 		},

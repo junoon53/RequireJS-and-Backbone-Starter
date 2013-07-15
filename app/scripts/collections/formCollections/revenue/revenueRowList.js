@@ -22,25 +22,7 @@ define([
 			this._total = 0;
 			var self = this;
 			_.each(this.filterInvalidRows(),function(row, i,data) {
-				 self._total+= parseInt(row.get("amount"),10);
-			});
-			return this._total;
-		},
-		totalCash: function(){
-			this._total = 0;
-			var self = this;
-			_.each(this.filterInvalidRows(),function(row, i) {
-				if(row.get("paymentOption")==="CASH")
-				 self._total+= parseInt(row.get("amount"),10);
-			});
-			return this._total;
-		},
-		totalCard: function(){
-			this._total = 0;
-			var self = this;
-			_.each(this.filterInvalidRows(),function(row, i) {
-				if(row.get("paymentOption")==="CARD")
-				 self._total+= parseInt(row.get("amount"),10);
+				 self._total+= parseInt(row.get("amount"),10)- parseInt(row.get("consultantFee"),10);
 			});
 			return this._total;
 		},
@@ -56,6 +38,7 @@ define([
                     doctorName: utility.toTitleCase(element.doctor.firstName + " " + element.doctor.lastName),
                     doctor: element.doctor._id,
                     amount: element.amount,
+                    consultantFee: element.consultantFee,
                     paymentOption: element.paymentOption._id,
                     paymentOptionName: element.paymentOption.name
                 })));
@@ -68,6 +51,7 @@ define([
                     patient: element.get('patient'),
                     doctor: element.get('doctor'),
                     amount: element.get('amount'),
+                    consultantFee: element.get('consultantFee'),
                     paymentOption: element.get('paymentOption')
                 };
                 result.push(dataMember);

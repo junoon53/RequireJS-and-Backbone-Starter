@@ -35,7 +35,8 @@ define([
                     tooth: element.details.tooth,
                     numFillings: element.details.numFillings,
                     expendableInventoryItem: element.details.expendableInventoryItem._id,
-                    genericName: element.details.expendableInventoryItem.genericName
+                    genericName: element.details.expendableInventoryItem.genericName,
+                    remarks: element.details.remarks
                 })));
             });
 		},
@@ -49,7 +50,8 @@ define([
                     details: {
 	                    tooth: element.get('tooth'),
     	                numFillings: element.get('numFillings'),
-        	            expendableInventoryItem: element.get('expendableInventoryItem')
+        	            expendableInventoryItem: element.get('expendableInventoryItem'),
+        	            remarks: element.get('remarks')
                     }
                 };
                 result.push(dataMember);

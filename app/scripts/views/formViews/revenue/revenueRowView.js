@@ -63,6 +63,11 @@ define([
 					this.model.isValid(true);
 					vent.trigger('CDF.Views.Revenue.RevenueRowView:exitColumn:amount');
 					break;
+				case "consultantFee":
+					this.model.set(targetClass,parseInt(this.$('.consultantFee').attr('value'),10));
+					this.model.isValid(true);
+					vent.trigger('CDF.Views.Revenue.RevenueRowView:exitColumn:consultantFee');
+					break;
 				case "paymentOption":
 					setModelProperties.call(this,'paymentOption','paymentOptionName');
 					break;

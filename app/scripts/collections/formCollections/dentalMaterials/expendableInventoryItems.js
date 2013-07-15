@@ -2,7 +2,8 @@ define(['backbone','models/formModels/dentalMaterials/expendableInventoryItem','
 
 	var ExpendableInventoryItems = Backbone.Collection.extend({
 		model: ExpendableInventoryItem,
-		url: Config.serverUrl+'expendableInventoryMaster'
+		url: Config.serverUrl+'expendableInventoryMaster',
+		
 	});
 
 	return ExpendableInventoryItems;

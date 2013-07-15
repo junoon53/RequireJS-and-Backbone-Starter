@@ -64,6 +64,10 @@ define([
 				case "treatment":
 					setModelProperties.call(this,'treatment','treatmentName');
 					break;  
+				case "remarks":
+					this.model.set('remarks',this.$('.remarks').attr("value"));
+					break;
+
 			}
 
 			function setModelProperties(property,propertyName){
@@ -248,7 +252,6 @@ define([
 					var map = this.options.map;
 					$.get(config.serverUrl+'treatmentStages',{category:category},function(data){
 						var result = [];
-						//var data = collection.toJSON();								
 						 _.each(data,function(element,index,data){
 						 var name = utility.toTitleCase(element);
 							 result.push(name);

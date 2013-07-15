@@ -32,6 +32,7 @@ define([
                     doctor: element.doctors[0]._id,
                     treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
+                    remarks: element.details.remarks
                 })));
             });
 		},
@@ -42,6 +43,9 @@ define([
                     patient: element.get('patient'),
                     doctors: [element.get('doctor')],
                     treatment: element.get('treatment'),
+                    details: {
+                    	remarks: element.get('remarks')
+                    }
                 };
                 result.push(dataMember);
             });

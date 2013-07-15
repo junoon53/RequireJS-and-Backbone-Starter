@@ -73,14 +73,13 @@ utility.appendTextToMain('initializing...');
     success:function(model, response,options){
       if(!model.get('clientKey')) {
         clientInstance.authenticate();
-     } 
-      else {
+     } else {
        utility.appendTextToMain('using existing client credentials');
        clientInstance.getStaticData();
      }
     },
     error:function(){
-      clientInstance.authenticate();
+      //clientInstance.authenticate();
     }
 
 });

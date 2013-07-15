@@ -32,7 +32,8 @@ define([
                     treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
                     tooth: element.details.tooth,
-                    numInjections: element.details.numInjections
+                    numInjections: element.details.numInjections,
+                    remarks: element.details.remarks
                 })));
             });
 		},
@@ -45,7 +46,8 @@ define([
                     treatment: element.get('treatment'),
                     details: {
 	                    tooth: element.get('tooth'),
-    	                numInjections: element.get('numInjections')
+    	                numInjections: element.get('numInjections'),
+    	                remarks: element.get('remarks')
                     }
                 };
                 result.push(dataMember);

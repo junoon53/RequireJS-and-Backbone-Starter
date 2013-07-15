@@ -9,7 +9,7 @@ define(['backbone','config'], function(Backbone,config) {
 				_instance = this;
 			}});*/
 			//this.set('clientKey',client().get('clientKey'));
-		}
+		},
 	});
 
 	

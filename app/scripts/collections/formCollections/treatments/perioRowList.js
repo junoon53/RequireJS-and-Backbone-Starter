@@ -32,6 +32,7 @@ define([
                     treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
 
+                    remarks: element.details.remarks,
                     quadrant: element.details.quadrant,
                     sitting: element.details.sitting,
                 })));
@@ -45,8 +46,9 @@ define([
                     doctors: [element.get('doctor')],
                     treatment: element.get('treatment'),
                     details: {
-                    quadrant: element.get('quadrant'),
-                    sitting: element.get('sitting'),
+                    	quadrant: element.get('quadrant'),
+                    	sitting: element.get('sitting'),
+                    	remarks: element.get('remarks')
                     }
                 };
                 result.push(dataMember);

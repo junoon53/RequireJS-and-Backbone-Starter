@@ -76,6 +76,10 @@ define([
 					this.model.set(targetClass,parseInt(this.$('.numFillings').attr('value'),10));
 					this.model.isValid(true);
 					break;
+ 				case "remarks":
+					this.model.set('remarks',this.$('.remarks').attr("value"));
+					break;
+
 			}
 
 			function setModelProperties(property,propertyName){

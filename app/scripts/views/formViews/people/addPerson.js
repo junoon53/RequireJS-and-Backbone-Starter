@@ -19,6 +19,7 @@ define(['backbone','jquery', 'underscore','vent','models/formModels/people/perso
 			var self = this;
 			vent.trigger('CDF.Views.People.AddPerson:addPerson:called');
 			ev.preventDefault();
+			this.model.set("salutation",this.$('#salutation').val());
 			this.model.set("firstName",this.$('#firstname').val());
 			this.model.set("lastName",this.$('#lastname').val());
 

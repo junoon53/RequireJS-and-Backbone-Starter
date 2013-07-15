@@ -10,6 +10,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 				treatmentName: '',
 				treatment:null,
 				rowId:0,
+				remarks:''
 			}
 		},
 		validation: {

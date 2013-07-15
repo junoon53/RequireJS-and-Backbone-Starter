@@ -72,7 +72,7 @@ define([
 		},
 		updateTotal: function(){
 
-			this.$('.total').text("Total : Rs. "+this.model.total());
+			this.$('.total').text("Total [ less consultant fee ] : Rs. "+this.model.total());
 		},
 		addDataFromReport: function(data){
 			this.model.addDataFromReport(data);

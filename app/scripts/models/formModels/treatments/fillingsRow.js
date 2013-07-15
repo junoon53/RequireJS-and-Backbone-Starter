@@ -13,6 +13,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 				expendableInventoryItem:0,
 				genericName:'',
 				numFillings:0,
+				remarks:'',
 				rowId:0,
 			}
 		},

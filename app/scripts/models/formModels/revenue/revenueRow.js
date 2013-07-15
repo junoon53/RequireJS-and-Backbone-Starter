@@ -1,7 +1,6 @@
 define(['backbone','underscore','config'], function(Backbone,_,config) {
 
 	var RevenueRow = Backbone.Model.extend({
-		//url: config.serverUrl+'revenue',
 		defaults: function() {
 			return {
 				patientName: '',
@@ -9,6 +8,7 @@ define(['backbone','underscore','config'], function(Backbone,_,config) {
 				doctorName: '',
 				doctor:null,
 				amount:0,
+				consultantFee:0,
 				paymentOption:0,
 				paymentOptionName: "CASH",
 				rowId:0,
@@ -30,6 +30,11 @@ define(['backbone','underscore','config'], function(Backbone,_,config) {
 		    	required: true,
 		    	range: [1, 1000000],
 		    	msg: "Please enter a valid amount"
+		    },
+		    consultantFee: {
+		    	pattern: 'digits',
+		    	range: [0,1000000],
+		    	msg: "Please enter a valid consultant fee"
 		    }
 		},
 		onClose: function(){

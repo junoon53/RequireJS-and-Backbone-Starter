@@ -34,7 +34,8 @@ define([
                     treatment: element.treatment._id,
                     
                     stageName: utility.toTitleCase(element.details.stage.name),
-                    stage: element.details.stage._id
+                    stage: element.details.stage._id,
+                    remarks:element.details.remarks
                 })));
             });
 		},
@@ -47,6 +48,7 @@ define([
                     treatment: element.get('treatment'),
                     details: {
 	                    stage: { name: element.get('stageName'), _id: element.get('stage') },
+	                    remarks: element.get('remarks')
                     }
                 };
                 result.push(dataMember);

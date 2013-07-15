@@ -1,4 +1,4 @@
-define(['backbone','config'], function(Backbone,config) {
+define(['backbone','config','models/client'], function(Backbone,config,client) {
 
 	var ExpendableInventoryItem = Backbone.Model.extend({
 		url:config.serverUrl+'expendableInventoryMaster',
@@ -7,6 +7,7 @@ define(['backbone','config'], function(Backbone,config) {
 			brandName:"",
 			accountingUnit:"",
 			expendableInventoryType:0,
+			serverKey: client().get('serverKey')
 		}
 	});
 
