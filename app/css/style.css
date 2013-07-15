@@ -20,6 +20,11 @@ body {
         font-family: 'Open Sans',sans-serif;
 }
 
+hr {
+border-top: 1px solid #DBDBDB;
+border-bottom: 1px solid #E9E7E7;
+}
+
 .nav li i.icon-home,
 .nav li i.icon-hdd,
 .nav li i.icon-cloud-upload {
