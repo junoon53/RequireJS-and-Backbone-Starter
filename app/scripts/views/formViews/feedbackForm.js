@@ -75,6 +75,7 @@ define([
             'click li#treatments': 'addView',
             'click li#submit a': 'showSubmitModal',
             'click li#save a': 'saveReport',
+            'click li#refresh a': 'handleRefresh',
             'click .clinicsList li a': 'handleClinicSelect',
             'changeDate #datetimepicker' : 'handleDateChange'
 
@@ -162,12 +163,19 @@ define([
             ev.preventDefault();
             this.dateTimePicker.hide();
 
-            if(!utility.areSameDate(ev.localDate,this.model.get('date'))){    
+            if(!utility.areSameDate(ev.localDate,this.model.get('date'))){
+                
                 this.model.set("date",ev.localDate);
                 this.removeAllViews();
                 this.showLoadingGif();
             }
         }, 
+        handleRefresh: function(ev) {
+            ev.preventDefault();
+            this.removeAllViews();
+            this.showLoadingGif();
+            this.model.handleDateOrClinicChange();
+        },
         unselectAllMenuItems: function(){
            this.$('ul.nav-tabs li').each(function(index){
                 $(this).removeClass('active');

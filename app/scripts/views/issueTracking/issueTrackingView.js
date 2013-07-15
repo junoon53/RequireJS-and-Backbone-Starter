@@ -33,6 +33,7 @@ define([
         collection: new IssuesCollection(),
         events: {
             'click .clinicsList li a': 'handleClinicSelect',
+            'click li#refresh a': 'handleRefresh',
             'changeDate #fromDatetimepicker' : 'handleFromDateChange',
             'changeDate #toDatetimepicker' : 'handleToDateChange',
             'click .hideCompletedIssues' : 'toggleCompletedIssues'
@@ -91,6 +92,11 @@ define([
                 this.fetchIssues();
                 this.showLoadingGif();
             }                      
+        },
+        handleRefresh: function(ev) {
+            ev.preventDefault();
+            this.fetchIssues();
+            this.showLoadingGif();
         }, 
         hideCompletedIssue: function(view) {
             if($('input.hideCompletedIssues').is(":checked")) view.$el.hide();
