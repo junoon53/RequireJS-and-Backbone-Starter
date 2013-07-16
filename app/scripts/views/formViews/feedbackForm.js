@@ -23,6 +23,7 @@ define([
     'views/formViews/inventoryRequired/inventoryRequiredTable',
     'views/formViews/inventoryReceived/inventoryReceivedTable',
     'views/formViews/treatments/treatmentsView',
+    'views/loading',
 
     'views/formViews/utility/modal',
     'views/formViews/utility/submit',
@@ -54,6 +55,7 @@ define([
         InventoryRequiredTableView,
         InventoryReceivedTableView,
         TreatmentsView,    
+        Loading,
 
         ModalView,
         Submit,
@@ -85,7 +87,6 @@ define([
             this.model = new FeedbackForm();
             this.template = _.template(template);
             this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
-            this.loadingTemplate = _.template(loadingTemplate);
 
             this.activeViews = {};
             this.selectedViewType = null;
@@ -501,7 +502,7 @@ define([
             } 
         },
         showLoadingGif: function() {
-            this.$("#feedbackFormContent").html(this.loadingTemplate());
+            this.$("#feedbackFormContent").html(Loading.$el);
         },
         addView: function(ev) {
             ev.preventDefault();

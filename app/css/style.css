@@ -82,6 +82,7 @@ a {
 }
 
 a.brand.logo {
+	margin-top: 5px;
 	background: url('../resources/images/cdf_logo_only.png') no-repeat;
         -webkit-background-size: contain; /*for webKit*/
         -moz-background-size: contain; /*Mozilla*/

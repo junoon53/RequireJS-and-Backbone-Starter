@@ -10,6 +10,7 @@ define([
     'models/formModels/people/roles',
     'models/issueTracking/issueTracking',
     'views/issueTracking/issueRow',
+    'views/loading',
     'vent',
     'text!templates/issueTrackingView.html',
     'text!templates/clinicsListRow.html',
@@ -24,6 +25,7 @@ define([
         roles,
         IssueTracking,
         IssueRow,
+        Loading,
         vent,template,clinicsListRowTemplate,rowTemplate,loadingTemplate){
 
     var _instance = null;
@@ -47,7 +49,6 @@ define([
             this.template = _.template(template);
             this.rowTemplate = _.template(rowTemplate);
             this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
-            this.loadingTemplate = _.template(loadingTemplate);
 
             this.rowViews = [];
 
@@ -185,7 +186,7 @@ define([
             return this;
         },
         showLoadingGif: function() {
-            this.$(".issuesTableBody").html(this.loadingTemplate());
+            this.$(".issuesTableBody").html(Loading.$el);
         },
 
     });
