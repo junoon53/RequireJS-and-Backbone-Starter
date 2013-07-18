@@ -48,7 +48,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 		},
 		exitColumn: function(ev) {
@@ -71,13 +71,13 @@ define([
 				case "partNo":
 				case "length":
 				case "diameter":
-					this.model.set(targetClass,parseInt(this.$('.'+targetClass).attr('value'),10));
+					this.model.set(targetClass,parseInt(this.$('.'+targetClass).val(),10));
 					this.model.isValid(true);
 					break;
 			}
 
 			function setModelProperties(property,propertyName){
-				this.model.set(propertyName, this.$('.'+property).attr("value"));							
+				this.model.set(propertyName, this.$('.'+property).val());							
 				var propertyValue = this.$('.'+property).attr("valueId");
 				if(propertyValue !== 'null') 
 					this.model.set(property, parseInt(propertyValue,10));					

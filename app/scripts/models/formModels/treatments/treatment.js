@@ -1,4 +1,4 @@
-define(['backbone','config'], function(Backbone,config) {
+define(['backbone','config','models/client'], function(Backbone,config,client) {
 
 	var Treatment = Backbone.Model.extend({
 		url:config.serverUrl+'treatments',

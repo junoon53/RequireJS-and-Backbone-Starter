@@ -82,17 +82,21 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
         },
         fetchReport: function(callback){
             var self = this;
-            this.fetch({data:{date:this.get('date'),clinic:this.get('clinic')},success: function(model, response, options){
-                        
-                if(response) {
+            this.fetch(
+
+                {data:{date:this.get('date'),clinic:this.get('clinic')},
+
+                success: function(model, response, options){
+                    
                     model.set('id',model.get('_id'));
                     callback.call(self,true);
-                } else {
+                },
+                error: function(model, response,options){
                    callback.call(self,false);    
-                   model.set("submitted",false);                             
-                }
-                    
-            },silent: true});
+                   model.set("submitted",false);            
+                },
+
+            silent: true});
         },
         handleReportSubmitRequest: function(){
             this.checkReportStatus(this.sendSubmitMessageToView);

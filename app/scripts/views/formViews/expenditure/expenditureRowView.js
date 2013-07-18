@@ -43,7 +43,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 		},
 		exitColumn: function(ev) {
@@ -51,15 +51,15 @@ define([
 			var targetClass = ev.currentTarget.className.split(" ")[0];
 			switch(targetClass){
 				case "item":
-					this.model.set('item',this.$('.item').attr("value"));
+					this.model.set('item',this.$('.item').val());
 					this.model.isValid(true);
 					break;
 				case "qty":
-					this.model.set('qty',this.$('.qty').attr("value"));
+					this.model.set('qty',this.$('.qty').val());
 					this.model.isValid(true);
 					break;
 				case "amount":
-					this.model.set('amount',this.$('.amount').attr("value"));
+					this.model.set('amount',this.$('.amount').val());
 					vent.trigger('CDF.Views.Expenditure.ExpenditureRowView:exitColumn:amount');
 					this.model.isValid(true);
 					break;
@@ -73,7 +73,7 @@ define([
 			}
 
 			function setModelProperties(property,propertyName){				
-				this.model.set(propertyName,this.$('.'+property).attr("value"));
+				this.model.set(propertyName,this.$('.'+property).val());
 				
 				var propertyValue = this.$('.'+property).attr("valueId");
 				if(propertyValue !== "null") {

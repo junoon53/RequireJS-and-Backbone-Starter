@@ -13,6 +13,7 @@
     "requirejs-plugins":"latest",
     "requirejs-text":"latest",
     "backbone.localStorage":"latest",
-    "node-crypto":"latest"
+    "node-crypto":"latest",
+    "flot":"latest"
   }
 }

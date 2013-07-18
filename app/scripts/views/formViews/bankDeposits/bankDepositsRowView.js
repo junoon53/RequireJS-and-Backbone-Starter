@@ -41,7 +41,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 		
 		},
@@ -51,7 +51,7 @@ define([
 			switch(targetClass){
 				case "person":
 					element = this.$('.person');
-					var textFieldText = this.$('.person').attr("value").trim();
+					var textFieldText = this.$('.person').val().trim();
 					var propertyValue = this.$('.person').attr("valueId");
 					this.model.set('personName',textFieldText);	
 					
@@ -61,7 +61,7 @@ define([
 					this.model.isValid(true);
 					break;
 				case "amount":
-					this.model.set(targetClass,parseInt(this.$('.amount').attr('value'),10));
+					this.model.set(targetClass,parseInt(this.$('.amount').val(),10));
 					this.model.isValid(true);
 					vent.trigger('CDF.Views.BankDeposits.BankDepositsRowView:exitColumn:amount');
 					break;

@@ -11,7 +11,7 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
             this.listenTo(vent,'CDF.Models.Auth:login:success',this.createAndAddAppView);
         },
         /*Private methods*/
-        _renderCurrentView: function(callback, background){
+        _animateCurrentView: function(callback, background){
             var self = this;
             this.$el.html(this.currentView.el);
             this.currentView.$el.show();
@@ -38,7 +38,7 @@ define(['backbone','jquery','underscore','utility','models/app','views/app','vie
             var self = this;
             this._removeCurrentView(function(){
                 self.currentView = view;
-                self._renderCurrentView(null,background);
+                self._animateCurrentView(null,background);
             },background);
         },
         showAppInitFailedMessage: function(){

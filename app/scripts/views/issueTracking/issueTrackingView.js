@@ -152,10 +152,11 @@ define([
             this.$('.issuesTableBody').append((rowView.$el));
         },
         removeAllRowViews: function() {
-            //this.$('#rows-container').html('');
-            for(var i=0;i<this.rowViews.length;i++){
-                this.rowViews[i].close();
-            }
+            
+             _.each(this.rowViews,function(element,index,data){
+                element.close();
+                element = null;               
+            }); 
         },
         render: function(){
             var self = this;

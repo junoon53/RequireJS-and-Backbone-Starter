@@ -13,6 +13,7 @@ require.config({
     'backbone': 'vendor/backbone-amd/backbone',  
     'localStorage': 'vendor/backbone.localStorage/backbone.localStorage',
     'image' : 'vendor/requirejs-plugins/src/image',
+    'flot' : 'vendor/Flot/jquery.flot',
     'img' : '../resources/images',
     'utility': 'utility',
     'config' : 'config'  

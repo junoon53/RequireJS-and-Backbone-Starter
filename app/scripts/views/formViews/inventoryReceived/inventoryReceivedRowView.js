@@ -48,7 +48,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 		
 		},
@@ -58,14 +58,14 @@ define([
 			switch(targetClass){
 				case "expendableInventoryItem":
 				case "receivedBy":
-					this.model.set(targetClass, this.$('.'+targetClass).attr("value"));
+					this.model.set(targetClass, this.$('.'+targetClass).val());
 					var propertyValue = this.$('.'+targetClass).attr("valueId");
 					if(propertyValue !== "null")
 						this.model.set(targetClass,parseInt(propertyValue,10));
 					this.model.isValid(true);
 					break;
 				case "qtyReceived":
-					this.model.set('qtyReceived', parseInt(this.$('.qtyReceived').attr("value"),10));
+					this.model.set('qtyReceived', parseInt(this.$('.qtyReceived').val(),10));
 					vent.trigger('CDF.Views.InventoryReceived.InventoryReceivedRowView:exitColumn:qtyReceived');
 					this.model.isValid(true);
 					break;

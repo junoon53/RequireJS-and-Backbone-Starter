@@ -49,7 +49,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 		},
 		exitColumn: function(ev) {
@@ -68,13 +68,13 @@ define([
 					setModelProperties.call(this,'stage','stageName');
 					break;
 				case "tooth":
-					this.model.set(targetClass,parseInt(this.$('.tooth').attr('value'),10));
+					this.model.set(targetClass,parseInt(this.$('.tooth').val(),10));
 					this.model.isValid(true);
 					break;
 			}
 
 			function setModelProperties(property,propertyName){
-				this.model.set(propertyName, this.$('.'+property).attr("value"));							
+				this.model.set(propertyName, this.$('.'+property).val());							
 				var propertyValue = this.$('.'+property).attr("valueId");
 				if(propertyValue !== 'null') 
 					this.model.set(property, parseInt(propertyValue,10));					
@@ -184,7 +184,7 @@ define([
 					this.model.set("treatment",null);
 					break;
  				case "remarks":
-					this.model.set('remarks',this.$('.remarks').attr("value"));
+					this.model.set('remarks',this.$('.remarks').val());
 					break;
 				}
 			}

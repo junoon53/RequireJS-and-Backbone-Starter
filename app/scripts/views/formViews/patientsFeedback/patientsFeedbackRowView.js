@@ -42,7 +42,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 
 		
@@ -51,14 +51,14 @@ define([
 			var targetClass = ev.currentTarget.className.split(" ")[0];
 			switch(targetClass){
 				case "patient":
-				    this.model.set(targetClass,this.$('.patient').attr("value"));
+				    this.model.set(targetClass,this.$('.patient').val());
 						var propertyValue = this.$('.patient').attr("valueId");
 						if(propertyValue !== "null") 
 							this.model.set('patient', parseInt(propertyValue,10));
 						this.model.isValid(true);
 					break;
 				case "feedback":
-					this.model.set('feedback',this.$('.feedback').attr("value"));
+					this.model.set('feedback',this.$('.feedback').val());
 					break;
 			}
 		},

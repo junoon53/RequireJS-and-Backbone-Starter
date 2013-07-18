@@ -42,6 +42,9 @@ define([], function(){
 			return (d_names[curr_day] + " " + curr_date + "<SUP>"
 			+ sup + "</SUP> " + m_names[curr_month] + " " + curr_year);
 		},
+		getShortDate: function(date){
+			return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+		},
 		areSameDate: function(d1,d2) {
 			d1 = new Date(d1);
 			d2 = new Date(d2);

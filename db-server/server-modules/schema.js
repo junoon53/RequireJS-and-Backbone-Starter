@@ -26,7 +26,7 @@ function Schemas() {
 		isActive:Number,
 		sex: String,
 		age: Number,
-		address: String,
+		address: String,    
 		roles: [{ type: Number, ref: 'Role'}],
 		clinics: [{ type:Number, ref: 'Clinic' }]
 	});

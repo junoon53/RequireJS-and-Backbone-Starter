@@ -41,7 +41,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 		
 		},
@@ -50,14 +50,14 @@ define([
 			var targetClass = ev.currentTarget.className.split(" ")[0];
 			switch(targetClass){
 				case "expendableInventoryItem":
-					this.model.set(targetClass, this.$('.expendableInventoryItem').attr("value"));
+					this.model.set(targetClass, this.$('.expendableInventoryItem').val());
 					var propertyValue = this.$('.expendableInventoryItem').attr("valueId");
 					if(propertyValue !== "null")
 						this.model.set(targetClass,parseInt(propertyValue,10));
 					this.model.isValid(true);
 					break;
 				case "qty":
-					this.model.set('qty', parseInt(this.$('.qty').attr("value"),10));
+					this.model.set('qty', parseInt(this.$('.qty').val(),10));
 					vent.trigger('CDF.Views.InventoryRequired.InventoryRequiredRowView:exitColumn:qty');
 					this.model.isValid(true);
 					break;

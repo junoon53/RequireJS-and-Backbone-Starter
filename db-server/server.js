@@ -30,6 +30,7 @@ var Inventory = require('./server-modules/inventory.js')(Schemata);
 var Report = require('./server-modules/report.js')(Schemata);
 var Treatment = require('./server-modules/treatment.js')(Schemata);
 var Auth = require('./server-modules/auth.js')(Schemata);
+var Analytics = require('./server-modules/analytics.js')(Schemata);
 
 /****************************************Testing************************/
 
@@ -169,6 +170,10 @@ server.get('/reportStatus', Report.checkReportStatus);
 
 server.get('/clinicIssues', getClinicIssues);
 server.put('/clinicIssue', updateClinicIssue);
+
+server.get('/revenue',Analytics.getRevenue);
+server.get('/expenditure',Analytics.getExpenditure);
+server.get('/treatmentsData',Analytics.getTreatments);
 
 //server.del('/report/:_id', deleteReport);
 

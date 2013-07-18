@@ -48,7 +48,7 @@ define([
 			var value = el.val();
 			if(el.attr('valueId') === 'null'
 			&& el.val().length > 0 ) {
-				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).attr("value"));
+				this.whenValueIsNotSelected(targetClass,this.$('.'+targetClass).val());
 			}
 
 		
@@ -57,7 +57,7 @@ define([
 			var targetClass = ev.currentTarget.className.split(" ")[0];
 			switch(targetClass){
 				case "doctor":
-					this.model.set(targetClass,this.$('.doctor').attr("value"));
+					this.model.set(targetClass,this.$('.doctor').val());
 					var propertyValue = this.$('.doctor').attr("valueId");
 					if(propertyValue !== "null") {
 						this.model.set('doctor', parseInt(propertyValue,10));
@@ -65,11 +65,11 @@ define([
 					this.model.isValid(true);
 					break;
 				case "issue":
-					this.model.set('issue',this.$('.issue').attr("value"));
+					this.model.set('issue',this.$('.issue').val());
 				    this.model.isValid(true);
 					break;
 				case "priority":
-					this.model.set('priority',this.$('.priority').attr("value"));
+					this.model.set('priority',this.$('.priority').val());
 				    this.model.isValid(true);
 					break;
 			}

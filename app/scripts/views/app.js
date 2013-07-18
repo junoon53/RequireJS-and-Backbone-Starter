@@ -9,6 +9,7 @@ define([
     
     'views/formViews/feedbackForm',
     'views/issueTracking/issueTrackingView',
+    'views/analytics/analyticsView',
 
     'router/router',
     'vent',
@@ -20,6 +21,7 @@ define([
 
         FeedbackForm,
         IssueTracking,
+        Analytics,
 
         router,vent,template){
 
@@ -30,6 +32,7 @@ define([
         events: {
             'click li#feedbackForm': 'handleMainMenuClick',
             'click li#issueTracking': 'handleMainMenuClick',
+            'click li#analytics': 'handleMainMenuClick',
             'click li#logout a': 'handleLogoutClick',
         },
         initialize: function(){
@@ -137,6 +140,15 @@ define([
                         fromDate.setDate(fromDate.getDate()-30);
                         this.activeViews[viewType].model.set('fromDate',fromDate);
                         this.activeViews[viewType].fetchIssues();                        
+                        break;
+                    case 'analytics':
+                        this.activeViews[viewType] = new Analytics();
+                        this.activeViews[viewType].model.set({
+                            clinics:this.model.get('clinics'),
+                            clinic:this.model.get('clinic'),
+                            clinicName:this.model.get('clinicName'),
+                        });
+
                         break;
                 } 
 
