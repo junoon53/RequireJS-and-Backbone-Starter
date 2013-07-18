@@ -73,6 +73,7 @@ utility.appendTextToMain('initializing...');
 
     success:function(model, response,options){
       if(!model.get('clientKey')) {
+        utility.appendTextToMain('getting new clicnet key');
         clientInstance.authenticate();
      } else {
        utility.appendTextToMain('using existing client credentials');
@@ -80,7 +81,7 @@ utility.appendTextToMain('initializing...');
      }
     },
     error:function(){
-      //clientInstance.authenticate();
+      clientInstance.authenticate();
     }
 
 });
