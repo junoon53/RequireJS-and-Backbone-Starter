@@ -1,4 +1,4 @@
-define(['models/analytics/graphViewModel','config','utility','vent'], function(Graph,config,utility,vent) {
+define(['backbone','underscore','jquery','models/analytics/graphViewModel','config','utility','vent'], function(Backbone,_,$,Graph,config,utility,vent) {
     var _instance = null;
 
     var FinanceGraphModel = Graph.extend({
@@ -21,34 +21,37 @@ define(['models/analytics/graphViewModel','config','utility','vent'], function(G
         	var self = this;
         	var start  = new Date(this.get('fromDate'));
         	var end = new Date(this.get('toDate'));
-        	var revenueData = [];
-        	var expenditureData = [];
+        	var revenueData = {};
+        	var expenditureData = {};
         	var xAxisTicks = [];
         	var i = 0;
 
         	while(start < end){
 		       var tick = utility.getShortDate(start);
-		       revenueData.push([i,0]);
-		       expenditureData.push([i,0]);
-		       xAxisTicks.push([i,start.getDate()+"|"+start.getMonth()]);
-		       start.setDate(start.getDate() + 1)
+		       var dateString = start.getDate()+"|"+(start.getMonth()+1)+"|"+start.getFullYear();
+			   var shortDateString = start.getDate()+"|"+(start.getMonth()+1);
+
+		       revenueData[dateString] = [i,0];
+		       expenditureData[dateString] = [i,0];
+		       xAxisTicks.push([i,shortDateString]);
+		       start.setDate(start.getDate() + 1);
 		       i++;
 		    }
 		    this.set('xAxisTicks',xAxisTicks);
 
         	$.get(config.serverUrl+'revenue',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
 		    	if(data.length) {
-			        revenueData.forEach(function(element,index){
+			        data.forEach(function(element,index){
 			        	var total = 0;
-			        	if(data[index]) {
-				        	data[index].revenue.forEach(function(revenue){
-				        		total+=revenue.amount;
-				        	});
-				        	revenueData[index][1] = total;
-			        	}
+			        	element.revenue.forEach(function(revenue){
+			        		total+=revenue.amount;
+			        	});
+			        	var date = new Date(element.date);
+			        	var dateString = date.getDate()+"|"+(date.getMonth()+1)+"|"+date.getFullYear();
+			        	if(revenueData[dateString]) revenueData[dateString][1] = total;
 			        });
 
-			        self.set('revenueData',revenueData);
+			        self.set('revenueData',_.values(revenueData));
 			        vent.trigger('CDF.Models.Analytics.GraphModels.FinanceGraphModel.fetchAndParseGraphData:revenue');
 			    }
 			
@@ -56,17 +59,17 @@ define(['models/analytics/graphViewModel','config','utility','vent'], function(G
 
 			$.get(config.serverUrl+'expenditure',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
 		    	if(data.length) {
-			        expenditureData.forEach(function(element,index){
+			        data.forEach(function(element,index){
 			        	var total = 0;
-			        	if(data[index]){
-				        	data[index].expenditure.forEach(function(expenditure){
-				        		total+=expenditure.amount;
-				        	});
-				        	expenditureData[index][1] = total;
-			        	}
+			        	element.expenditure.forEach(function(expenditure){
+			        		total+=expenditure.amount;
+			        	});
+			        	var date = new Date(element.date);
+			        	var dateString = date.getDate()+"|"+(date.getMonth()+1)+"|"+date.getFullYear();
+			        	if(expenditureData[dateString]) expenditureData[dateString][1] = total;
 			        });
 
-			        self.set('expenditureData',expenditureData);
+			        self.set('expenditureData',_.values(expenditureData));
 			        vent.trigger('CDF.Models.Analytics.GraphModels.FinanceGraphModel.fetchAndParseGraphData:expenditure');
 			    }
 			

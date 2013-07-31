@@ -13,7 +13,7 @@ define([
 
     var GraphView  = Backbone.View.extend({
         onClose: function(){
-        	this.fromDatetimePicker.destroy();
+        	this.fromDateTimePicker.destroy();
         	this.toDateTimePicker.destroy();
         	//this.$('.graph-container').unbindAll();
         },

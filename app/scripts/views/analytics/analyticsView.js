@@ -33,6 +33,7 @@ define([
         model: new Analytics(),
         events: {
             'click .clinicsList li a': 'handleClinicSelect',
+            'click  li#refresh a': 'handleRefreshClick',
 
         },
         initialize: function(){
@@ -102,6 +103,10 @@ define([
                 })
                 
             }                      
+        },
+        handleRefreshClick: function(Ev){
+            this.removeAllGraphsViews();
+            this.loadGraphViews();
         },
         render: function() {
         	var self = this;
