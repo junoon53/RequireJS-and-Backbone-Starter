@@ -29,7 +29,7 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
         	var xAxisTicks = [];
         	var i = 0;
 
-        	while(start < end){
+        	while(start <= end){
 		       var tick = utility.getShortDate(start);
 		       //newPatientsData.push([i,0]);
 		       var dateString = start.getDate()+"|"+(start.getMonth()+1)+"|"+start.getFullYear();

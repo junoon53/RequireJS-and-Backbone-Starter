@@ -37,7 +37,7 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
         	var dataPoints = 0;
         	var i = 0;
 
-        	while(start < end){
+        	while(start <= end){
 		       var tick = utility.getShortDate(start);
 		       var dateString = start.getDate()+"|"+(start.getMonth()+1)+"|"+start.getFullYear();
 			   var shortDateString = start.getDate()+"|"+(start.getMonth()+1);
