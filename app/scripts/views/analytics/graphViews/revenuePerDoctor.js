@@ -2,31 +2,30 @@ define([
 	'utility',
 	'vent',
     'views/analytics/graphView',
-    'models/analytics/graphModels/patientsGraphModel',
-    'text!templates/patientsGraphView.html',
+    'models/analytics/graphModels/revenuePerDoctorGraphModel',
+    'text!templates/revenuePerDoctorGraphView.html',
     'flot',
 
-    ], function(utility,vent,GraphView,PatientsGraphModel,template){
+    ], function(utility,vent,GraphView,RevenuePerDoctorGraphModel,template){
 
-    var PatientsView  = GraphView.extend({
-    	className:'row-fluid patients-graph ',
+    var RevenuePerDoctorView  = GraphView.extend({
+    	className:'row-fluid revenuePerDoctor-graph ',
         events: {
-        	'click .button-allPatients-graph' : 'handleAllPatientsClick',
-        	'click .button-newPatients-graph' : 'handleNewPatientsClick',
+        	'click .button-revenue-graph' : 'handleRevenueClick',
+        	'click .button-expenditure-graph' : 'handleExpenditureClick',
         	'changeDate #fromDatetimepicker' : 'handleFromDateChange',
             'changeDate #toDatetimepicker' : 'handleToDateChange',
         },
         initialize: function(){
             var self = this;
-            this.model = new PatientsGraphModel();
+            this.model = new RevenuePerDoctorGraphModel();
             this.template = _.template(template);
 
             var fromDate = new Date(this.model.get('fromDate'));
             fromDate.setDate(fromDate.getDate()-30);
             this.model.set('fromDate',fromDate);
 
-          	this.listenTo(vent,'CDF.Models.Analytics.GraphModels.PatientsGraphModel.fetchAndParseGraphData:allPatients',this.plotGraph);
-        	this.listenTo(vent,'CDF.Models.Analytics.GraphModels.PatientsGraphModel.fetchAndParseGraphData:newPatients',this.plotGraph);
+          	this.listenTo(vent,'CDF.Models.Analytics.GraphModels.RevenuePerDoctorGraphModel.fetchAndParseGraphData:revenue',this.plotGraph);
         },
         handleFromDateChange : function(ev) {
             ev.preventDefault();
@@ -49,63 +48,60 @@ define([
 
             }
         },
-        handleAllPatientsClick : function(ev) {
+        handleRevenueClick : function(ev) {
         	if(!this.$(ev.target).hasClass('active')) {
-        		this.model.set('drawAllPatientsGraph',true);
+        		this.model.set('drawRevenueGraph',true);
         	} else {
-        		this.model.set('drawAllPatientsGraph',false);
+        		this.model.set('drawRevenueGraph',false);
         	}
         	this.model.fetchAndParseGraphData();
         },
-        handleNewPatientsClick : function(ev) {
+        handleExpenditureClick : function(ev) {
         	if(!this.$(ev.target).hasClass('active')) {
-        		this.model.set('drawNewPatientsGraph',true);
+        		this.model.set('drawExpenditureGraph',true);
         	} else {
-        		this.model.set('drawNewPatientsGraph',false);
+        		this.model.set('drawExpenditureGraph',false);
         	}
         	this.model.fetchAndParseGraphData();
         },
         plotGraph: function() {
         	var self = this
         	var data = [];
-        	if(this.model.get('drawAllPatientsGraph')) data.push({ data: this.model.get('allPatientsData'), label: "All Patients"});
-        	//if(this.model.get('drawNewPatientsGraph')) data.push({ data: this.model.get('NewPatientsData'), label: "NewPatients"});
 
+            data.push({ data: this.model.get('revenueData'), label: "Revenue By Doctor",
+                   bars: { show: true,
+                            lineWidth: 0,
+                            'align': "center",
+                            barWidth : 0.5,
+                            fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }
+                         },
+                   points: { show: false, 
+                             lineWidth: 2 
+                         },
+                   shadowSize: 0,
+               });
 
-        	var options  = {
-				   series: {
-					   bars: { show: true,
-								lineWidth: 0,
-                                'align': "center",
-                                barWidth : 0.5,
-								fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }
-							 },
-					   points: { show: false, 
-								 lineWidth: 2 
-							 },
-					   shadowSize: 0
-				   },
-				   grid: { hoverable: true, 
-						   clickable: true, 
-						   tickColor: "#f9f9f9",
-						   borderWidth: 0
-						 },
-				 legend: {
-						    show: true
-						},	
-				   colors: ["#FA5833","#bdea74","#2FABE9","#eae874"   ],
-					xaxis: {ticks: self.model.get('xAxisTicks')},
-					yaxis: {ticks:5, tickDecimals: 0},
-				 };
+            var options = {
+                grid: { hoverable: true, 
+                           clickable: true, 
+                           tickColor: "#f9f9f9",
+                           borderWidth: 0
+                         },
+                 legend: {
+                            show: true
+                        },  
+                   colors: ["#bdea74",   "#FA5833"],
+                    xaxis: {ticks: self.model.get('xAxisTicks')},
+                    yaxis: {ticks:5, tickDecimals: 0},
+                 };
+             
 
-        	if(data.length === 0) {
-        		$.plot(this.$('.graph-container'),[],options);
-        		return;
-        	}
-/*			var d = [[0, 1000], [1, 2000], [2,4000], [3, 5000], [4, 5000],[5, 1000], [6, 2000], [7,4000], [8, 800], [9, 5500],[10, 1000], [11, 2000], [12,4000], [13, 6000], [14, 3000]];
-			var e = [[0,3000],[0,4000],[1,5000],[2,3000][0,3000],[3,3000],[4,6000],[5,3000],[6,4000],[7,0000],[8,8000],[9,4000],[10,1000],[11,5000],[12,3000]];
-*/			;
-			$.plot(this.$(".graph-container"), data,options);
+            if(data.length === 0) {
+                $.plot(this.$('.graph-container'),[],options);
+                return;
+            }
+
+			$.plot(this.$(".graph-container"),data,options);
 
 			function showTooltip(x, y, contents) {
 			$('<div id="tooltip">' + contents + '</div>').css( {
@@ -145,6 +141,6 @@ define([
         }
     });
 
-    return PatientsView;
+    return RevenuePerDoctorView;
 
 });

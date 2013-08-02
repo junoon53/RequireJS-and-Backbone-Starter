@@ -68,33 +68,56 @@ define([
         plotGraph: function() {
         	var self = this
         	var data = [];
-        	if(this.model.get('drawRevenueGraph')) data.push({ data: this.model.get('revenueData'), label: "Revenue"});
-        	if(this.model.get('drawExpenditureGraph')) data.push({ data: this.model.get('expenditureData'), label: "Expenditure"});
+            //var options = [];
+        	if(this.model.get('drawRevenueGraph')) {
+                data.push({ data: this.model.get('revenueData'), label: "Revenue",
+                       lines: { show: true,
+                                lineWidth: 2,
+                                fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }
+                             },
+                       points: { show: true, 
+                                 lineWidth: 2 
+                             },
+                       shadowSize: 0,
+                   });
+                data.push({data: this.model.get('averageRevenueData'),label: "Average Revenue",
+                       lines: { show: true,
+                                lineWidth: 1,
+                                fill: true, fillColor: { colors: [ { opacity: 0.2 }, { opacity: 0.2 } ] }
+                             },
+                       points: { show: false, 
+                                 lineWidth: 2 
+                             },
+                       shadowSize: 0,
+        
+                   });
+            }
 
+        	if(this.model.get('drawExpenditureGraph')) data.push({ data: this.model.get('expenditureData'), label: "Expenditure",
+                       lines: { show: true,
+                                lineWidth: 2,
+                                fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }
+                             },
+                       points: { show: true, 
+                                 lineWidth: 2 
+                             },
+                       shadowSize: 0,
+                 });
 
-        	var options  = {
-				   series: {
-					   lines: { show: true,
-								lineWidth: 2,
-								fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }
-							 },
-					   points: { show: true, 
-								 lineWidth: 2 
-							 },
-					   shadowSize: 0
-				   },
-				   grid: { hoverable: true, 
-						   clickable: true, 
-						   tickColor: "#f9f9f9",
-						   borderWidth: 0
-						 },
-				 legend: {
-						    show: true
-						},	
-				   colors: ["#2FABE9","#eae874","#bdea74",   "#FA5833"],
-					xaxis: {ticks: self.model.get('xAxisTicks')},
-					yaxis: {ticks:5, tickDecimals: 0},
-				 };
+            var options = {
+                grid: { hoverable: true, 
+                           clickable: true, 
+                           tickColor: "#f9f9f9",
+                           borderWidth: 0
+                         },
+                 legend: {
+                            show: true
+                        },  
+                   colors: ["#2FABE9","#2FABE9","#dae874","#bdea74",   "#FA5833"],
+                    xaxis: {ticks: self.model.get('xAxisTicks')},
+                    yaxis: {ticks:5, tickDecimals: 0},
+                 };
+             
 
         	if(data.length === 0) {
         		$.plot(this.$('.graph-container'),[],options);
@@ -102,8 +125,8 @@ define([
         	}
 /*			var d = [[0, 1000], [1, 2000], [2,4000], [3, 5000], [4, 5000],[5, 1000], [6, 2000], [7,4000], [8, 800], [9, 5500],[10, 1000], [11, 2000], [12,4000], [13, 6000], [14, 3000]];
 			var e = [[0,3000],[0,4000],[1,5000],[2,3000][0,3000],[3,3000],[4,6000],[5,3000],[6,4000],[7,0000],[8,8000],[9,4000],[10,1000],[11,5000],[12,3000]];
-*/			;
-			$.plot(this.$(".graph-container"), data,options);
+*/			
+			$.plot(this.$(".graph-container"),data,options);
 
 			function showTooltip(x, y, contents) {
 			$('<div id="tooltip">' + contents + '</div>').css( {

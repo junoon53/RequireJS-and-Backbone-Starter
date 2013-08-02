@@ -277,7 +277,11 @@ i.successCheckMark {
 }
 
 .patients-graph {
-	width: 60%;
+	
+}
+
+.revenuePerDoctor-graph {
+	width: 40%;
 }
 
 .graph-container {

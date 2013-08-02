@@ -9,6 +9,12 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
         	clinic: 0,
         	revenueData: [],
         	expenditureData: [],
+        	totalRevenue :0,
+        	averageRevenue: 0,
+        	averageRevenueData: [],
+        	totalExpenditure: 0,
+        	averageExpenditure: 0,
+        	averageExpData: [],
         	xAxisTicks: [],
         	drawRevenueGraph: true,
         	drawExpenditureGraph: true
@@ -23,7 +29,12 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
         	var end = new Date(this.get('toDate'));
         	var revenueData = {};
         	var expenditureData = {};
+        	var totalRevenue = 0;
+        	var averageRevenue  = 0;
+        	var averageRevenueData = {};
+        	var averageExpData = {};
         	var xAxisTicks = [];
+        	var dataPoints = 0;
         	var i = 0;
 
         	while(start < end){
@@ -33,10 +44,13 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
 
 		       revenueData[dateString] = [i,0];
 		       expenditureData[dateString] = [i,0];
+		       averageExpData[dateString] = [i,0];
+		       averageRevenueData[dateString] = [i,0];
 		       xAxisTicks.push([i,shortDateString]);
 		       start.setDate(start.getDate() + 1);
 		       i++;
 		    }
+		    dataPoints = i;
 		    this.set('xAxisTicks',xAxisTicks);
 
         	$.get(config.serverUrl+'revenue',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
@@ -49,9 +63,17 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
 			        	var date = new Date(element.date);
 			        	var dateString = date.getDate()+"|"+(date.getMonth()+1)+"|"+date.getFullYear();
 			        	if(revenueData[dateString]) revenueData[dateString][1] = total;
+			        	totalRevenue+=total;
 			        });
 
+			        averageRevenue = parseInt(totalRevenue/dataPoints,10);
+			        _.values(averageRevenueData).forEach(function(element){
+			        	element[1] = averageRevenue;
+			        });
+			        self.set('averageRevenue',averageRevenue);
+			        self.set('totalRevenue',totalRevenue);
 			        self.set('revenueData',_.values(revenueData));
+			        self.set('averageRevenueData',_.values(averageRevenueData));
 			        vent.trigger('CDF.Models.Analytics.GraphModels.FinanceGraphModel.fetchAndParseGraphData:revenue');
 			    }
 			
@@ -67,8 +89,10 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
 			        	var date = new Date(element.date);
 			        	var dateString = date.getDate()+"|"+(date.getMonth()+1)+"|"+date.getFullYear();
 			        	if(expenditureData[dateString]) expenditureData[dateString][1] = total;
+			        	self.totalExpenditure+=total;
 			        });
 
+			        self.averageExpenditure += self.totalExpenditure/dataPoints;
 			        self.set('expenditureData',_.values(expenditureData));
 			        vent.trigger('CDF.Models.Analytics.GraphModels.FinanceGraphModel.fetchAndParseGraphData:expenditure');
 			    }

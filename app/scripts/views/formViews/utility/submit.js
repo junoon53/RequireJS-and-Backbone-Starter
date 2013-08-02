@@ -19,7 +19,7 @@ define([
         },
         submit: function(ev){
             ev.preventDefault();
-            vent.trigger("CDF.Views.AppView:click:submit");
+            vent.trigger("CDF.Views.FeedbackForm:click:submit");
         },
     });
    

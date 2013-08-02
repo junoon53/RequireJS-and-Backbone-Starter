@@ -36,8 +36,8 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
            
            this.listenTo(this,'change:date',this.handleDateOrClinicChange);
            this.listenTo(this,'change:clinic',this.handleDateOrClinicChange);
-           this.listenTo(vent,'CDF.Views.AppView:click:submit',this.handleReportSubmitRequest);
-           this.listenTo(vent,'CDF.Views.AppView:click:save',this.handleReportSaveRequest);
+           this.listenTo(vent,'CDF.Views.FeedbackForm:click:submit',this.handleReportSubmitRequest);
+           this.listenTo(vent,'CDF.Views.FeedbackForm:click:save',this.handleReportSaveRequest);
 
         },
         onClose: function(){

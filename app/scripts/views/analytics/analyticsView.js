@@ -12,6 +12,7 @@ define([
     'views/loading',
     'views/analytics/graphViews/finances',
     'views/analytics/graphViews/patients',
+    'views/analytics/graphViews/revenuePerDoctor',
     'text!templates/analyticsView.html',
     'text!templates/clinicsListRow.html',
          
@@ -24,6 +25,7 @@ define([
         Loading,
         Finances,
         Patients,
+        RevenuePerDoctor,
         
         template,clinicsListRowTemplate){
 
@@ -76,10 +78,15 @@ define([
         	this.graphViews.push(finances);
         	this._animateAndAppendSubView(null,finances);
 
-        	var patients = new Patients();
-        	patients.render();
-        	this.graphViews.push(patients);
-        	this._animateAndAppendSubView(null,patients);
+            var patients = new Patients();
+            patients.render();
+            this.graphViews.push(patients);
+            this._animateAndAppendSubView(null,patients);
+
+        	var revenuePerDoctor = new RevenuePerDoctor();
+        	revenuePerDoctor.render();
+        	this.graphViews.push(revenuePerDoctor);
+        	this._animateAndAppendSubView(null,revenuePerDoctor);
 
         },
         handleClinicSelect: function(ev){
