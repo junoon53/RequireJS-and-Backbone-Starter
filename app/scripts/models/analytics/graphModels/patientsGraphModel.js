@@ -9,6 +9,8 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
         	clinic: 0,
         	allPatientsData: [],
         	newPatientsData: [],
+        	totalPatients: 0,
+        	averagePatients: 0,
         	xAxisTicks: [],
         	drawAllPatientsGraph: true,
         	drawNewPatientsGraph: true
@@ -21,6 +23,8 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
         	var start  = new Date(this.get('fromDate'));
         	var end = new Date(this.get('toDate'));
         	var allPatientsData = {};
+        	var totalPatients = 0;
+        	var averagePatients = 0;
         	//var newPatientsData = [];
         	var xAxisTicks = [];
         	var i = 0;
@@ -36,7 +40,7 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
 		       start.setDate(start.getDate() + 1);
 		       i++;
 		    }
-		    
+		    var dataPoints = i;
 
         	$.get(config.serverUrl+'treatmentsData',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
 		    	if(data.length) {
@@ -48,33 +52,19 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
 			   			var date = new Date(element.date);
 			        	var dateString = date.getDate()+"|"+(date.getMonth()+1)+"|"+date.getFullYear();
 			        	if(allPatientsData[dateString]) allPatientsData[dateString][1] = _.keys(treatments).length;
+			        	totalPatients+= _.keys(treatments).length;
 			        });
 
 			        self.set('allPatientsData',_.values(allPatientsData));
+			        self.set('totalPatients',totalPatients);
+			        self.set('averagePatients',parseInt(totalPatients/dataPoints,10));
 			        vent.trigger('CDF.Models.Analytics.GraphModels.PatientsGraphModel.fetchAndParseGraphData:allPatients');
 			    }
 			
 			});
 
         	this.set('xAxisTicks',xAxisTicks);
-/*			$.get(config.serverUrl+'newPatients',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
-		    	if(data.length) {
-			        newPatientsData.forEach(function(element,index){
-			        	var total = 0;
-			        	if(data[index]){
-				        	data[index].newPatients.forEach(function(newPatients){
-				        		total+=newPatients.amount;
-				        	});
-				        	newPatientsData[index][1] = total;
-			        	}
-			        });
 
-			        self.set('newPatientsData',newPatientsData);
-			        vent.trigger('CDF.Models.Analytics.GraphModels.PatientsGraphModel.fetchAndParseGraphData:newPatients');
-			    }
-			
-			});
-*/
         }
     });
 
