@@ -68,7 +68,7 @@ define([
         plotGraph: function() {
         	var self = this
         	var data = [];
-        	if(this.model.get('drawAllPatientsGraph')) data.push({ data: this.model.get('allPatientsData'), label: "Patients : "+this.model.get('totalPatients')});
+        	if(this.model.get('drawAllPatientsGraph')) data.push({ data: this.model.get('allPatientsData'), label: "All Patients"});
         	//if(this.model.get('drawNewPatientsGraph')) data.push({ data: this.model.get('NewPatientsData'), label: "NewPatients"});
 
 
@@ -104,40 +104,39 @@ define([
         	}
 /*			var d = [[0, 1000], [1, 2000], [2,4000], [3, 5000], [4, 5000],[5, 1000], [6, 2000], [7,4000], [8, 800], [9, 5500],[10, 1000], [11, 2000], [12,4000], [13, 6000], [14, 3000]];
 			var e = [[0,3000],[0,4000],[1,5000],[2,3000][0,3000],[3,3000],[4,6000],[5,3000],[6,4000],[7,0000],[8,8000],[9,4000],[10,1000],[11,5000],[12,3000]];
-*/			;
+*/			
 			$.plot(this.$(".graph-container"), data,options);
 
 			function showTooltip(x, y, contents) {
-			$('<div id="tooltip">' + contents + '</div>').css( {
-				position: 'absolute',
-				display: 'none',
-				top: y + 5,
-				left: x + 5,
-				border: '1px solid #fdd',
-				padding: '2px',
-				'background-color': '#dfeffc',
-				opacity: 0.80
-			}).appendTo("body").fadeIn(200);
+    			$('<div id="tooltip">' + contents + '</div>').css( {
+    				position: 'absolute',
+    				display: 'none',
+    				top: y + 5,
+    				left: x + 5,
+    				border: '1px solid #fdd',
+    				padding: '2px',
+    				'background-color': '#dfeffc',
+    				opacity: 0.80
+    			}).appendTo("body").fadeIn(200);
 			}
 
 			var previousPoint = null;
-			$(".graph-container").bind("plothover", function (event, pos, item) {
-				$("#x").text(pos.x.toFixed(2));
-				$("#y").text(pos.y.toFixed(2));
+			this.$(".graph-container").bind("plothover", function (event, pos, item) {
+				self.$("#x").text(pos.x.toFixed(2));
+				self.$("#y").text(pos.y.toFixed(2));
 
 					if (item) {
 						if (previousPoint != item.dataIndex) {
 							previousPoint = item.dataIndex;
 
 							$("#tooltip").remove();
-							var x = item.datapoint[0].toFixed(2),
+							var x = (self.model.get('xAxisTicks')[item.datapoint[0]])[1],
 								y = item.datapoint[1].toFixed(2);
 
 							showTooltip(item.pageX, item.pageY,
-										item.series.label + " of " + x + " = " + y);
+										item.series.label + " on " + x + " = " + y);
 						}
-					}
-					else {
+					}else {
 						$("#tooltip").remove();
 						previousPoint = null;
 					}

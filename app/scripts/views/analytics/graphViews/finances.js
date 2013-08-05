@@ -70,7 +70,7 @@ define([
         	var data = [];
             //var options = [];
         	if(this.model.get('drawRevenueGraph')) {
-                data.push({ data: this.model.get('revenueData'), label: "Revenue: "+this.model.get('totalRevenue'),
+                data.push({ data: this.model.get('revenueData'), label: "Revenue",
                        lines: { show: true,
                                 lineWidth: 2,
                                 fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }
@@ -80,7 +80,7 @@ define([
                              },
                        shadowSize: 0,
                    });
-                data.push({data: this.model.get('averageRevenueData'),label: "Average Daily Revenue: "+this.model.get('averageRevenue'),
+                data.push({data: this.model.get('averageRevenueData'),label: "Average Revenue",
                        lines: { show: true,
                                 lineWidth: 1,
                                 fill: true, fillColor: { colors: [ { opacity: 0.2 }, { opacity: 0.2 } ] }
@@ -142,20 +142,20 @@ define([
 			}
 
 			var previousPoint = null;
-			$(".graph-container").bind("plothover", function (event, pos, item) {
-				$("#x").text(pos.x.toFixed(2));
-				$("#y").text(pos.y.toFixed(2));
+			this.$(".graph-container").bind("plothover", function (event, pos, item) {
+				self.$("#x").text(pos.x.toFixed(2));
+				self.$("#y").text(pos.y.toFixed(2));
 
 					if (item) {
 						if (previousPoint != item.dataIndex) {
 							previousPoint = item.dataIndex;
 
 							$("#tooltip").remove();
-							var x = item.datapoint[0].toFixed(2),
+							var x = (self.model.get('xAxisTicks')[item.datapoint[0]])[1],
 								y = item.datapoint[1].toFixed(2);
 
 							showTooltip(item.pageX, item.pageY,
-										item.series.label + " of " + x + " = " + y);
+										item.series.label + " on " + x + " = " + y);
 						}
 					}
 					else {
