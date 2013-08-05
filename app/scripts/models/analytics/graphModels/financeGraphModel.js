@@ -30,6 +30,8 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
         	var revenueData = {};
         	var expenditureData = {};
         	var totalRevenue = 0;
+        	var totalExpenditure = 0;
+        	var averageExpenditure = 0;
         	var averageRevenue  = 0;
         	var averageRevenueData = {};
         	var averageExpData = {};
@@ -89,11 +91,12 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
 			        	var date = new Date(element.date);
 			        	var dateString = date.getDate()+"|"+(date.getMonth()+1)+"|"+date.getFullYear();
 			        	if(expenditureData[dateString]) expenditureData[dateString][1] = total;
-			        	self.totalExpenditure+=total;
+			        	totalExpenditure+=total;
 			        });
 
-			        self.averageExpenditure += self.totalExpenditure/dataPoints;
+			        averageExpenditure += totalExpenditure/dataPoints;
 			        self.set('expenditureData',_.values(expenditureData));
+			        self.set('totalExpenditure',(totalExpenditure));
 			        vent.trigger('CDF.Models.Analytics.GraphModels.FinanceGraphModel.fetchAndParseGraphData:expenditure');
 			    }
 			

@@ -70,7 +70,7 @@ define([
         	var data = [];
             //var options = [];
         	if(this.model.get('drawRevenueGraph')) {
-                data.push({ data: this.model.get('revenueData'), label: "Revenue",
+                data.push({ data: this.model.get('revenueData'), label: "Revenue: "+this.model.get('totalRevenue'),
                        lines: { show: true,
                                 lineWidth: 2,
                                 fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }
@@ -80,7 +80,7 @@ define([
                              },
                        shadowSize: 0,
                    });
-                data.push({data: this.model.get('averageRevenueData'),label: "Average Revenue",
+                data.push({data: this.model.get('averageRevenueData'),label: "Average Revenue :"+this.model.get('averageRevenue'),
                        lines: { show: true,
                                 lineWidth: 1,
                                 fill: true, fillColor: { colors: [ { opacity: 0.2 }, { opacity: 0.2 } ] }
@@ -93,7 +93,7 @@ define([
                    });
             }
 
-        	if(this.model.get('drawExpenditureGraph')) data.push({ data: this.model.get('expenditureData'), label: "Expenditure",
+        	if(this.model.get('drawExpenditureGraph')) data.push({ data: this.model.get('expenditureData'), label: "Expenditure :"+this.model.get('totalExpenditure'),
                        lines: { show: true,
                                 lineWidth: 2,
                                 fill: true, fillColor: { colors: [ { opacity: 0.5 }, { opacity: 0.2 } ] }

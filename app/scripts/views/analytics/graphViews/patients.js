@@ -68,7 +68,7 @@ define([
         plotGraph: function() {
         	var self = this
         	var data = [];
-        	if(this.model.get('drawAllPatientsGraph')) data.push({ data: this.model.get('allPatientsData'), label: "All Patients"});
+        	if(this.model.get('drawAllPatientsGraph')) data.push({ data: this.model.get('allPatientsData'), label: "All Patients :"+this.model.get('totalPatients')});
         	//if(this.model.get('drawNewPatientsGraph')) data.push({ data: this.model.get('NewPatientsData'), label: "NewPatients"});
 
 
