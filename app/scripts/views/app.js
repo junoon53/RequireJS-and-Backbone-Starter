@@ -137,7 +137,7 @@ define([
                             toDate:this.model.get('date'),
                         });
                         var fromDate = new Date(this.model.get('date'));
-                        fromDate.setDate(fromDate.getDate()-30);
+                        fromDate.setDate(fromDate.getDate()-30*6);
                         
                         this.activeViews[viewType].fetchIssues();                        
                         break;
