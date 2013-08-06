@@ -138,7 +138,7 @@ define([
                         });
                         var fromDate = new Date(this.model.get('date'));
                         fromDate.setDate(fromDate.getDate()-30*6);
-                        
+                        this.activeViews[viewType].model.set('fromDate',fromDate);
                         this.activeViews[viewType].fetchIssues();                        
                         break;
                     case 'analytics':
