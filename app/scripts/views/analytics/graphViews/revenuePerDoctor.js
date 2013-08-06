@@ -11,10 +11,7 @@ define([
     var RevenuePerDoctorView  = GraphView.extend({
     	className:'row-fluid revenuePerDoctor-graph ',
         events: {
-        	'click .button-revenue-graph' : 'handleRevenueClick',
-        	'click .button-expenditure-graph' : 'handleExpenditureClick',
-        	'changeDate #fromDatetimepicker' : 'handleFromDateChange',
-            'changeDate #toDatetimepicker' : 'handleToDateChange',
+
         },
         initialize: function(){
             var self = this;
@@ -26,44 +23,7 @@ define([
             this.model.set('fromDate',fromDate);
 
           	this.listenTo(vent,'CDF.Models.Analytics.GraphModels.RevenuePerDoctorGraphModel.fetchAndParseGraphData:revenue',this.plotGraph);
-        },
-        handleFromDateChange : function(ev) {
-            ev.preventDefault();
-            this.fromDateTimePicker.hide();
-
-            if(!utility.areSameDate(ev.localDate,this.model.get('fromDate'))){
-                this.model.set("fromDate",ev.localDate);
-	           	this.model.fetchAndParseGraphData();
-                //this.showLoadingGif();
-            }
-        }, 
-        handleToDateChange : function(ev) {
-            ev.preventDefault();
-            this.toDateTimePicker.hide();
-
-            if(!utility.areSameDate(ev.localDate,this.model.get('toDate'))){
-                this.model.set("toDate",ev.localDate);
-                this.model.fetchAndParseGraphData();
-                //this.showLoadingGif();
-
-            }
-        },
-        handleRevenueClick : function(ev) {
-        	if(!this.$(ev.target).hasClass('active')) {
-        		this.model.set('drawRevenueGraph',true);
-        	} else {
-        		this.model.set('drawRevenueGraph',false);
-        	}
-        	this.model.fetchAndParseGraphData();
-        },
-        handleExpenditureClick : function(ev) {
-        	if(!this.$(ev.target).hasClass('active')) {
-        		this.model.set('drawExpenditureGraph',true);
-        	} else {
-        		this.model.set('drawExpenditureGraph',false);
-        	}
-        	this.model.fetchAndParseGraphData();
-        },
+        },       
         plotGraph: function() {
         	var self = this
         	var data = [];

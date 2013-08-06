@@ -36,6 +36,8 @@ define([
         events: {
             'click .clinicsList li a': 'handleClinicSelect',
             'click  li#refresh a': 'handleRefreshClick',
+            'changeDate #fromDatetimepicker' : 'handleFromDateChange',
+            'changeDate #toDatetimepicker' : 'handleToDateChange',
 
         },
         initialize: function(){
@@ -45,7 +47,6 @@ define([
             this.clinicsListRowTemplate = _.template(clinicsListRowTemplate);
 
             this.graphViews = [];
-
         },
         _animateAndAppendSubView: function(callback, view){
             var self = this;
@@ -54,12 +55,42 @@ define([
 
             view.$el.fadeIn(1000, function(){
                 view.$el.show();
-	           	view.model.fetchAndParseGraphData();
+	           	view.model.fetchAndParseGraphData(self.model.get('fromDate'),self.model.get('toDate'));
                 if(callback) callback();
             });
         },
         onClose: function(){
             this.removeAllGraphsViews();
+            this.fromDateTimePicker.destroy();
+            this.toDateTimePicker.destroy();
+        },
+        handleFromDateChange : function(ev) {
+            ev.preventDefault();
+            this.fromDateTimePicker.hide();
+            var self = this;
+            if(!utility.areSameDate(ev.localDate,this.model.get('fromDate'))){
+                this.model.set("fromDate",ev.localDate);
+                //this.model.fetchAndParseGraphData();
+                //this.showLoadingGif();
+                this.graphViews.forEach(function(view){
+                    view.model.fetchAndParseGraphData(self.model.get('fromDate'),self.model.get('toDate'));
+                });
+
+            }
+        }, 
+        handleToDateChange : function(ev) {
+            ev.preventDefault();
+            this.toDateTimePicker.hide();
+            var self = this;
+            if(!utility.areSameDate(ev.localDate,this.model.get('toDate'))){
+                this.model.set("toDate",ev.localDate);
+                //this.model.fetchAndParseGraphData();
+                //this.showLoadingGif();
+                this.graphViews.forEach(function(view){
+                    view.model.fetchAndParseGraphData(self.model.get('fromDate'),self.model.get('toDate'));
+                });
+
+            }
         },
         showLoadingGif: function() {
             this.$(".graphs-container").html(Loading.$el);
@@ -106,7 +137,7 @@ define([
 
                 this.graphViews.forEach(function(view){
                 	view.model.set('clinic',self.model.get('clinic'));
-                	view.model.fetchAndParseGraphData();
+                	view.model.fetchAndParseGraphData(self.model.get('fromDate'),self.model.get('toDate'));
                 })
                 
             }                      
@@ -127,6 +158,18 @@ define([
             clinicsList += self.clinicsListRowTemplate({clinicName:"All Clinics",clinic:-1});
 
             this.$('.clinicsList').html(clinicsList);  
+
+             this.$('#fromDatetimepicker').datetimepicker({
+              pickTime: false
+            });
+            this.fromDateTimePicker = this.$('#fromDatetimepicker').data('datetimepicker');
+            this.fromDateTimePicker.setLocalDate(this.model.get('fromDate'));
+
+            this.$('#toDatetimepicker').datetimepicker({
+              pickTime: false
+            });
+            this.toDateTimePicker = this.$('#toDatetimepicker').data('datetimepicker');
+            this.toDateTimePicker.setLocalDate(new Date(this.model.get("toDate")));
 
             this.loadGraphViews();
         }

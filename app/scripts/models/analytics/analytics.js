@@ -6,6 +6,8 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
         defaults: {
 			clinic: null,  
 			clinics: [],
+            fromDate: new Date(),
+            toDate: new Date()
         },
         events: {
 

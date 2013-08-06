@@ -4,8 +4,6 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
     var PatientsGraphModel = Graph.extend({
         url: '',
         defaults: {
-        	fromDate: new Date(),
-        	toDate: new Date(),
         	clinic: 0,
         	allPatientsData: [],
         	newPatientsData: [],
@@ -17,10 +15,10 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
         initialize: function(){
            var self = this;
         },
-        fetchAndParseGraphData: function() {
+        fetchAndParseGraphData: function(fromDate,toDate) {
         	var self = this;
-        	var start  = new Date(this.get('fromDate'));
-        	var end = new Date(this.get('toDate'));
+        	var start  = new Date(new Date(fromDate).getTime());
+        	var end = toDate;
         	var allPatientsData = {};
         	var totalPatients = 0;
         	//var newPatientsData = [];
@@ -39,8 +37,7 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
 		       i++;
 		    }
 		    
-
-        	$.get(config.serverUrl+'treatmentsData',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
+        	$.get(config.serverUrl+'treatmentsData',{fromDate: fromDate,toDate:toDate, clinic:this.get('clinic')},function(data){
 		    	if(data.length) {
 			        data.forEach(function(element,index){
 			        	var treatments = {};
@@ -57,28 +54,9 @@ define(['underscore','jquery','models/analytics/graphViewModel','config','utilit
 			        self.set('totalPatients',totalPatients);
 			        vent.trigger('CDF.Models.Analytics.GraphModels.PatientsGraphModel.fetchAndParseGraphData:allPatients');
 			    }
-			
 			});
 
         	this.set('xAxisTicks',xAxisTicks);
-/*			$.get(config.serverUrl+'newPatients',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
-		    	if(data.length) {
-			        newPatientsData.forEach(function(element,index){
-			        	var total = 0;
-			        	if(data[index]){
-				        	data[index].newPatients.forEach(function(newPatients){
-				        		total+=newPatients.amount;
-				        	});
-				        	newPatientsData[index][1] = total;
-			        	}
-			        });
-
-			        self.set('newPatientsData',newPatientsData);
-			        vent.trigger('CDF.Models.Analytics.GraphModels.PatientsGraphModel.fetchAndParseGraphData:newPatients');
-			    }
-			
-			});
-*/
         }
     });
 

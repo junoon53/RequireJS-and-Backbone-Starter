@@ -138,17 +138,21 @@ define([
                         });
                         var fromDate = new Date(this.model.get('date'));
                         fromDate.setDate(fromDate.getDate()-30);
-                        this.activeViews[viewType].model.set('fromDate',fromDate);
+                        
                         this.activeViews[viewType].fetchIssues();                        
                         break;
                     case 'analytics':
                         this.activeViews[viewType] = new Analytics();
                         this.activeViews[viewType].model.set({
+                           
                             clinics:this.model.get('clinics'),
                             clinic:this.model.get('clinic'),
                             clinicName:this.model.get('clinicName'),
+                            toDate:this.model.get('date'),
                         });
-
+                        var fromDate = new Date(this.model.get('date'));
+                        fromDate.setDate(fromDate.getDate()-30);
+                        this.activeViews[viewType].model.set('fromDate',fromDate);
                         break;
                 } 
 

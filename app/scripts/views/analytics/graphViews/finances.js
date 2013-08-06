@@ -11,60 +11,17 @@ define([
     var FinancesView  = GraphView.extend({
     	className:'row-fluid finance-graph ',
         events: {
-        	'click .button-revenue-graph' : 'handleRevenueClick',
-        	'click .button-expenditure-graph' : 'handleExpenditureClick',
-        	'changeDate #fromDatetimepicker' : 'handleFromDateChange',
-            'changeDate #toDatetimepicker' : 'handleToDateChange',
+        	//'click .button-revenue-graph' : 'handleRevenueClick',
+        	//'click .button-expenditure-graph' : 'handleExpenditureClick',
         },
         initialize: function(){
             var self = this;
             this.model = new FinanceGraphModel();
             this.template = _.template(template);
 
-            var fromDate = new Date(this.model.get('fromDate'));
-            fromDate.setDate(fromDate.getDate()-30);
-            this.model.set('fromDate',fromDate);
-
           	this.listenTo(vent,'CDF.Models.Analytics.GraphModels.FinanceGraphModel.fetchAndParseGraphData:revenue',this.plotGraph);
         	this.listenTo(vent,'CDF.Models.Analytics.GraphModels.FinanceGraphModel.fetchAndParseGraphData:expenditure',this.plotGraph);
-        },
-        handleFromDateChange : function(ev) {
-            ev.preventDefault();
-            this.fromDateTimePicker.hide();
-
-            if(!utility.areSameDate(ev.localDate,this.model.get('fromDate'))){
-                this.model.set("fromDate",ev.localDate);
-	           	this.model.fetchAndParseGraphData();
-                //this.showLoadingGif();
-            }
-        }, 
-        handleToDateChange : function(ev) {
-            ev.preventDefault();
-            this.toDateTimePicker.hide();
-
-            if(!utility.areSameDate(ev.localDate,this.model.get('toDate'))){
-                this.model.set("toDate",ev.localDate);
-                this.model.fetchAndParseGraphData();
-                //this.showLoadingGif();
-
-            }
-        },
-        handleRevenueClick : function(ev) {
-        	if(!this.$(ev.target).hasClass('active')) {
-        		this.model.set('drawRevenueGraph',true);
-        	} else {
-        		this.model.set('drawRevenueGraph',false);
-        	}
-        	this.model.fetchAndParseGraphData();
-        },
-        handleExpenditureClick : function(ev) {
-        	if(!this.$(ev.target).hasClass('active')) {
-        		this.model.set('drawExpenditureGraph',true);
-        	} else {
-        		this.model.set('drawExpenditureGraph',false);
-        	}
-        	this.model.fetchAndParseGraphData();
-        },
+        },      
         plotGraph: function() {
         	var self = this
         	var data = [];
@@ -123,9 +80,7 @@ define([
         		$.plot(this.$('.graph-container'),[],options);
         		return;
         	}
-/*			var d = [[0, 1000], [1, 2000], [2,4000], [3, 5000], [4, 5000],[5, 1000], [6, 2000], [7,4000], [8, 800], [9, 5500],[10, 1000], [11, 2000], [12,4000], [13, 6000], [14, 3000]];
-			var e = [[0,3000],[0,4000],[1,5000],[2,3000][0,3000],[3,3000],[4,6000],[5,3000],[6,4000],[7,0000],[8,8000],[9,4000],[10,1000],[11,5000],[12,3000]];
-*/			
+
 			$.plot(this.$(".graph-container"),data,options);
 
 			function showTooltip(x, y, contents) {

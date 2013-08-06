@@ -4,8 +4,6 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
     var FinanceGraphModel = Graph.extend({
         url: '',
         defaults: {
-        	fromDate: new Date(),
-        	toDate: new Date(),
         	clinic: 0,
         	revenueData: [],
         	expenditureData: [],
@@ -23,10 +21,10 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
            var self = this;
        
         },
-        fetchAndParseGraphData: function() {
+        fetchAndParseGraphData: function(fromDate,toDate) {
         	var self = this;
-        	var start  = new Date(this.get('fromDate'));
-        	var end = new Date(this.get('toDate'));
+        	var start  = new Date(fromDate.getTime());
+        	var end = toDate;
         	var revenueData = {};
         	var expenditureData = {};
         	var totalRevenue = 0;
@@ -55,7 +53,7 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
 		    dataPoints = i;
 		    this.set('xAxisTicks',xAxisTicks);
 
-        	$.get(config.serverUrl+'revenue',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
+        	$.get(config.serverUrl+'revenue',{fromDate: fromDate,toDate:toDate,clinic:this.get('clinic')},function(data){
 		    	if(data.length) {
 			        data.forEach(function(element,index){
 			        	var total = 0;
@@ -81,7 +79,7 @@ define(['backbone','underscore','jquery','models/analytics/graphViewModel','conf
 			
 			});
 
-			$.get(config.serverUrl+'expenditure',{fromDate: this.get('fromDate'),toDate:this.get('toDate'),clinic:this.get('clinic')},function(data){
+			$.get(config.serverUrl+'expenditure',{fromDate: fromDate,toDate:toDate,clinic:this.get('clinic')},function(data){
 		    	if(data.length) {
 			        data.forEach(function(element,index){
 			        	var total = 0;
