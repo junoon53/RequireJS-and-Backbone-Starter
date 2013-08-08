@@ -7,7 +7,7 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
             clinic: null, 
             pgNo:1,
             lastId: 0,
-            itemsPerPage:3,
+            itemsPerPage:25,
             searchString:"",
             totalResults: 0
         },
