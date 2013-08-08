@@ -116,7 +116,8 @@ function Schemas() {
 				    		remarks: String,
 				    	}
 
-	    }]	
+	    }],
+	    
 	 
 		
 	});
@@ -181,6 +182,17 @@ function Schemas() {
 	});
 	mongoose.model('Tooth', ToothSchema, 'teeth');
 	result.Tooth = mongoose.model('Tooth');
+
+
+	var ClinicTreatmentDetailsSchema = new Schema({
+			_id: Number,
+			treatment: { type: Number, ref: 'TreatmentsMaster' },
+			rate: Number, 
+	});
+	mongoose.model('ClinicTreatmentDetails', ClinicTreatmentDetailsSchema, 'clinicTreatmentDetails');
+	result.ClinicTreatmentDetails = mongoose.model('ClinicTreatmentDetails');
+
+
 
 	return result;
 

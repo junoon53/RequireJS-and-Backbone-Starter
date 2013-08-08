@@ -145,7 +145,7 @@ server.get('/treatmentStages',Treatment.getTreatmentStages);
 server.post('/treatmentStages',Treatment.addNewTreatmentStage);
 
 server.get('/expendableInventoryTypes', Inventory.getExpendableInventoryTypes);
-
+server.get('/expendableInventoryRecords', Inventory.getClinicExpendableInventoryRecords);
 server.get('/expendableInventoryMaster', Inventory.getExpendableInventoryItems);
 server.post('/expendableInventoryMaster',Inventory.addExpendableInventoryItem);
 
@@ -170,6 +170,9 @@ server.get('/reportStatus', Report.checkReportStatus);
 
 server.get('/clinicIssues', getClinicIssues);
 server.put('/clinicIssue', updateClinicIssue);
+
+
+
 
 server.get('/revenue',Analytics.getRevenue);
 server.get('/expenditure',Analytics.getExpenditure);

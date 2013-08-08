@@ -15,7 +15,7 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
             
         },
         viewTypes: function() {
-            return ['feedbackForm','issueTracking','analytics'];
+            return ['feedbackForm','issueTracking','analytics','expendableInventoryRecords'];
         },
         events: {
             //'change:date' : 'checkReportStatus'
@@ -26,9 +26,6 @@ define(['backbone','underscore','jquery','vent','models/formModels/people/roles'
         },
         onClose: function(){
 
-        },
-        viewTypes: function() {
-            return ['feedbackForm'];
         },
     });
 

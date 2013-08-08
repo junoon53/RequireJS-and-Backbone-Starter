@@ -11,7 +11,8 @@ define(['backbone','underscore'], function(Backbone,_) {
 			qtyReceived:0,
 			dateExpiry: new Date(),
 			receivedBy: null,
-			receivedByName: ""
+			receivedByName: "",
+			dateReceived: new Date()
 		},
 		validation: {
 		    expendableInventoryItem: {

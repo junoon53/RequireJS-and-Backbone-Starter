@@ -1,4 +1,5 @@
 var _instance = null;
+var async = require('async');
 
 function Inventory(schemata) {
 
@@ -6,7 +7,7 @@ function Inventory(schemata) {
 
 	this._addClinicExpendableInventoryItem = function(clinicExpendableInventoryItem,callback){
 		schemata.ClinicExpendableInventory.count({},function(err,count){
-			clinicExpendableInventoryItem._id = Math.floor(Math.random()*10000)+count;
+			clinicExpendableInventoryItem._id = Math.floor(Math.random()*1000000000000)+count;
 			clinicExpendableInventoryItem.save(function(err,data){
 				schemata.ExpendableInventoryType.populate(data,{path:'expendableInventoryType'},
 				function(err,data){
@@ -32,6 +33,34 @@ function Inventory(schemata) {
 				if(callback) callback(err,numAffectedRows);
 			}
 		);
+	};
+
+	this._getExpendableInventoryItems = function(searchString,callback){
+		schemata.ExpendableInventoryMaster.find({
+					"genericName" : {$regex : ".*"+searchString.toUpperCase()+".*"}
+					 })
+			.populate('expendableInventoryType')
+			.execFind(function(err,data){
+				if(err) console.log(err);
+				console.log(data);
+				callback(data);
+		});
+	};
+
+	this._searchExpendableInventoryItems = function(searchString,callback){
+		schemata.ExpendableInventoryMaster.find({
+					$or : [
+						{"genericName" : {$regex : ".*"+searchString.toUpperCase()+".*"}},
+						{"brandName" : {$regex : ".*"+searchString.toUpperCase()+".*"}},
+					]
+					
+					 })
+			.select('_id')			
+			.execFind(function(err,data){
+				if(err) console.log(err);
+				//console.log(data);
+				callback(data);
+		});
 	};
 
 
@@ -78,14 +107,8 @@ function Inventory(schemata) {
 		res.header("Access-Control-Allow-Origin","*");
 		res.header("Access-Control-Allow-Headers","X-Requested-With");
 
-		schemata.ExpendableInventoryMaster.find({
-					"genericName" : {$regex : ".*"+req.query.searchString.toUpperCase()+".*"}
-					 })
-			.populate('expendableInventoryType')
-			.execFind(function(err,data){
-				if(err) console.log(err);
-				console.log(data);
-				res.send(data);
+		self._getExpendableInventoryItems(req.query.searchString,function(data){
+			res.send(data);
 		});
 
 	};
@@ -116,7 +139,70 @@ function Inventory(schemata) {
 		});
 	};
 
+	this.getClinicExpendableInventoryRecords = function(req,res,next){
+		console.log('sending expendable inventory records for clinic :'+req.query.clinic);
+		res.header("Access-Control-Allow-Origin","*");
+		res.header("Access-Control-Allow-Headers","X-Requested-With");
 
+		var lastId = req.query.lastId;
+		var itemsPerPage = req.query.itemsPerPage;
+		var clinic = req.query.clinic;
+		var searchString = req.query.searchString;
+        var inventoryIds = [];
+    	var result = {};
+        	
+        var getResults = function(inventory){
+
+        	var searchOptions = {};
+        	var countOptions = {};
+        	if(clinic) {
+        		searchOptions.clinic = clinic;
+        		countOptions.clinic = clinic;
+        	}
+        	if(inventory) {
+        		inventory.forEach(function(item){
+        			inventoryIds.push(item._id);
+        		});
+        		//console.log(inventoryIds);
+        		searchOptions.expendableInventoryItem = {$in: inventoryIds };
+        		countOptions.expendableInventoryItem = {$in: inventoryIds };
+
+        	}
+        	searchOptions._id = {$gt: lastId};
+
+        	schemata.ClinicExpendableInventory.find(searchOptions)
+        	.sort({_id: 1})
+			.limit(itemsPerPage)
+        	.populate('expendableInventoryItem')
+        	.populate('receivedBy')
+        	.lean().execFind(function(err,data){
+		       if(err) {
+		          res.send(err);
+		          return;
+		       } else {
+		       	  schemata.ExpendableInventoryType.populate(data, {path: 'expendableInventoryItem.expendableInventoryType'},function (err,data){
+					if(err) {console.log(err); res.send(err);}
+					else {
+						schemata.ClinicExpendableInventory.count(countOptions,function(err, count){
+							if(err) {console.log(err); res.send(err);}
+							else {
+								result.totalResults = count;
+								result.data = data;
+								res.send(result);
+							}
+						});
+
+						
+					}
+		       	  });
+		     }
+		  });
+
+        };
+
+        self._searchExpendableInventoryItems(req.query.searchString,getResults);
+        
+	};
 
 };
 

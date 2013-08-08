@@ -16,7 +16,7 @@ define([
     'text!templates/clinicsListRow.html',
     'text!templates/issueTrackingRow.html',
     'text!templates/loading.html',
-    'datetimepicker',
+    'datetimepicker'
          
 
     ], function(Backbone,$,_,utility,
@@ -39,8 +39,6 @@ define([
             'changeDate #fromDatetimepicker' : 'handleFromDateChange',
             'changeDate #toDatetimepicker' : 'handleToDateChange',
             'click .hideCompletedIssues' : 'toggleCompletedIssues'
-            //'click th.priority' : 'sortRows',
-            //'click th.status' : 'sortRows'
         },
         initialize: function(){
             var self = this;

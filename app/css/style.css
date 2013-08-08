@@ -173,6 +173,10 @@ li#toDatetimepicker
 
 }
 
+li#inventoryItemSearch {
+	margin-top: 5px;
+}
+
 input.hideCompletedIssues {
 	margin-top:13px;
 }

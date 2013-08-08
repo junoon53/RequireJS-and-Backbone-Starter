@@ -10,6 +10,7 @@ define([
     'views/formViews/feedbackForm',
     'views/issueTracking/issueTrackingView',
     'views/analytics/analyticsView',
+    'views/inventoryRecords/inventoryRecordsView',
 
     'router/router',
     'vent',
@@ -22,6 +23,7 @@ define([
         FeedbackForm,
         IssueTracking,
         Analytics,
+        ExpendableInventoryRecords,
 
         router,vent,template){
 
@@ -33,6 +35,7 @@ define([
             'click li#feedbackForm': 'handleMainMenuClick',
             'click li#issueTracking': 'handleMainMenuClick',
             'click li#analytics': 'handleMainMenuClick',
+            'click li#inventoryRecords': 'handleMainMenuClick',
             'click li#logout a': 'handleLogoutClick',
         },
         initialize: function(){
@@ -154,6 +157,17 @@ define([
                         fromDate.setDate(fromDate.getDate()-30);
                         this.activeViews[viewType].model.set('fromDate',fromDate);
                         break;
+                    case 'inventoryRecords':
+                        this.activeViews[viewType] = new ExpendableInventoryRecords();
+                        this.activeViews[viewType].model.set({
+                           
+                            clinics:this.model.get('clinics'),
+                            clinic:this.model.get('clinic'),
+                            clinicName:this.model.get('clinicName'),
+                        });
+                        this.activeViews[viewType].fetchInventoryRecords();                        
+                        break;
+
                 } 
 
                 this.activeViews[viewType].render();     
