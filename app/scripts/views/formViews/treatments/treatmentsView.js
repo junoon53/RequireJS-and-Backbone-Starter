@@ -13,6 +13,7 @@ define([
     'views/formViews/treatments/denturesTable',
     'views/formViews/treatments/consultationTable',
     'views/formViews/treatments/perioTable',
+    'views/formViews/treatments/implantsTable',
 	'views/formViews/treatments/miscTable',
 	'vent',
 	'text!templates/treatmentsView.html'
@@ -28,6 +29,7 @@ define([
         DenturesTable,
         ConsultationTable,
         PerioTable,
+        ImplantsTable,
         MiscTable,
 
 		vent,template){
@@ -85,6 +87,9 @@ define([
                         break;
                     case 'perio':
                         this.activeTables[tableType] = new PerioTable();
+                        break;
+                    case 'implants':
+                        this.activeTables[tableType] = new ImplantsTable();
                         break;
                     case 'misc':
                         this.activeTables[tableType] = new MiscTable();

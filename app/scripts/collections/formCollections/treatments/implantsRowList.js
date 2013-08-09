@@ -33,11 +33,12 @@ define([
                     prosthodontist: element.doctors[1]._id,
                     treatmentName: utility.toTitleCase(element.treatment.name),
                     treatment: element.treatment._id,
-                    tooth: element.tooth,
-                    brand: element.brand,
-                    partNo: element.partNo,
-                    length: element.length,
-                    diameter: element.diameter,
+                    // details
+                    tooth: element.details.tooth,
+                    brand: element.details.brand,
+                    length: element.details.length,
+                    diameter: element.details.diameter,
+                    partNo: element.details.partNo
 
                 })));
             });
@@ -48,12 +49,15 @@ define([
                var dataMember = {
                     patient: element.get('patient'),
                     doctors: [element.get('implantologist'), element.get('prosthodontist')],
-                    tooth: element.get('tooth'),
                     treatment: element.get('treatment'),
-                    brand: element.get('brand'),
-                    partNo: element.get('partNo'),
-                    length: element.get('length'),
-                    diameter: element.get('diameter'),
+
+                    details: {
+                    	tooth: element.get('tooth'),
+                    	brand: element.get('brand'),
+                    	partNo: element.get('partNo'),
+                    	length: element.get('length'),
+                    	diameter: element.get('diameter'),
+                    }
                 };
                 result.push(dataMember);
             });

@@ -66,9 +66,12 @@ define([
 				case "treatment":
 					setModelProperties.call(this,'treatment','treatmentName');
 					break;  
-				case "tooth":
 				case "brand":
 				case "partNo":
+					this.model.set(targetClass,this.$('.'+targetClass).val());
+					this.model.isValid(true);
+					break;
+				case "tooth":				
 				case "length":
 				case "diameter":
 					this.model.set(targetClass,parseInt(this.$('.'+targetClass).val(),10));
@@ -108,7 +111,7 @@ define([
 					break;
 				case "implantologist":
 				case "prosthodontist":
-					this.addNewDoctor(value);
+					this.addNewDoctor(value,targetClass);
 					break;
 				case "treatment":
 					this.addNewTreatment(value);
@@ -127,13 +130,13 @@ define([
 
 				vent.trigger('CDF.Views.Treatments.ImplantsRowView:addNewPatient',{patientNameString:propertyName,callback:newPatientAdded});
 		},
-		addNewDoctor: function(propertyName){
+		addNewDoctor: function(propertyName,targetClass){
 			   var self = this;
 				function newDoctorAdded(doctorModel) {
-					self.$('.doctor').val(utility.toTitleCase(doctorModel.get('firstName')+" "+doctorModel.get('lastName')));
-					self.$('.doctor').attr('valueId',doctorModel.get('_id'));
-					self.model.set('doctor',doctorModel.get('_id'));
-					self.model.set('doctorName',doctorModel.get('firstName')+" "+doctorModel.get('lastName')); 
+					self.$('.'+targetClass).val(utility.toTitleCase(doctorModel.get('firstName')+" "+doctorModel.get('lastName')));
+					self.$('.'+ targetClass).attr('valueId',doctorModel.get('_id'));
+					self.model.set(targetClass,doctorModel.get('_id'));
+					self.model.set(targetClass+'Name',doctorModel.get('firstName')+" "+doctorModel.get('lastName')); 
 					self.model.isValid(true);
 				}
 				vent.trigger('CDF.Views.Treatments.ImplantsRowView:addNewDoctor',{doctorNameString:propertyName,callback:newDoctorAdded});
@@ -148,7 +151,7 @@ define([
 					self.model.set('treatment',treatmentModel.get('_id')); 
 					self.model.isValid(true);
 				}
-     			vent.trigger('CDF.Views.Treatments.ImplantsRowView:iddNewTreatment',{name:propertyName,category:1004,callback:newTreatmentAdded});
+     			vent.trigger('CDF.Views.Treatments.ImplantsRowView:addNewTreatment',{name:propertyName,category:1012,callback:newTreatmentAdded});
 		},
  		onEnterUpdate: function(ev) {
 			if (ev.keyCode === 13) {
@@ -260,7 +263,7 @@ define([
 			this.$('.patient').typeahead({source:personSource(new Persons(),[0]),updater:personUpdater,minLength:3,id:"patient"+this.model.cid,map:this.patientMap});
 			this.$('.implantologist').typeahead({source:personSource(new Persons(),[1,2]),updater:personUpdater,minLength:3,id:"implantologist"+this.model.cid,map:this.doctorsMap});
 			this.$('.prosthodontist').typeahead({source:personSource(new Persons(),[1,2]),updater:personUpdater,minLength:3,id:"prosthodontist"+this.model.cid,map:this.doctorsMap});
-			this.$('.treatment').typeahead({source:treatmentsSource(new Treatments(),1004),updater:treatmentsUpdater,minLength:3,id:"treatment"+this.model.cid,map:this.treatmentsMap});
+			this.$('.treatment').typeahead({source:treatmentsSource(new Treatments(),1012),updater:treatmentsUpdater,minLength:3,id:"treatment"+this.model.cid,map:this.treatmentsMap});
 
 			return this;
 		}

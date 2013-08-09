@@ -11,12 +11,12 @@ define(['backbone','underscore'], function(Backbone,_) {
 				prosthodontist:null,
 				treatmentName: '',
 				treatment:null,
-				tooth: '',
+				tooth: 0,
 				brand:'',
 				partNo:'',
-				length:'',
-				diameter:'',
-				rowId:0,
+				length:0,
+				diameter:0,
+				rowId:0
 			}
 		},
 		validation: {
@@ -36,11 +36,11 @@ define(['backbone','underscore'], function(Backbone,_) {
 		      pattern: 'digits',
 		      required: true,
 		      range: [1000,10000],
-		      msg: "Please select a implantologist"
+		      msg: "Please select an implantologist"
 		    },
 		    prosthodontist: {
 		      pattern: 'digits',
-		      required: true,
+		      required: false,
 		      range: [1000,10000],
 		      msg: "Please select a prosthodontist"
 		    },
@@ -49,10 +49,6 @@ define(['backbone','underscore'], function(Backbone,_) {
 		    	required: true,
 		    	range: [11, 100],
 		    	msg: "Please enter a valid tooth"
-		    },
-		    partNo: {
-		    	required: true,
-		    	msg: "Please enter a valid part number"
 		    },
 		    length: {
 		    	pattern: 'digits',
@@ -65,7 +61,7 @@ define(['backbone','underscore'], function(Backbone,_) {
 		    	required: true,
 		    	range: [1, 100],
 		    	msg: "Please enter a valid diameter"
-		    },
+		    }
 
 		},
 		onClose: function(){

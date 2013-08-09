@@ -114,6 +114,11 @@ function Schemas() {
 				    		numInjections: Number,
 				    		numFillings: Number,
 				    		remarks: String,
+				    		diameter: Number,
+				    		length: Number,
+				    		brand: String,
+				    		partNo: String
+
 				    	}
 
 	    }],
